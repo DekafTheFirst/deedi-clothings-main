@@ -90,7 +90,7 @@ const Products = () => {
               height={300}
               className="catImg"
               wrapperClassName="catImgWrapper"
-              src={process.env.REACT_APP_UPLOAD_URL + category[0]?.attributes?.img?.data?.attributes?.url}
+              src={import.meta.env.VITE_UPLOAD_URL + category[0]?.attributes?.img?.data?.attributes?.url}
               alt=""
               effect="blur"
               blurhash={category[0]?.attributes.imgBlurred}

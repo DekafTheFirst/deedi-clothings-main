@@ -30,14 +30,14 @@ const Product = () => {
           <div className="images">
             <img
               src={
-                process.env.REACT_APP_UPLOAD_URL + data?.attributes?.img?.data?.attributes?.url
+                import.meta.env.VITE_UPLOAD_URL + data?.attributes?.img?.data?.attributes?.url
               }
               alt=""
               onClick={(e) => setSelectedImg("img")}
             />
             <img
               src={
-                process.env.REACT_APP_UPLOAD_URL + data?.attributes?.img2?.data?.attributes?.url
+                import.meta.env.VITE_UPLOAD_URL + data?.attributes?.img2?.data?.attributes?.url
               }
               alt=""
               onClick={(e) => setSelectedImg("img2")}
@@ -46,7 +46,7 @@ const Product = () => {
           <div className="mainImg">
             <img
               src={
-                process.env.REACT_APP_UPLOAD_URL + data?.attributes[selectedImg]?.data?.attributes?.url
+                import.meta.env.VITE_UPLOAD_URL + data?.attributes[selectedImg]?.data?.attributes?.url
               }
               alt=""
             />

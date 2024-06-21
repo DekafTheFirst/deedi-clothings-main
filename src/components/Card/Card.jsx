@@ -14,17 +14,17 @@ const Card = ({ item }) => {
                         <OptimizedImage
                             wrapperClassName='imgWrapper mainImgWrapper'
                             alt=""
-                            src={process.env.REACT_APP_UPLOAD_URL + item.attributes?.img?.data?.attributes?.url}
+                            src={import.meta.env.VITE_UPLOAD_URL + item.attributes?.img?.data?.attributes?.url}
                             effect="blur"
                             height={400}
                             width={"100%"}
                             blurhash={item.attributes?.imgBlurred}
                         />  
-                        {/* <img src={process.env.REACT_APP_UPLOAD_URL + item.attributes?.img?.data?.attributes?.url} alt="" className="mainImg" /> */}
+                        {/* <img src={import.meta.env.VITE_UPLOAD_URL + item.attributes?.img?.data?.attributes?.url} alt="" className="mainImg" /> */}
                         <OptimizedImage
                             wrapperClassName='imgWrapper secondImgWrapper'
                             alt=""
-                            src={process.env.REACT_APP_UPLOAD_URL + item.attributes?.img2?.data?.attributes?.url}
+                            src={import.meta.env.VITE_UPLOAD_URL + item.attributes?.img2?.data?.attributes?.url}
                             effect="blur"
                             height={400}
                             width={"100%"}
