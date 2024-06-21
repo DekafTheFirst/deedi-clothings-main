@@ -38,20 +38,20 @@ const Navbar = () => {
 
           
           
-          <div className="item">
-            <Link className="link" to="/contact">Contact</Link> 
-          </div>
+          
           {/* <div className="item">
             <Link className="link" to="/products/3">Stores</Link> 
           </div> */}
           <div className="icons">
             <SearchIcon />
             <PersonOutlineIcon />
-            <FavoriteBorderOutlinedIcon />
             <div className="cartIcon" onClick={()=>setOpen(!open)}>
               <ShoppingCartOutlinedIcon />
               <span>{products.length}</span>
             </div>
+          </div>
+          <div className="item">
+            <Link className="link" to="/contact">Contact</Link> 
           </div>
         </div>
       </div>
