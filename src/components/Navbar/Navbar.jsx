@@ -17,14 +17,7 @@ const Navbar = () => {
     <div className='navbar'>
       <div className="wrapper">
         <div className="left">
-          <div className="item">
-            <img src='/img/en.png' alt="en-logo"/>
-            <KeyboardArrowDownIcon />
-          </div>
-          <div className="item">
-            <span>USD</span>
-            <KeyboardArrowDownIcon />
-          </div>
+          
           <div className="item">
             <Link className="link" to="/products/women">Women</Link> 
           </div>
@@ -34,18 +27,17 @@ const Navbar = () => {
           <div className="item">
             <Link className="link" to="/products/kids">Kids</Link> 
           </div>
-        </div>
-        <div className="center">
-          <Link className="link" to='/'>DEEDI</Link>
-        </div>
-        <div className="right">
-
-        <div className="item">
-            <Link className="link" to="/">Homepage</Link> 
-          </div>
           <div className="item">
             <Link className="link" to="/about">About</Link> 
           </div>
+        </div>
+        <div className="center">
+          <Link className="link" to='/'><img src='/img/deedi_transparent.png'/></Link>
+        </div>
+        <div className="right">
+
+          
+          
           <div className="item">
             <Link className="link" to="/contact">Contact</Link> 
           </div>

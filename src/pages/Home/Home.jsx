@@ -1,14 +1,21 @@
 import React from 'react'
-import Slider from '../../components/Slider/Slider'
 import "./Home.scss"
 import FeaturedProducts from '../../components/FeaturedProducts/FeaturedProducts'
 import Categories from '../../components/Categories/Categories'
 import Contact from '../../components/Contact/Contact'
+import MySwiper from '../../components/Swiper/MySwiper'
 
 const Home = () => {
   return (
     <div className="home">
-      <Slider />
+      {/* <Slider /> */}
+      <div className="hero">
+        <MySwiper />
+        <div className="content">
+          <h1>Wear Deedi, <span>Wear Hope</span></h1>
+          <p>A minority woman-owned business supporting  widows and vulnerable children in west Africa…We are not just selling clothes we are selling a story, a cause.</p>
+        </div>
+      </div>
       <FeaturedProducts type="featured" />
       <Categories />
       <FeaturedProducts type="trending" />

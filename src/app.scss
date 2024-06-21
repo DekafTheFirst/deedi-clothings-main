@@ -1,16 +1,20 @@
-$lightbrown: #D3B484;
-$darkbrown: #93703f;
-$ligthGray: #dbdbdc;
-$darkGray: #8c8778;
-$blue:#2d4772;
+// $lightbrown: #D3B484;
+// $darkbrown: #93703f;
+// $ligthGray: #dbdbdc;
+// $darkGray: #8c8778;
+// $blue:#2d4772;
 
-:export {
-    darkbrown: $darkbrown;
-    lightbrown: $lightbrown;
-    lightGray: $ligthGray;
-    darkGray: $darkGray;
-    blue: $blue
+// :export {
+//     darkbrown: $darkbrown;
+//     lightbrown: $lightbrown;
+//     lightGray: $ligthGray;
+//     darkGray: $darkGray;
+//     blue: $blue
 
+// }
+
+h1, h2, h3, h4, h5, h6, p {
+    margin: 0;
 }
 
 .app {

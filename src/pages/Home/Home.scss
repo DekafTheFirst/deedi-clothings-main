@@ -1,0 +1,48 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,100..900;1,100..900&display=swap');
+
+.home {
+    overflow: hidden;
+
+    .hero {
+        height: calc(100vh - 70px);
+        padding: 0 10px;
+        border-radius: 10px;
+        overflow: hidden;
+        position: relative;
+        
+        .content {
+            position: absolute;
+            z-index: 100;
+            bottom: 30px;
+            left: 40px;
+
+            h1 {
+            
+                vertical-align: baseline;
+                color: #F8F9FA;
+                font-weight: 400;
+                font-size: clamp(24px, 10vw, 80px);
+                text-transform: uppercase;
+                line-height: 1;
+                margin-bottom: 20px;
+                font-family: "Noto Serif", serif;
+
+                span {
+                    color: #FFC107;
+                }
+            }
+
+            p {
+                color: whitesmoke;
+                font-weight: 300;
+                font-size: 15px;
+                max-width: 60%;
+            }
+
+            
+        }
+
+        
+        
+    }
+}
