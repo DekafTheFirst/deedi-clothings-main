@@ -14,8 +14,10 @@ const Home = () => {
         <MySwiper />
         <div className="content">
           <h1>Wear Deedi, <span>Wear Hope</span></h1>
-          <p>A minority woman-owned business supporting  widows and vulnerable children in west Africa…We are not just selling clothes we are selling a story, a cause.</p>
-          <Link to="/products" className="btn">Shop</Link>
+          <div className="bottom">
+            <p>A minority woman-owned business supporting  widows and vulnerable children in west Africa…We are not just selling clothes we are selling a story, a cause.</p>
+            <Link to="/products" className="btn">Shop Now</Link>
+          </div>
 
         </div>
       </div>

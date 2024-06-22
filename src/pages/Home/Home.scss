@@ -1,25 +1,29 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,100..900;1,100..900&display=swap');
 @import '../../variables.scss';
+@import '../../mixins.scss';
+
 .home {
     overflow: hidden;
 
     .hero {
-        height: calc(70vh - $navbarHeight + 10px);
+        height: calc(60vh - $navbarHeight + 10px);
         margin: 0 10px;
         border-radius: 10px;
         overflow: hidden;
         position: relative;
-        
+        display: flex;
+        align-items: flex-end;
+
         .content {
-            position: absolute;
+            // position: absolute;
             z-index: 100;
-            bottom: 30px;
-            left: 0;
-            padding-left: 15px;
-            width: 100%;
+            // bottom: 30px;
+            // left: 0;
+            padding: 15px;
+            // width: 100%;
 
             h1 {
-            
+
                 vertical-align: baseline;
                 color: #F8F9FA;
                 font-weight: 400;
@@ -37,18 +41,29 @@
                 }
             }
 
-            p {
-                color: whitesmoke;
-                font-weight: 200;
-                font-size: 16px;
-                max-width: 60%;
+            .bottom {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+
+                p {
+                    color: whitesmoke;
+                    font-weight: 200;
+                    font-size: 16px;
+                    max-width: 100%;
+                }
+
+                .btn {
+                    @include btn-1();
+                }
             }
 
-            
+
         }
 
-        
-        
+
+
     }
 
     // .hero {
@@ -57,7 +72,7 @@
     //     border-radius: 10px;
     //     overflow: hidden;
     //     position: relative;
-        
+
     //     .content {
     //         position: absolute;
     //         z-index: 100;
@@ -65,7 +80,7 @@
     //         left: 40px;
 
     //         h1 {
-            
+
     //             vertical-align: baseline;
     //             color: #F8F9FA;
     //             font-weight: 400;
@@ -90,10 +105,10 @@
     //             max-width: 60%;
     //         }
 
-            
+
     //     }
 
-        
-        
+
+
     // }
 }
