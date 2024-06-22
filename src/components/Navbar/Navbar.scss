@@ -1,9 +1,10 @@
 @import '../../variables.scss';
+@import '../../mixins.scss';
 
 .navbar {
     height: $navbarHeight;
     display: flex;
-    padding: 0 10px;
+    padding: 0 15px;
 
 
     .wrapper {
@@ -11,6 +12,7 @@
         justify-content: space-between;
         align-items: center;
         width: 100%;
+
 
         .item {
             display: flex;
@@ -22,11 +24,27 @@
         .left {
             display: flex;
             align-items: center;
-            gap: 25px;
-            display: none;
+
+            .toggle {
+                @include md {
+                    display: none;
+                }
+            }
+
+
+            .nav-items {
+                display: none;
+
+                @include md {
+                    display: flex;
+                    gap: 20px;
+                }
+            }
+
         }
 
         .center {
+
             // margin-left: auto;
             // margin-right: auto;
             .link {
@@ -40,15 +58,55 @@
             display: flex;
             align-items: center;
             gap: 25px;
-            
+
 
             .icons {
                 display: flex;
                 gap: 15px;
                 color: #464545;
                 align-items: center;
+                cursor: pointer;
 
-                cursor: pointer;    
+                .searchbar {
+                    background-color: #F0F0F0;
+                    padding: 7px;
+                    border-radius: 50%;
+                    display: none;
+
+                    @include md {
+                        display: flex;
+                    }
+
+                    input {
+                        border: none;
+                        background-color: transparent;
+                        width: 80%;
+                    }
+
+                    .search-icon {
+                        margin-left: auto;
+                    }
+                }
+
+                .user {
+                    align-items: center;
+                    display: none;
+
+                    @include md {
+                        display: flex;
+                    }
+
+                    span {
+                        font-size: 14px;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        margin-left: 5px;
+
+
+                    }
+
+
+                }
 
                 .cartIcon {
                     position: relative;
@@ -117,7 +175,7 @@
 //             display: flex;
 //             align-items: center;
 //             gap: 25px;
-            
+
 
 //             .icons {
 //                 display: flex;
@@ -131,7 +189,7 @@
 //                     position: relative;
 //                     display: flex;
 //                     align-items: center;
-                    
+
 //                     span {
 //                         font-size: 11px;
 //                         width: 17px;

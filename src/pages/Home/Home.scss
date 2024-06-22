@@ -6,7 +6,7 @@
     overflow: hidden;
 
     .hero {
-        height: calc(60vh - $navbarHeight + 10px);
+        height: calc(70vh - $navbarHeight - 10px);
         margin: 0 10px;
         border-radius: 10px;
         overflow: hidden;
@@ -14,25 +14,58 @@
         display: flex;
         align-items: flex-end;
 
+        
+
+        @include breakpoint(400px) {
+            height: calc(60vh - $navbarHeight - 10px);
+        }
+
+        @include xs-landscape {
+            height: calc(100vh - $navbarHeight - 10px);
+        }
+
+
+        @include md {
+            height: calc(50vh - $navbarHeight - 10px);
+        }
+
+        
+
+        @include md-landscape {
+            height: calc(100vh - $navbarHeight - 10px);
+        }
+
+        @include xl {
+            height: calc(100vh - $navbarHeight - 10px);
+        }
+
+
         .content {
             // position: absolute;
             z-index: 100;
             // bottom: 30px;
             // left: 0;
             padding: 15px;
-            // width: 100%;
+            width: 100%;
 
             h1 {
 
                 vertical-align: baseline;
                 color: #F8F9FA;
                 font-weight: 400;
-                font-size: clamp(24px, 10vw, 80px);
+                font-size: clamp(24px, 6vw, 80px);
                 text-transform: uppercase;
                 line-height: 1;
                 margin-bottom: 15px;
                 font-family: "Noto Serif", serif;
 
+                @include xs-landscape {
+                    font-size: clamp(18px, 10vw, 40px);
+                }
+
+                @include lg-landscape {
+                    font-size: clamp(24px, 6vw, 80px);
+                }
 
                 span {
                     color: $brightYellow;
@@ -47,15 +80,28 @@
                 align-items: flex-start;
                 gap: 15px;
 
+                @include md {
+                    flex-direction: row;
+                    align-items: flex-end;
+
+                }
+
                 p {
                     color: whitesmoke;
                     font-weight: 200;
                     font-size: 16px;
                     max-width: 100%;
+
+                    @include md {
+                        max-width: 70%;
+                    }
                 }
 
                 .btn {
                     @include btn-1();
+                    @include md {
+                        margin-left: auto;
+                    }
                 }
             }
 
