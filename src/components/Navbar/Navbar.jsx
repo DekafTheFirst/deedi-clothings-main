@@ -75,7 +75,7 @@ const Navbar = () => {
               <SearchIcon fontSize='small' className='icon search-icon' />
             </div>
             <div className="user">
-              <PersonOutlineIcon className='icon'/>
+              <PersonOutlineIcon className='icon' fontSize='small'/>
               <span>My Account</span>
               <KeyboardArrowDownIcon className='icon down-arrow' fontSize='small' />
             </div>

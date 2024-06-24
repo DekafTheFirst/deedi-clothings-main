@@ -29,7 +29,7 @@
         .left {
             display: flex;
             align-items: center;
-
+            
             .toggle {
                 @include md {
                     display: none;
@@ -73,7 +73,7 @@
 
                 .searchbar {
                     background-color: #F0F0F0;
-                    padding: 7px;
+                    padding: 4px;
                     border-radius: 50%;
                     display: none;
 
@@ -118,9 +118,9 @@
                     align-items: center;
 
                     span {
-                        font-size: 11px;
+                        font-size: 10px;
                         width: 17px;
-                        height: 17px;
+                        height: 19px;
                         border-radius: 50%;
                         background-color: #FF4B5C;
                         color: white;
