@@ -8,11 +8,12 @@ import { Link } from 'react-router-dom';
 import "./Navbar.scss"
 import Cart from '../Cart/Cart';
 import { useSelector } from 'react-redux';
-import { Menu, MenuOpen } from '@mui/icons-material';
+import { Close, Menu, MenuOpen } from '@mui/icons-material';
 
 const Navbar = () => {
-  const [open, setOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false)
+  const [showcart, setShowCart] = useState(false);
+  const [toggle, setToggle] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
   const products = useSelector(state => state.cart.products)
 
@@ -40,11 +41,16 @@ const Navbar = () => {
   }, []);
 
   return (
-    <div className={`navbar ${scrolled ? 'scrolled' : ''}`}>
+    <div className={`navbar ${scrolled ? 'scrolled' : ''} ${toggle ? 'toggeled' : ''}`}>
       <div className="wrapper">
         <div className="left">
-          <Menu className='toggle' />
-          <div className="nav-items">
+
+          <Menu className='toggle' onClick={() => setToggle(!toggle)} />
+          <div className={`nav-items ${toggle ? 'show' : ''}`}>
+            <div className="top">
+              <Link className="brand collapse-menu-brand" to='/'><img src='/img/deedi-logo.png' /></Link>
+              <Close className='close' onClick={() => setToggle(!toggle)} />
+            </div>
             <div className="item">
               <Link className="link" to="/products/women">Women</Link>
             </div>
@@ -64,7 +70,7 @@ const Navbar = () => {
 
         </div>
         <div className="center">
-          <Link className="link" to='/'><img src='/img/deedi-logo.png' /></Link>
+          <Link className="brand" to='/'><img src='/img/deedi-logo.png' /></Link>
         </div>
         <div className="right">
           {/* <div className="item">
@@ -75,12 +81,12 @@ const Navbar = () => {
               <SearchIcon fontSize='small' className='icon search-icon' />
             </div>
             <div className="user">
-              <PersonOutlineIcon className='icon' fontSize='small'/>
+              <PersonOutlineIcon className='icon' fontSize='small' />
               <span>My Account</span>
-              <KeyboardArrowDownIcon className='icon down-arrow' fontSize='small' />
+              <KeyboardArrowDownIcon className='icon down-arrow' fontSize="small" />
             </div>
-            <div className="cartIcon" onClick={() => setOpen(!open)}>
-              <ShoppingCartOutlinedIcon className='icon'/>
+            <div className="cartIcon" onClick={() => setShowCart(!showcart)}>
+              <ShoppingCartOutlinedIcon className='icon' />
               <span>{products.length}</span>
             </div>
 
@@ -88,7 +94,7 @@ const Navbar = () => {
           </div>
         </div>
       </div>
-      {open && <Cart />}
+      {showcart && <Cart />}
     </div>
   )
 }

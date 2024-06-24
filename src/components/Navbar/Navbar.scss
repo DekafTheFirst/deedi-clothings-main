@@ -29,7 +29,15 @@
         .left {
             display: flex;
             align-items: center;
-            
+
+            .collapse-menu-brand {
+                display: none;
+
+                img {
+                    height: 70px;
+                }
+            }
+
             .toggle {
                 @include md {
                     display: none;
@@ -38,11 +46,48 @@
 
 
             .nav-items {
-                display: none;
+                display: flex;
+                gap: 30px;
 
-                @include md {
-                    display: flex;
-                    gap: 20px;
+                .close {
+                    display: none;
+                }
+
+                @include max-breakpoint(720px) {
+                    display: none;
+                    @include flex-column;
+                    height: calc(100vh);
+                    width: 60vw;
+                    min-width: 200px;
+                    position: absolute;
+                    left: -100%;
+                    top: 0;
+                    padding: 10px 20px;
+                    background-color: rgba(225, 225, 225, 0.5);
+                    -webkit-backdrop-filter: blur(30px);
+                    backdrop-filter: blur(30px);
+                    // box-shadow: -10px, 0, 10px rgba(0, 0, 0, 0.1);
+                    box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
+                    .top {
+                        @include flex-row;
+                        align-items: center;
+                        justify-content: space-between;
+
+                        .collapse-menu-brand {
+                            display: block;
+
+                        }
+
+                        .close {
+                            display: block;
+                            right: 20px;
+                            top: 20px
+                        }
+                    }
+
+                    &.show {
+                        left: 0;
+                    }
                 }
             }
         }
@@ -51,7 +96,7 @@
 
             // margin-left: auto;
             // margin-right: auto;
-            .link {
+            .brand {
                 img {
                     height: 50px;
                 }
@@ -139,19 +184,25 @@
     &.scrolled {
         background-color: $charcoal;
 
-        .link {
+        .toggle {
             color: $lightGray;
+        }
+
+        .link {
+            @include md {
+                color: $lightGray;
+            }
         }
 
         .icon {
             color: $lightGray;
 
-            &.search-icon{
+            &.search-icon {
                 color: $charcoal;
             }
         }
 
-        
+
 
         .right .user span {
             color: $lightGray;
@@ -160,80 +211,3 @@
 
 
 }
-
-
-// .navbar {
-//     height: 60px;
-//     display: flex;
-//     padding: 0 25px;
-
-
-//     .wrapper {
-//         display: flex;
-//         justify-content: space-between;
-//         align-items: center;
-//         width: 100%;
-
-//         .item {
-//             display: flex;
-//             align-items: center;
-//             font-size: 15px;
-//             font-weight: 500;
-//         }
-
-//         .left {
-//             display: flex;
-//             align-items: center;
-//             gap: 25px;
-//         }
-
-//         .center {
-//             // margin-left: auto;
-//             // margin-right: auto;
-//             .link {
-//                 img {
-//                     height: 50px;
-//                 }
-//             }
-//         }
-
-//         .right {
-//             display: flex;
-//             align-items: center;
-//             gap: 25px;
-
-
-//             .icons {
-//                 display: flex;
-//                 gap: 15px;
-//                 color: #464545;
-//                 align-items: center;
-
-//                 cursor: pointer;    
-
-//                 .cartIcon {
-//                     position: relative;
-//                     display: flex;
-//                     align-items: center;
-
-//                     span {
-//                         font-size: 11px;
-//                         width: 17px;
-//                         height: 17px;
-//                         border-radius: 50%;
-//                         background-color: #2979fe;
-//                         color: white;
-//                         position: absolute;
-//                         right: -7px;
-//                         top: -7px;
-//                         display: flex;
-//                         align-items: center;
-//                         justify-content: center;
-//                     }
-//                 }
-//             }
-//         }
-//     }
-
-
-// }
