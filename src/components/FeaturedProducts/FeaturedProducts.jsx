@@ -51,16 +51,20 @@ const FeaturedProducts = ({ type }) => {
 
   return (
     <div className='featuredProducts'>
-      <div className="top">
-        <h1>{type} products</h1>
-        <p>
-          Lorem ipsum dolor sit amet consectetur
-          adipisicing elit. Consequatur neque
-          totam sed tenetur expedita ab dolorem!
-          Eos distinctio numquam laborum quae
-          reprehenderit animi non iure assumenda vel a.
-          Alias, error!
-        </p>
+      <div className="row">
+        <div className="col-md-4">
+          <h1>{type} products</h1>
+        </div>
+        <div className="col-md-5">
+          <p>
+            Lorem ipsum dolor sit amet consectetur
+            adipisicing elit. Consequatur neque
+            totam sed tenetur expedita ab dolorem!
+            Eos distinctio numquam laborum quae
+            reprehenderit 
+          </p>
+        </div>
+
       </div>
       <div className="bottom">
         {

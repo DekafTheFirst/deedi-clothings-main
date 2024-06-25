@@ -3,13 +3,13 @@
 
 
 .card {
-    width: 220px;
     display: flex;
     // background-color: $lighterGray;
     flex-direction: column;
     border-radius: 8px;
     margin-bottom: 10px;
     overflow: hidden;
+    border: none;
 
 
 
@@ -21,7 +21,7 @@
         position: relative;
 
         .img {
-            background-color: darken($lighterGray, 3%);
+            background-color: darken($lighterGray, 1%);
             position: absolute !important;
             top: 0;
             left: 0;
@@ -57,14 +57,14 @@
 
         span.new-season {
             position: absolute;
-            top: 15px;
-            left: 15px;
+            top: 10px;
+            left: 10px;
             background-color: #fff;
             color: teal;
             padding: 3px 5px;
             z-index: 3;
             font-weight: 500;
-            font-size: 12px;
+            font-size: 11px;
         }
     }
 

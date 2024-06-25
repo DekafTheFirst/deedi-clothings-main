@@ -79,7 +79,7 @@ const Products = () => {
 
       </div>
       <div className="right">
-        {!category
+        {/* {!category
           ?
           (<CircularProgress />)
           :
@@ -96,7 +96,7 @@ const Products = () => {
             />
 
           )
-        }
+        } */}
 
         <List catSlug={catSlug} maxPrice={maxPrice} sort={sort} subCats={selectedSubCats} />
       </div>

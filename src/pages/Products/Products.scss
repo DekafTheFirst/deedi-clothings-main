@@ -32,7 +32,11 @@
     .right {
         flex: 3;
         position: relative;
+        flex-direction: column;
+        display: flex;
+        gap: 20px;
 
+        
         .catImgWrapper {
             overflow: hidden;
             border-radius: 10px;
@@ -42,7 +46,7 @@
         .catImg {
             object-fit: cover;
             border-radius: 10px;
-            
+            height: 260px;
         }
     }
 }

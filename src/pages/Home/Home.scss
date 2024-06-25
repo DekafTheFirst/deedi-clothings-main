@@ -7,7 +7,7 @@
 
     .hero {
         height: calc(70vh - $navbarHeight - 10px);
-        margin: 0 10px 10px;
+        border-bottom: 12px;
         border-radius: 10px;
         overflow: hidden;
         position: relative;
@@ -17,7 +17,7 @@
         
 
         @include min-breakpoint(400px) {
-            height: calc(70vh - $navbarHeight - 10px);
+            height: calc(60vh - $navbarHeight - 10px);
         }
 
         @include xs-landscape {

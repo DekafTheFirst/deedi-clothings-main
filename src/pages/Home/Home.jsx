@@ -10,21 +10,23 @@ const Home = () => {
   return (
     <div className="home">
       {/* <Slider /> */}
-      <div className="hero">
-        <MySwiper />
-        <div className="content">
-          <h1>Wear Deedi, <span>Weave Hope</span></h1>
-          <div className="bottom">
-            <p>A minority woman-owned business supporting  widows and vulnerable children in west Africa…We are not just selling clothes we are selling a story, a cause.</p>
-            <Link to="/products" className="btn">Shop Now</Link>
+      <div className="container-fluid">
+        <div className="hero">
+          <MySwiper />
+          <div className="content">
+            <h1>Wear Deedi, <span>Weave Hope</span></h1>
+            <div className="bottom">
+              <p>A minority woman-owned business supporting  widows and vulnerable children in west Africa…We are not just selling clothes we are selling a story, a cause.</p>
+              <Link to="/products" className="btn">Shop Now</Link>
+            </div>
           </div>
-
         </div>
+        <FeaturedProducts type="featured" />
+        <Categories />
+        {/* <FeaturedProducts type="trending" /> */}
+        <Contact />
       </div>
-      <FeaturedProducts type="featured" />
-      {/* <Categories /> */}
-      {/* <FeaturedProducts type="trending" /> */}
-      <Contact />
+
     </div>
 
   )

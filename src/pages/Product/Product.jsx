@@ -11,7 +11,7 @@ import { addToCart } from "../../redux/cartReducer";
 
 const Product = () => {
   const id = useParams().id
-  const [selectedImg, setSelectedImg] = useState("img");
+  const [selectedImg, setSelectedImg] = useState(0);
   const [quantity, setQuantity] = useState(1)
 
   const dispatch = useDispatch()
@@ -28,25 +28,22 @@ const Product = () => {
       {loading ? "loading" : (<>
         <div className="left">
           <div className="images">
-            <img
-              src={
-                import.meta.env.VITE_UPLOAD_URL + data?.attributes?.img?.data?.attributes?.url
-              }
-              alt=""
-              onClick={(e) => setSelectedImg("img")}
-            />
-            <img
-              src={
-                import.meta.env.VITE_UPLOAD_URL + data?.attributes?.img2?.data?.attributes?.url
-              }
-              alt=""
-              onClick={(e) => setSelectedImg("img2")}
-            />
+            {data?.attributes?.img?.data.map((image, index) =>
+              <img
+                key={index}
+                src={
+                  import.meta.env.VITE_UPLOAD_URL + image?.attributes?.formats?.thumbnail?.url
+                }
+                alt=""
+                onClick={(e) => setSelectedImg(index)}
+              />
+            )}
+
           </div>
           <div className="mainImg">
             <img
               src={
-                import.meta.env.VITE_UPLOAD_URL + data?.attributes[selectedImg]?.data?.attributes?.url
+                import.meta.env.VITE_UPLOAD_URL + data?.attributes.img?.data[selectedImg]?.attributes?.url
               }
               alt=""
             />
@@ -69,16 +66,16 @@ const Product = () => {
           </div>
           <button
             className="add"
-              onClick={()=>
-                dispatch(addToCart({
-                  id: data.id,
-                  title: data.attributes.title,
-                  desc: data.attributes.desc,
-                  img: data.attributes.img.data.attributes.url,
-                  quantity,
-                  price: data.attributes.price
-                }))
-              }
+            onClick={() =>
+              dispatch(addToCart({
+                id: data.id,
+                title: data.attributes.title,
+                desc: data.attributes.desc,
+                img: data.attributes.img.data[0].attributes.url,
+                quantity,
+                price: data.attributes.price
+              }))
+            }
           >
             <AddShoppingCartIcon /> ADD TO CART
           </button>
