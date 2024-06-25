@@ -9,6 +9,8 @@ import { LazyLoadImage } from 'react-lazy-load-image-component'
 const List = ({ subCats, maxPrice, sort, catSlug }) => {
 
     const { data, loading, error } = useFetch(`/products?populate=*&[filters] [categories] [slug]=${catSlug}${subCats.map(item => `&[filters][sub_categories][id][$eq]=${item}`)}&[filters] [price] [$lte]=${maxPrice}&sort=price:${sort}`)
+    console.log(data)
+    
     const interceptedData  = [
         {
             "id": 1,

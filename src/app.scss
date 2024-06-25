@@ -14,6 +14,7 @@
 // }
 
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
+@import 'mixins';
 
 h1, h2, h3, h4, h5, h6, p {
     margin: 0;
@@ -28,5 +29,9 @@ h1, h2, h3, h4, h5, h6, p {
     .link {
         color: inherit;
         text-decoration: none;
+    }
+
+    #content {
+        margin-top: $navbarHeight;
     }
 }

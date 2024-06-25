@@ -16,7 +16,6 @@ const Products = () => {
   const catSlug = useParams().slug
 
   const { data: category, loading: categoryLoading, error: categoryError } = useFetch(`/categories?populate=*&filters[slug][$eq]=${catSlug}`)
-  console.log("category: ", category)
   const { data: subCategories, loading: subCategoriesLoading, error: subCategoriesError } = useFetch(`/sub-categories?[filters] [categories] [slug] [$eq]=${catSlug}`)
   
   const handleChange = (e) => {

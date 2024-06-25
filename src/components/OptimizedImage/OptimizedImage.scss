@@ -1,6 +1,39 @@
-.blurHash {
+@import '../../variables.scss';
+@import '../../mixins.scss';
+
+// .blurHash {
+//     z-index: 20;
+//     position: absolute !important;
+//     top: 0;
+//     left: 0;
+//     overflow: hidden;
+// }
+
+.optimized-image {
+    position: relative;
+    overflow: hidden;
+    height: 100%;
+    width: 100%;
+}
+
+.lazy-load-image {
+    object-fit: cover;
+    overflow: hidden;
+}
+
+.image-placeholder {
     z-index: 20;
     position: absolute !important;
+    height: 100%;
+    width: 100%;
+    background-color: $lighterGray ;
     top: 0;
     left: 0;
+    overflow: hidden;
+}
+
+
+
+.image-placeholder.background-image {
+    background: $lighterGray;
 }

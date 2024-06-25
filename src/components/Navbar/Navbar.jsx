@@ -22,7 +22,7 @@ const Navbar = () => {
     // Listen for scroll events
     const handleScroll = () => {
       // Check the scroll position
-      if (window.scrollY > 40) { // Change 100 to the desired scroll position
+      if (window.scrollY > 10) { // Change 100 to the desired scroll position
         // Update the state to indicate that the user has scrolled
         setScrolled(true);
       } else {
