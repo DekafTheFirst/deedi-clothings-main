@@ -1,49 +1,116 @@
+@import '../../variables.scss';
+@import '../../mixins.scss';
+
 .categories {
+  @include flex-column;
+  gap: 10px;
+  margin: 30px 0px;
+
+  .cards {
     display: flex;
-    height: 80vh;
-    gap: 10px;
-    margin: 10px;
-  
-    .col {
-      flex: 1;
+    gap: 20px;
+
+    .category-card {
       display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-  
-    .col-l {
-      flex: 2;
-    }
-  
-    .row{
-      flex:1;
-      display: flex;
-      gap: 10px;
-      position: relative;
+      align-items: center;
+      justify-content: space-between;
+      height: 160px;
+      width: 260px;
+      min-width: 260px;
+      border-radius: 10px;
       overflow: hidden;
-  
-      button{
-        position: absolute;
-        min-width: 100px;
-        width: fit-content;
-        height: 50px;
-        padding: 10px;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        margin: auto;
-        cursor: pointer;
-        border: none;
-        background-color: white;
-        text-transform: uppercase;
-        font-weight: 500;
-      }
-  
-      img{
-        width: 100%;
+
+      .content {
+        @include flex-column;
+        justify-content: center;
+        padding-left: 20px;
+        gap: 13px;
+        width: calc(65% - 30px);
         height: 100%;
-        object-fit: cover;
+        box-sizing: border-box;
+        background-color: lighten($lightGray, 3%);
+
+        .text {
+          @include flex-column;
+          gap: 5px;
+
+          p {
+            font-size: 15px;
+            color: $charcoal;
+          }
+        }
+
+        .link {
+          font-weight: 600;
+          font-size: 14px;
+          text-decoration: underline;
+          text-transform: uppercase;
+          margin-right: auto;
+        }
+      }
+
+      .right {
+        height: 100%;
+        width: calc(45% + 30px);
+        padding-right: 20px;
+        box-sizing: border-box;
+        border-left: 30px solid lighten($lightGray, 3%);
+        border-bottom: 160px solid transparent;
+        display: flex;
+
+
+
+        .image {
+          background-repeat: no-repeat;
+          background-size: cover;
+          background-position: top;
+          height: 160px;
+          width: 100%;
+
+          img {
+            height: 160px;
+            object-fit: contain;
+          }
+        }
+
+      }
+
+      &.women .right {
+        background-color: rgba($brightRed, 0.3);
+
+        .image {
+          background-image: url('/img/products/2.1-removebg(cropped).png');
+        }
+      }
+
+      &.men .right {
+        background-color: rgba($mediumGray, 0.7);
+
+        .image {
+          background-image: url('/img/products/5.1-removebg(cropped).png');
+        }
+      }
+    }
+
+    
+
+    @include max-breakpoint(map-get($breakpoints, "lg")) {
+      overflow-x: scroll;
+      -webkit-overflow-scrolling: touch;
+
+
+      scroll-snap-type: x mandatory;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
+
+      -ms-overflow-style: none;
+      scrollbar-width: 0;
+
+      .category-card {
+        scroll-snap-align: start;
       }
     }
   }
+}
