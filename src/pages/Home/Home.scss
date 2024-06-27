@@ -12,10 +12,16 @@
         align-items: flex-end;
         background-color: lighten($lightGray, 2%);
 
-        @include max-breakpoint(767px) {
-            margin: 15px;
+        @include max-breakpoint(575px) {
+            margin: 20px;
             border-radius: 15px;
             aspect-ratio: 16/9;
+            background-color: rgba($lightBrown, 0.6);
+
+            .blob-1,
+            .blob-2 {
+                display: none;
+            }
         }
 
         @include xs-landscape {
@@ -62,14 +68,14 @@
                 .content {
                     // position: absolute;
                     z-index: 100;
-                    margin-top: 20px;
                     // bottom: 30px;
                     // left: 0;
                     @include flex-column;
 
 
-                    gap: 15px;
+                    gap: 10px;
 
+                    
 
                     @include lg {
                         gap: 20px;
@@ -81,37 +87,41 @@
                     .top {
                         p {
                             font-weight: 800;
-                            font-size: 13px;
+                            font-size: 10px;
                             text-wrap: wrap;
                             line-height: 1.2;
                         }
 
-                        padding-block: 10px;
-                        padding-left: 10px;
+                        padding-block: 5px;
+                        padding-left: 11px;
                         border-left: 3px solid #000;
+
+                        @include sm {
+                            font-size: 13px;
+                            padding-block: 7px;
+                        }
                     }
 
                     h1 {
-                        display: none;
 
                         vertical-align: baseline;
                         color: $charcoal;
                         font-weight: 300;
-                        font-size: clamp(24px, 10vw, 50px);
+                        font-size: clamp(12px, 6vw, 30px);
+
                         text-transform: uppercase;
                         line-height: 1;
-                        margin-bottom: 10px;
 
                         @include xs-landscape {
                             font-size: clamp(18px, 10vw, 30px);
                         }
 
-                        @include md {
+                        @include sm {
                             display: block;
                         }
 
-                        @include lg-landscape {
-                            font-size: clamp(24px, 6vw, 60px);
+                        @include md-landscape {
+                            font-size: clamp(24px, 10vw, 60px);
                         }
 
                         span.deedi {
@@ -163,7 +173,7 @@
 
 
 
-                    
+
 
 
 
