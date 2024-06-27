@@ -42,7 +42,7 @@ const Navbar = () => {
 
   return (
     <div className={`navbar ${scrolled ? 'scrolled' : ''} ${toggle ? 'toggeled' : ''}`}>
-      <div className="wrapper">
+      <div className="container-fluid">
         <div className="left">
 
           <Menu className='toggle' onClick={() => setToggle(!toggle)} />
@@ -78,6 +78,7 @@ const Navbar = () => {
           </div> */}
           <div className="icons">
             <div className="searchbar">
+              <input type="text" name="" id="" />
               <SearchIcon fontSize='small' className='icon search-icon' />
             </div>
             <div className="user">

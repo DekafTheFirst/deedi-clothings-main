@@ -1,10 +1,18 @@
 @import '../../variables.scss';
 @import '../../mixins.scss';
 
+$cardHeight: 200px;
+
 .categories {
   @include flex-column;
   gap: 10px;
   margin: 30px 0px;
+
+  .heading {
+    @include md {
+      display: none;
+    }
+  }
 
   .cards {
     display: flex;
@@ -14,11 +22,12 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      height: 160px;
-      width: 260px;
-      min-width: 260px;
-      border-radius: 10px;
+      height: $cardHeight;
+      width: 320px;
+      min-width: 320px;
       overflow: hidden;
+      background-color: $offWhite;
+
 
       .content {
         @include flex-column;
@@ -28,7 +37,7 @@
         width: calc(65% - 30px);
         height: 100%;
         box-sizing: border-box;
-        background-color: lighten($lightGray, 3%);
+        background-color: lighten($lightGray, 9%);
 
         .text {
           @include flex-column;
@@ -54,8 +63,8 @@
         width: calc(45% + 30px);
         padding-right: 20px;
         box-sizing: border-box;
-        border-left: 30px solid lighten($lightGray, 3%);
-        border-bottom: 160px solid transparent;
+        border-left: 30px solid lighten($lightGray, 9%);
+        border-bottom: $cardHeight solid transparent;
         display: flex;
 
 
@@ -64,11 +73,11 @@
           background-repeat: no-repeat;
           background-size: cover;
           background-position: top;
-          height: 160px;
+          height: $cardHeight;
           width: 100%;
 
           img {
-            height: 160px;
+            height: $cardHeight;
             object-fit: contain;
           }
         }
@@ -76,7 +85,7 @@
       }
 
       &.women .right {
-        background-color: rgba($brightRed, 0.3);
+        background-color: rgba($brightRed, 0.2);
 
         .image {
           background-image: url('/img/products/2.1-removebg(cropped).png');
@@ -84,15 +93,23 @@
       }
 
       &.men .right {
-        background-color: rgba($mediumGray, 0.7);
+        background-color: rgba($mediumGray, 0.5);
 
         .image {
           background-image: url('/img/products/5.1-removebg(cropped).png');
         }
       }
+
+      &.kids .right {
+        background-color: rgba($brightYellow, 0.3);
+
+        .image {
+          background-image: url('/img/products/4.0-removebg(cropped).png');
+        }
+      }
     }
 
-    
+
 
     @include max-breakpoint(map-get($breakpoints, "lg")) {
       overflow-x: scroll;
@@ -111,6 +128,10 @@
       .category-card {
         scroll-snap-align: start;
       }
+    }
+
+    @include lg {
+      justify-content: center;
     }
   }
 }

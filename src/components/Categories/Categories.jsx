@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 const Categories = () => {
   return (
     <div className="categories">
-      <h4 className="fw-bold mb-2">Categories</h4>
+      <h4 className="fw-bold mb-2 heading">Categories</h4>
       {/* <div className="cards">
         <div className="category-card">
           <div className="content">
@@ -63,10 +63,10 @@ const Categories = () => {
           </div>
         </div>
 
-        <div className="category-card men">
+        <div className="category-card kids">
           <div className="content">
             <div className="text">
-              <h5 className="fw-bold">Men</h5>
+              <h5 className="fw-bold">Kids</h5>
               <p>Elegant Pieces for him</p>
             </div>
             <Link to="/women" className="link">Shop Now</Link>
@@ -76,6 +76,20 @@ const Categories = () => {
             </div>
           </div>
         </div>
+
+        {/* <div className="category-card kids">
+          <div className="content">
+            <div className="text">
+              <h5 className="fw-bold">Accessories</h5>
+              <p>Elegant Pieces for him</p>
+            </div>
+            <Link to="/women" className="link">Shop Now</Link>
+          </div>
+          <div className="right">
+            <div className="image">
+            </div>
+          </div>
+        </div> */}
       </div>
 
     </div>

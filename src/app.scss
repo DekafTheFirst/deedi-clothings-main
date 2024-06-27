@@ -16,19 +16,37 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
 @import 'mixins';
 
-h1, h2, h3, h4, h5, h6, p {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
     margin: 0;
     padding: 0;
 }
 
-// .row>* {
-//     margin: 0;
-//     padding: 0;
-// }
+.row {
+    width: 100%;
+}
 
-// .container-fluid {
-//     padding: 12px;
-// }
+.row>* {
+    margin: 0;
+    padding: 0;
+}
+
+.container-fluid {
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding-inline: 15px;
+
+    @include xl {
+        max-width: 1200px;
+        margin-inline: auto;
+    }
+}
 
 * {
     font-family: "DM Sans", sans-serif;

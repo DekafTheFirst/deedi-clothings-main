@@ -6,155 +6,189 @@
     overflow: hidden;
 
     .hero {
-        height: calc(70vh - $navbarHeight - 10px);
-        border-bottom: 12px;
-        border-radius: 10px;
         overflow: hidden;
         position: relative;
         display: flex;
         align-items: flex-end;
+        background-color: lighten($lightGray, 2%);
 
-        
-
-        @include min-breakpoint(400px) {
-            height: calc(60vh - $navbarHeight - 10px);
+        @include max-breakpoint(767px) {
+            margin: 15px;
+            border-radius: 15px;
+            aspect-ratio: 16/9;
         }
 
         @include xs-landscape {
-            height: calc(100vh - $navbarHeight - 10px);
+            height: calc(100vh - $navbarHeight );
         }
-
 
         @include md {
-            height: calc(50vh - $navbarHeight - 10px);
+            height: calc(40vh - $navbarHeight );
+            align-items: center;
         }
 
-        
-
         @include md-landscape {
-            height: calc(100vh - $navbarHeight - 10px);
+            height: calc(100vh - $navbarHeight );
+        }
+
+        @include lg-landscape {
+            height: calc(100vh - $navbarHeight );
         }
 
         @include xl {
-            height: calc(100vh - $navbarHeight - 10px);
+            height: calc(100vh - $navbarHeight);
+        }
+
+        @include xl-landscape {
+            // height: calc(80vh - $navbarHeight);
         }
 
 
-        .content {
-            // position: absolute;
-            z-index: 100;
-            // bottom: 30px;
-            // left: 0;
-            padding: 15px;
-            width: 100%;
 
-            h1 {
 
-                vertical-align: baseline;
-                color: #F8F9FA;
-                font-weight: 400;
-                font-size: clamp(24px, 10vw, 70px);
-                text-transform: uppercase;
-                line-height: 1;
-                margin-bottom: 15px;
-                font-family: "Noto Serif", serif;
 
-                @include xs-landscape {
-                    font-size: clamp(18px, 10vw, 40px);
-                }
+        .container-fluid {
+            height: 100%;
+            display: flex;
 
-                @include lg-landscape {
-                    font-size: clamp(24px, 6vw, 70px);
-                }
+            .row {
+                padding: 0;
+                margin: 0;
+                align-items: center;
 
-                span {
-                    color: $brightYellow;
-                    font-family: "Noto Serif", serif;
 
-                }
-            }
+                height: 100%;
 
-            .bottom {
-                display: flex;
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 15px;
+                .content {
+                    // position: absolute;
+                    z-index: 100;
+                    margin-top: 20px;
+                    // bottom: 30px;
+                    // left: 0;
+                    @include flex-column;
 
-                @include md {
-                    flex-direction: row;
-                    align-items: flex-end;
-                }
 
-                p {
-                    color: whitesmoke;
-                    font-weight: 200;
-                    font-size: 16px;
-                    max-width: 100%;
+                    gap: 15px;
 
-                    @include md {
-                        max-width: 70%;
+
+                    @include lg {
+                        gap: 20px;
                     }
+
+
+
+
+                    .top {
+                        p {
+                            font-weight: 800;
+                            font-size: 13px;
+                            text-wrap: wrap;
+                            line-height: 1.2;
+                        }
+
+                        padding-block: 10px;
+                        padding-left: 10px;
+                        border-left: 3px solid #000;
+                    }
+
+                    h1 {
+                        display: none;
+
+                        vertical-align: baseline;
+                        color: $charcoal;
+                        font-weight: 300;
+                        font-size: clamp(24px, 10vw, 50px);
+                        text-transform: uppercase;
+                        line-height: 1;
+                        margin-bottom: 10px;
+
+                        @include xs-landscape {
+                            font-size: clamp(18px, 10vw, 30px);
+                        }
+
+                        @include md {
+                            display: block;
+                        }
+
+                        @include lg-landscape {
+                            font-size: clamp(24px, 6vw, 60px);
+                        }
+
+                        span.deedi {
+                            color: $burgundy;
+                            font-weight: 500;
+
+                        }
+
+                        span.weave-hope {
+                            font-weight: 600;
+                            color: #000;
+                        }
+                    }
+
+                    .bottom {
+                        display: flex;
+                        flex-direction: column;
+                        align-items: flex-start;
+                        gap: 15px;
+
+
+                        .btn {
+
+                            @include btn-1();
+
+                        }
+                    }
+
+
                 }
 
-                .btn {
+                .image {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    height: 100%;
+                    margin-top: auto;
+                    position: relative;
+
+
+                    .img img {
+                        height: 100%;
+                        object-fit: contain;
+                    }
+
+                    .img .image-placeholder {
+                        background-color: transparent;
+                    }
+
+
+
                     
-                    @include btn-1();
-                    @include md {
-                        margin-left: auto;
-                    }
+
+
+
+
                 }
             }
-
-
         }
 
+        .blob-2 {
+            position: absolute;
+            top: 30px;
+            right: -60px;
+            width: 350px;
+            object-fit: contain;
+        }
 
+        .blob-1 {
+            position: absolute;
+            top: 20px;
+            right: -60px;
+            width: 350px;
+            object-fit: contain;
+        }
 
     }
 
-    // .hero {
-    //     height: calc(100vh - 70px);
-    //     padding: 0 10px;
-    //     border-radius: 10px;
-    //     overflow: hidden;
-    //     position: relative;
 
-    //     .content {
-    //         position: absolute;
-    //         z-index: 100;
-    //         bottom: 30px;
-    //         left: 40px;
-
-    //         h1 {
-
-    //             vertical-align: baseline;
-    //             color: #F8F9FA;
-    //             font-weight: 400;
-    //             font-size: clamp(24px, 10vw, 80px);
-    //             text-transform: uppercase;
-    //             line-height: 1;
-    //             margin-bottom: 15px;
-    //             font-family: "Noto Serif", serif;
-
-
-    //             span {
-    //                 color: $brightYellow;
-    //                 font-family: "Noto Serif", serif;
-
-    //             }
-    //         }
-
-    //         p {
-    //             color: whitesmoke;
-    //             font-weight: 200;
-    //             font-size: 16px;
-    //             max-width: 60%;
-    //         }
-
-
-    //     }
-
-
-
-    // }
 }

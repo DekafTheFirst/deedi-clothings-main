@@ -9,16 +9,14 @@
     left: 0;
     z-index: 200;
     display: flex;
-    padding: 0 15px;
+    background-color: $lighterGray;
 
+    
 
-    .wrapper {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        width: 100%;
+    
 
-
+    .container-fluid {
+    
         .item {
             display: flex;
             align-items: center;
@@ -39,7 +37,7 @@
             }
 
             .toggle {
-                @include md {
+                @include lg {
                     display: none;
                 }
             }
@@ -53,7 +51,7 @@
                     display: none;
                 }
 
-                @include max-breakpoint(720px) {
+                @include max-breakpoint(991px) {
                     display: none;
                     @include flex-column;
                     height: calc(100vh);
@@ -64,8 +62,8 @@
                     top: 0;
                     padding: 10px 20px;
                     background-color: rgba(225, 225, 225, 0.5);
-                    -webkit-backdrop-filter: blur(30px);
-                    backdrop-filter: blur(30px);
+                    -webkit-backdrop-filter: blur(20px);
+                    backdrop-filter: blur(20px);
                     transition: left 0.5s ease;
 
                     // box-shadow: -10px, 0, 10px rgba(0, 0, 0, 0.1);
@@ -119,23 +117,24 @@
                 cursor: pointer;
 
                 .searchbar {
-                    background-color: #F0F0F0;
+                    background-color: $offWhite;
                     padding: 4px;
-                    border-radius: 50%;
+                    border-radius: 50px;
                     display: none;
 
-                    @include md {
+                    @include lg {
                         display: flex;
                     }
 
                     input {
                         border: none;
                         background-color: transparent;
-                        width: 80%;
+                        width: 60%;
                     }
 
                     .search-icon {
                         margin-left: auto;
+                        color: black
                     }
                 }
 
@@ -143,7 +142,7 @@
                     align-items: center;
                     display: none;
 
-                    @include md {
+                    @include lg {
                         display: flex;
                     }
 
@@ -191,7 +190,7 @@
         }
 
         .link {
-            @include md {
+            @include lg {
                 color: $lightGray;
             }
         }
