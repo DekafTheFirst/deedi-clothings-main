@@ -59,14 +59,13 @@ const FeaturedProducts = ({ type }) => {
           <p>
             Lorem ipsum dolor sit amet consectetur
             adipisicing elit. Consequatur neque
-            totam sed tenetur expedita ab dolorem!
-            Eos distinctio numquam laborum quae
-            reprehenderit 
+            totam sed tenetur expedita
+             
           </p>
         </div>
 
       </div>
-      <div className="bottom">
+      <div className="products">
         {
           error ? "Something went wrong!" : (loading ?
             "loading"

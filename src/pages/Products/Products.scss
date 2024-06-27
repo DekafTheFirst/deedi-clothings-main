@@ -1,52 +1,63 @@
-.products {
-    padding: 30px 50px;
+@import '../../variables.scss';
+@import '../../mixins.scss';
+
+.product-list-page {
+    // padding: 30px 50px;
     display: flex;
 
 
-    .left {
-        flex: 1;
-        position: sticky;
-        height: 100%;
-        top: 50px;
-
-        .filterItem {
-            margin-bottom: 30px;
-
-            h2 {
-                font-weight: 400;
-                margin-bottom: 20px;
+    .container-fluid {
+        margin-top: 15px;
+        display: flex;
+        .left {
+            flex: 1;
+            position: sticky;
+            height: 100%;
+            top: 50px;
+            display: none;
+            @include md {
+                display: block;
             }
 
-            .inputItem {
-                display: flex;
-                align-items: center;
-                margin-bottom: 10px;
+            .filterItem {
+                margin-bottom: 30px;
 
-                label {
-                    margin-left: 10px;
+                h2 {
+                    font-weight: 400;
+                    margin-bottom: 20px;
+                }
+
+                .inputItem {
+                    display: flex;
+                    align-items: center;
+                    margin-bottom: 10px;
+
+                    label {
+                        margin-left: 10px;
+                    }
                 }
             }
         }
-    }
 
-    .right {
-        flex: 3;
-        position: relative;
-        flex-direction: column;
-        display: flex;
-        gap: 20px;
+        .right {
+            flex: 3;
+            position: relative;
+            flex-direction: column;
+            display: flex;
+            gap: 20px;
 
-        
-        .catImgWrapper {
-            overflow: hidden;
-            border-radius: 10px;
-            margin-bottom: 40px;
-        }
 
-        .catImg {
-            object-fit: cover;
-            border-radius: 10px;
-            height: 260px;
+            .catImgWrapper {
+                overflow: hidden;
+                border-radius: 10px;
+                margin-bottom: 40px;
+            }
+
+            .catImg {
+                object-fit: cover;
+                border-radius: 10px;
+                height: 260px;
+            }
         }
     }
 }

@@ -1,7 +1,7 @@
 @import '../../variables.scss';
 @import '../../mixins.scss';
 
-$cardHeight: 200px;
+
 
 .categories {
   @include flex-column;
@@ -19,12 +19,14 @@ $cardHeight: 200px;
     gap: 20px;
 
     .category-card {
+      $cardHeight: 220px;
+      $cardWidth: 350px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       height: $cardHeight;
-      width: 320px;
-      min-width: 320px;
+      width: $cardWidth;
+      min-width: $cardWidth;
       overflow: hidden;
       background-color: $offWhite;
 
@@ -44,6 +46,7 @@ $cardHeight: 200px;
           gap: 5px;
 
           p {
+            display: none;
             font-size: 15px;
             color: $charcoal;
           }
@@ -128,6 +131,10 @@ $cardHeight: 200px;
       .category-card {
         scroll-snap-align: start;
       }
+    }
+
+    @include sm {
+      
     }
 
     @include lg {
