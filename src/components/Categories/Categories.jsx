@@ -1,16 +1,16 @@
 import React from "react";
 import "./Categories.scss";
 import { Link } from "react-router-dom";
+import OptimizedImage from "../OptimizedImage/OptimizedImage";
 
 const Categories = () => {
   return (
     <div className="categories">
-      <h4 className="fw-bold mb-2 heading">Categories</h4>
       {/* <div className="cards">
         <div className="category-card">
           <div className="content">
             <div className="text">
-              <h6 className="fw-bold">Women</h6>
+              <h1 className="fw-bold">Women</h1>
               <p>Beautiful Pieces for her</p>
             </div>
             <Link to="/women" className="link">Shop Now</Link>
@@ -23,7 +23,7 @@ const Categories = () => {
         <div className="category-card">
           <div className="content">
             <div className="text">
-              <h6 className="fw-bold">Men</h6>
+              <h1 className="fw-bold">Men</h1>
               <p>Elegant Pieces for him</p>
             </div>
             <Link to="/women" className="link">Shop Now</Link>
@@ -36,60 +36,59 @@ const Categories = () => {
       </div> */}
 
       <div className="cards">
-        <div className="category-card women">
+        <Link to="/products/women" className="category-card dresses ">
           <div className="content">
             <div className="text">
-              <h6 className="fw-bold title">Women</h6>
+              <h1 className=" title">Dresses</h1>
+              <p>Beautiful Pieces for her</p>
+            </div>
+            <span to="/dresses" className="link">Shop Now</span>
+          </div>
+          <div className="image">
+            <OptimizedImage src="/img/img-7-medium.jpg" className="img" />
+          </div>
+
+        </Link>
+
+        <Link className="category-card regular-category-card men">
+          <div className="content">
+            <div className="text">
+              <h1 className=" title">Men</h1>
               <p>Beautiful Pieces for her</p>
             </div>
             <Link to="/women" className="link">Shop Now</Link>
           </div>
-          <div className="right">
-            <div className="image ">
-            </div>
-          </div>
-        </div>
-        <div className="category-card men">
-          <div className="content">
-            <div className="text">
-              <h6 className="fw-bold title">Men</h6>
-              <p>Elegant Pieces for him</p>
-            </div>
-            <Link to="/women" className="link">Shop Now</Link>
-          </div>
-          <div className="right">
-            <div className="image">
-            </div>
-          </div>
-        </div>
+          <OptimizedImage src="/img/img-8-medium-transparent.png" className="img" />
+        </Link>
 
-        <div className="category-card kids">
+        <Link className="category-card accessories ">
           <div className="content">
             <div className="text">
-              <h6 className="fw-bold title">Kids</h6>
-              <p>Elegant Pieces for him</p>
+              <h1 className=" title">Home Accessories</h1>
+              <p>Beautiful Pieces for her</p>
             </div>
-            <Link to="/women" className="link">Shop Now</Link>
+            <span to="/women" className="link">Shop Now</span>
           </div>
-          <div className="right">
-            <div className="image">
-            </div>
+          <div className="image">
+            <OptimizedImage src="/img/img-10-medium.jpg" className="img" />
           </div>
-        </div>
+        </Link>
 
-        {/* <div className="category-card kids">
+        <Link className="category-card regular-category-card kids">
           <div className="content">
             <div className="text">
-              <h6 className="fw-bold">Accessories</h6>
-              <p>Elegant Pieces for him</p>
+              <h1 className=" title">Kids</h1>
+              <p>Beautiful Pieces for her</p>
             </div>
-            <Link to="/women" className="link">Shop Now</Link>
+            <span to="/women" className="link">Shop Now</span>
           </div>
-          <div className="right">
-            <div className="image">
-            </div>
-          </div>
-        </div> */}
+          <OptimizedImage src="/img/img-9-medium-removebg.png" className="img" />
+        </Link>
+
+
+
+
+
       </div>
 
     </div>

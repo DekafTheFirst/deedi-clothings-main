@@ -2,44 +2,118 @@
 @import '../../mixins.scss';
 
 
+// MIXINS
+@mixin image-is-background {
+  background-color: rgba(0, 0, 0, 0.1);
+  position: relative;
+  text-decoration: none;
 
-.categories {
-  @include flex-column;
-  gap: 10px;
-  margin: 30px 0px;
 
-  .heading {
-    @include md {
-      display: none;
+  .text,
+  .link {
+    color: white;
+  }
+
+
+
+  @include md {
+    &:hover {
+      .image .img {
+
+        img {
+          transform: scale(1.2);
+          filter: brightness(90%)
+            /* Zoom effect */
+        }
+      }
     }
   }
 
+
+  .image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.3s ease;
+
+    img {
+      transition: transform 0.3s ease;
+      /* Zoom effect */
+    }
+  }
+}
+
+.categories {
+  margin-block: 30px;
+  margin-inline: 0;
+
+
+  @include md {
+    margin-inline: 12px;
+  }
+
   .cards {
-    display: flex;
-    gap: 20px;
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    grid-auto-rows: minmax(300px, auto);
+    grid-template-areas:
+      "dresses"
+      "men"
+      "kids"
+      "accessories"
+    ;
+    gap: 5px;
+
+
+    @include md {
+      grid-template-columns: repeat(6, 1fr);
+      grid-template-rows: repeat(12, 50px);
+      grid-template-areas:
+        "dresses dresses dresses  men men men"
+        "dresses dresses dresses  men men men"
+        "dresses dresses dresses  men men men"
+        "dresses dresses dresses  men men men"
+        "dresses dresses dresses  men men men"
+        "dresses dresses dresses accessories accessories accessories"
+        "dresses dresses dresses accessories accessories accessories"
+        "kids kids kids accessories accessories accessories"
+        "kids kids kids accessories accessories accessories"
+        "kids kids kids accessories accessories accessories"
+        "kids kids kids accessories accessories accessories"
+        "kids kids kids accessories accessories accessories"
+      ;
+
+      gap: 12px;
+    }
+
 
     .category-card {
-      $cardHeight: 220px;
-      $cardWidth: 350px;
+
       display: flex;
-      align-items: center;
+      align-items: stretch;
       justify-content: space-between;
-      height: $cardHeight;
-      width: $cardWidth;
-      min-width: $cardWidth;
-      overflow: hidden;
-      background-color: $offWhite;
+      background-color: $lighterGray;
+      width: 100%;
+      text-decoration: none;
+      color: black;
+
+
 
 
       .content {
         @include flex-column;
         justify-content: center;
-        padding-left: 20px;
-        gap: 13px;
-        width: calc(65% - 30px);
-        height: 100%;
-        box-sizing: border-box;
-        background-color: lighten($lightGray, 9%);
+        padding: 15px;
+        gap: 6px;
+
+
+        @include md {
+          gap: 13px;
+          margin: 30px;
+        }
 
         .text {
           @include flex-column;
@@ -55,90 +129,69 @@
         .link {
           font-weight: 600;
           font-size: 14px;
-          text-decoration: underline;
+          border-bottom: 2px solid $burgundy;
+          padding-bottom: 3px;
           text-transform: uppercase;
           margin-right: auto;
         }
       }
 
-      .right {
-        height: 100%;
-        width: calc(45% + 30px);
-        padding-right: 20px;
-        box-sizing: border-box;
-        border-left: 30px solid lighten($lightGray, 9%);
-        border-bottom: $cardHeight solid transparent;
-        display: flex;
 
 
 
-        .image {
-          background-repeat: no-repeat;
-          background-size: cover;
-          background-position: top;
-          height: $cardHeight;
-          width: 100%;
+
+      &.regular-category-card {
+        .img {
+          width: 50%;
 
           img {
-            height: $cardHeight;
             object-fit: contain;
           }
         }
+      }
+
+      &.dresses {
+        grid-area: dresses;
+        @include image-is-background;
 
       }
 
-      &.women .right {
-        background-color: rgba($brightRed, 0.2);
+      &.men {
+        grid-area: men;
 
-        .image {
-          background-image: url('/img/products/2.1-removebg(cropped).png');
+        @include md {
+          position: relative;
+
+          .img {
+            position: absolute;
+            width: unset;
+            right: 0;
+            top: -60px;
+          }
+        }
+
+
+      }
+
+      &.accessories {
+        grid-area: accessories;
+
+
+        @include max-breakpoint(1199px) {
+          @include image-is-background;
+          background-color: rgba(0, 0, 0, 0.4);
+
         }
       }
 
-      &.men .right {
-        background-color: rgba($mediumGray, 0.5);
+      &.kids {
+        grid-area: kids;
 
-        .image {
-          background-image: url('/img/products/5.1-removebg(cropped).png');
-        }
-      }
-
-      &.kids .right {
-        background-color: rgba($brightYellow, 0.3);
-
-        .image {
-          background-image: url('/img/products/4.0-removebg(cropped).png');
-        }
       }
     }
 
 
 
-    @include max-breakpoint(map-get($breakpoints, "lg")) {
-      overflow-x: scroll;
-      -webkit-overflow-scrolling: touch;
-
-
-      scroll-snap-type: x mandatory;
-
-      &::-webkit-scrollbar {
-        display: none;
-      }
-
-      -ms-overflow-style: none;
-      scrollbar-width: 0;
-
-      .category-card {
-        scroll-snap-align: start;
-      }
-    }
-
-    @include sm {
-      
-    }
-
-    @include lg {
-      justify-content: center;
-    }
+    @include max-breakpoint(map-get($breakpoints, "lg")) {}
   }
 }

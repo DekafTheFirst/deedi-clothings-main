@@ -12,7 +12,8 @@
     gap: 10px;
     overflow: hidden;
     border: none;
-    scroll-snap-align: start; /* Optional: for scroll snapping */
+    scroll-snap-align: start;
+    /* Optional: for scroll snapping */
 
 
 
@@ -23,6 +24,7 @@
         overflow: hidden;
         position: relative;
         border-radius: 3px;
+
         .img {
             background-color: darken($lighterGray, 1%);
             position: absolute !important;
@@ -46,10 +48,12 @@
             left: 0;
         }
 
-        &:hover {
-            .secondImg {
-                display: block !important;
-                z-index: 2;
+        @include md {
+            &:hover {
+                .secondImg {
+                    display: block !important;
+                    z-index: 2;
+                }
             }
         }
 
@@ -71,26 +75,25 @@
         }
     }
 
-
-}
-
-h2 {
-    font-size: 16px;
-    font-weight: 400;
-}
-
-.prices {
-    display: flex;
-    gap: 15px;
-
-    h3 {
-        font-size: 18px;
-        font-weight: 500;
-
-        &:first-child {
-            color: gray;
-            text-decoration: line-through;
-        }
-
+    h2 {
+        font-size: 16px;
+        font-weight: 400;
     }
+
+    .prices {
+        display: flex;
+        gap: 15px;
+
+        h3 {
+            font-size: 18px;
+            font-weight: 500;
+
+            &:first-child {
+                color: gray;
+                text-decoration: line-through;
+            }
+
+        }
+    }
+
 }

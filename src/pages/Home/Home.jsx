@@ -45,9 +45,10 @@ const Home = () => {
       <div className="container-fluid">
         <FeaturedProducts type="featured" />
 
-        <Categories />
 
       </div>
+      <Categories />
+
 
       {/* <FeaturedProducts type="trending" /> */}
       <Contact />
