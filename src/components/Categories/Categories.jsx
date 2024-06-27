@@ -56,7 +56,7 @@ const Categories = () => {
               <h1 className=" title">Men</h1>
               <p>Beautiful Pieces for her</p>
             </div>
-            <Link to="/women" className="link">Shop Now</Link>
+            <span to="/women" className="link">Shop Now</span>
           </div>
           <OptimizedImage src="/img/img-8-medium-transparent.png" className="img" />
         </Link>
