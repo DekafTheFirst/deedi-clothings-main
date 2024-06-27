@@ -187,6 +187,11 @@
       &.kids {
         grid-area: kids;
 
+        @include max-breakpoint(767px) {
+          flex-direction: row-reverse;
+          justify-content: space-around;
+        }
+
       }
     }
 
