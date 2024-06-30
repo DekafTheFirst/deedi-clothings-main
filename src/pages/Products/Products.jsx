@@ -34,7 +34,7 @@ const Products = () => {
       <div className="container-fluid">
         <div className="left">
           <div className="filterItem">
-            <h2>Product Categories</h2>
+            <h4 className="filterTitle">Product Categories</h4>
             {subCategories?.map((item) =>
             (<div className="inputItem" key={item.id}>
               <input type="checkbox" id={item.id} value={item.id} onChange={handleChange} />
@@ -43,7 +43,7 @@ const Products = () => {
             )}
           </div>
           <div className="filterItem">
-            <h2>Filter by price</h2>
+            <h4 className="filterTitle">Filter by price</h4>
             <div className="inputItem">
               <span>0</span>
               <input
@@ -56,7 +56,7 @@ const Products = () => {
             </div>
           </div>
           <div className="filterItem">
-            <h2>Sort by</h2>
+            <h4 className="filterTitle">Sort by</h4>
             <div className="inputItem">
               <input
                 type="radio"
@@ -99,6 +99,7 @@ const Products = () => {
           } */}
         
             <List catSlug={catSlug} maxPrice={maxPrice} sort={sort} subCats={selectedSubCats} />
+
         </div>
       </div>
     </div>

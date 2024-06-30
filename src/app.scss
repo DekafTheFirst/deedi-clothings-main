@@ -15,6 +15,7 @@
 
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
 @import 'mixins';
+@import 'variables';
 
 h1,
 h2,
@@ -60,5 +61,7 @@ p {
 
     #content {
         margin-top: $navbarHeight;
+        min-height: calc(100vh - $navbarHeight);
+        background-color: $offWhite;
     }
 }
