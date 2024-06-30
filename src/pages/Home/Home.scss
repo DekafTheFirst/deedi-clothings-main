@@ -19,9 +19,7 @@
             background-color: rgba($lightBrown, 0.4);
             background-color: $lightGray;
 
-            .blob-1 {
-                display: none;
-            }
+
         }
 
         @include xs-landscape {
@@ -147,9 +145,11 @@
 
 
                         .btn {
-
                             @include btn-1();
 
+                            @include md {
+                                padding: 10px 35px;
+                            }
                         }
                     }
 
@@ -185,30 +185,42 @@
             }
         }
 
+        .blob-1 {
+
+            display: none;
+
+            @include sm {
+                display: block;
+                position: absolute;
+                bottom: -50px;
+                left: -90px;
+                width: 30%;
+                object-fit: contain;
+                opacity: 0.2;
+            }
+
+            @include md {
+                bottom: -50px;
+                left: -90px;
+                width: 20%;
+            }
+
+        }
+
         .blob-2 {
             position: absolute;
-            // top: -20%;
-            // right: -60px;
-            // width: 100%;
+            width: 110%;
+        
             object-fit: cover;
             opacity: 0.15;
 
-            // @include sm {
-            //     top: -60px;
-            //     right: -80px;
-            //     width: 100%;
-            // }
+            @include sm {
+                
+                width: 100%;
+            }
         }
 
-        .blob-1 {
-            position: absolute;
-            bottom: -50px;
-            left: -90px;
-            width: 20%;
-            object-fit: contain;
-            opacity: 0.2;
 
-        }
 
     }
 
