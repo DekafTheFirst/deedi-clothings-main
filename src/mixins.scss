@@ -1,6 +1,6 @@
 @import 'variables.scss';
 
-@mixin btn-1($bg-color: $chocolateBrown, $text-color: $offWhite, $padding: 8px 25px, $border-radius: 8px) {
+@mixin btn-1($bg-color: black, $text-color: $offWhite, $padding: 9px 28px, $border-radius: 4px) {
   background-color: $bg-color;
   color: $text-color;
   padding: $padding;
