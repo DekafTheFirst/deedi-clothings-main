@@ -13,13 +13,11 @@ const Home = () => {
     <div className="home">
       {/* <Slider /> */}
       <div className="hero">
-        {/* <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" className='blob-1'>
-          <path fill="#D0E2FF" d="M52,-58.1C61,-43,57.5,-21.5,55.5,-2C53.5,17.5,53,35.1,44.1,50.5C35.1,65.9,17.5,79.2,2.6,76.7C-12.4,74.1,-24.9,55.7,-39.9,40.3C-54.9,24.9,-72.5,12.4,-73,-0.5C-73.5,-13.4,-56.9,-26.8,-41.9,-41.9C-26.8,-56.9,-13.4,-73.6,4,-77.7C21.5,-81.7,43,-73.1,52,-58.1Z" transform="translate(100 100)" />
-        </svg> */}
 
-        {/* <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" >
-          <path fill="#FAF4E6" d="M43.5,-46.3C55.9,-31.1,65.2,-15.5,65.3,0.1C65.3,15.7,56.2,31.4,43.8,43.2C31.4,54.9,15.7,62.8,-2.9,65.7C-21.5,68.6,-43,66.5,-56.3,54.8C-69.7,43,-74.8,21.5,-72.3,2.6C-69.7,-16.3,-59.4,-32.7,-46,-47.9C-32.7,-63.1,-16.3,-77.2,-0.4,-76.8C15.5,-76.4,31.1,-61.5,43.5,-46.3Z" transform="translate(100 100)" />
-        </svg> */}
+        <svg xmlns="http://www.w3.org/2000/svg" className='blob-1' viewBox="26.57 62.33 143.6 98.19">
+          <path fill="#FF4B5C" d="M65.8,-31.5C75.7,-20.8,67.6,6.8,53.6,26.8C39.6,46.7,19.8,59.2,-2.2,60.4C-24.2,61.7,-48.3,51.8,-61.7,32.1C-75.1,12.4,-77.8,-17,-65.7,-28.9C-53.6,-40.8,-26.8,-35.2,0.6,-35.6C27.9,-35.9,55.8,-42.1,65.8,-31.5Z" transform="translate(100 100)"></path>
+        </svg>
+
         <div className="container-fluid">
           <div className="row">
             <div className="col-7 col-sm-6 content">
@@ -31,11 +29,12 @@ const Home = () => {
                 <Link to="/products" className="btn">Shop Now</Link>
               </div>
             </div>
-            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" className='blob-2'>
-              <path fill="#F2F4F8" d="M57.3,-45.3C68.6,-31.5,68.3,-8,63,13.9C57.6,35.9,47.2,56.2,30.1,65.7C12.9,75.3,-11.1,74,-32.9,64.9C-54.7,55.7,-74.3,38.6,-77.2,19.5C-80.1,0.4,-66.2,-20.7,-50.5,-35.5C-34.9,-50.3,-17.4,-58.9,2.8,-61.1C23,-63.3,45.9,-59.1,57.3,-45.3Z" transform="translate(100 100)" />
-            </svg>
-            <div className="col-5 col-sm-6 image">
 
+
+            <div className="col-5 col-sm-6 image">
+              <svg xmlns="http://www.w3.org/2000/svg" className="blob-2" viewBox="22.41 38.35 144.13 133.99">
+                <path fill="#FF4B5C" d="M57.3,-45.3C68.6,-31.5,68.3,-8,63,13.9C57.6,35.9,47.2,56.2,30.1,65.7C12.9,75.3,-11.1,74,-32.9,64.9C-54.7,55.7,-74.3,38.6,-77.2,19.5C-80.1,0.4,-66.2,-20.7,-50.5,-35.5C-34.9,-50.3,-17.4,-58.9,2.8,-61.1C23,-63.3,45.9,-59.1,57.3,-45.3Z" transform="translate(100 100)"></path>
+              </svg>
               <OptimizedImage src="/img/img-5-medium-removebg.png" className='img' />
 
               {/* <img src="/img/blob-1.svg" alt="blob-1" className='blob-1' /> */}
@@ -46,8 +45,6 @@ const Home = () => {
 
       <div className="container-fluid">
         <FeaturedProducts type="featured" />
-
-
       </div>
       <Categories />
 
