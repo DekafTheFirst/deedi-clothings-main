@@ -11,6 +11,8 @@
         display: flex;
         align-items: flex-end;
         background-color: darken($lighterGray, 2%);
+        background-color: $lightGray;
+
 
         @include max-breakpoint(575px) {
             margin: 12px;
