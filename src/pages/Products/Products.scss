@@ -4,66 +4,136 @@
 .product-list-page {
     // padding: 30px 50px;
     display: flex;
-    min-width: 100%;
 
 
     .container-fluid {
         display: flex;
         padding: 0;
-        margin-top: 20px;
+
         align-items: flex-start;
 
-        .left {
-            flex: 1;
+        @include max-md {
+            position: relative;
+        }
+
+
+        .filters-wrapper {
             position: sticky;
             top: calc($navbarHeight + 20px);
+            flex: 1;
             padding: 12px;
-            display: none;
+            margin-top: 20px;
 
-            @include md {
-                display: block;
+
+            @include max-md {
+                position: fixed;
+                width: 100vw;
+                height: 100vh;
+                top: 0;
+                right: -100%;
+                margin-top: 0px;
+                z-index: 10;
+                background-color: $offWhite;
+                transition: left 0.5s ease;
+
+                &.show {
+                    right: 0;
+                    transition: left 0.5s ease;
+                }
             }
 
-            .filterItem {
-                margin-bottom: 30px;
-
-                .filterTitle {
-                    font-weight: 400;
-                    margin-bottom: 20px;
+            .filters {
+                .heading-mobile-only {
+                    display: none;
                 }
 
-                .inputItem {
-                    display: flex;
-                    align-items: center;
-                    margin-bottom: 10px;
 
-                    label {
-                        margin-left: 10px;
+                @include max-md {
+                    display: flex;
+                    flex-direction: column;
+                    height: 100vh;
+
+
+
+                    .heading-mobile-only {
+                        display: flex;
+                        justify-content: space-between;
+                        margin-bottom: 40px;
+                        margin-top: 20px;
+                    }
+                }
+
+                .filterItem {
+                    margin-bottom: 30px;
+
+                    .filterTitle {
+                        font-weight: 500;
+                        margin-bottom: 20px;
+                    }
+
+                    .inputItem {
+                        display: flex;
+                        align-items: center;
+                        margin-bottom: 10px;
+
+                        label {
+                            margin-left: 10px;
+                        }
                     }
                 }
             }
         }
 
-        .right {
+        .products {
             flex: 3;
             position: relative;
             flex-direction: column;
             display: flex;
             padding: 12px;
+            margin-top: 20px;
 
             gap: 20px;
 
+            .top {
+                display: flex;
+                align-items: center;
+                position: relative;
+                z-index: 3;
+                justify-content: space-between;
 
-            .catImgWrapper {
-                overflow: hidden;
-                border-radius: 10px;
-                margin-bottom: 40px;
-            }
+                .no-of-products {
+                    color: $darkGray;
+                    font-size: 15px;
+                }
 
-            .catImg {
-                object-fit: cover;
-                border-radius: 10px;
-                height: 260px;
+                .filter-toggle-btn {
+                    display: flex;
+                    font-size: 14px;
+                    gap: 10px;
+                    padding: 5px 18px;
+                    border: 1px solid $mediumGray;
+                    border-radius: 25px;
+
+
+                    @include md {
+                        display: none;
+
+                    }
+                }
+
+
+
+                // .catImgWrapper {
+                //     overflow: hidden;
+                //     border-radius: 10px;
+                //     margin-bottom: 40px;
+                // }
+
+                // .catImg {
+                //     object-fit: cover;
+                //     border-radius: 10px;
+                //     height: 260px;
+                // }
             }
         }
     }

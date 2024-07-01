@@ -7,9 +7,9 @@
     top: 0px;
     right: 0;
     left: 0;
-    z-index: 200;
+    z-index: 10;
     display: flex;
-    background-color: $offWhite;
+    background-color: $lightGray;
 
     
 
@@ -50,6 +50,7 @@
                 .top {
                     display: none;
                 }
+                
 
                 @include max-breakpoint(991px) {
                     display: none;
@@ -117,10 +118,10 @@
                 cursor: pointer;
 
                 .searchbar {
-                    background-color: white;
+                    background-color: $offWhite;
                     // border: 2px solid $lightGray;
                     padding: 4px;
-                    border-radius: 15px;
+                    border-radius: 10px;
                     
                     display: none;
 
@@ -136,7 +137,7 @@
 
                     .search-icon {
                         margin-left: auto;
-                        color: black
+                        color: $darkGray;
                     }
                 }
 

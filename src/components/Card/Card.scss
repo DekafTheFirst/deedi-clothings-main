@@ -31,7 +31,7 @@
             position: absolute !important;
             top: 0;
             left: 0;
-            z-index: 2;
+            z-index: 1;
 
             img {
                 width: 100%;
@@ -43,7 +43,7 @@
 
         .secondImg {
             display: none !important;
-            background-color: darken($lighterGray, 3%);
+            background-color: darken($lighterGray, 1%);
             position: absolute !important;
             top: 0;
             left: 0;

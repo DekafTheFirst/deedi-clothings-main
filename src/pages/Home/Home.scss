@@ -11,7 +11,7 @@
         display: flex;
         align-items: flex-end;
         background-color: darken($lighterGray, 2%);
-        background-color: $lightGray;
+        background-color: $lighterGray;
 
 
         @include max-breakpoint(575px) {
@@ -69,7 +69,6 @@
 
                 .content {
                     // position: absolute;
-                    z-index: 100;
                     // bottom: 30px;
                     // left: 0;
                     @include flex-column;

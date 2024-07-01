@@ -40,28 +40,45 @@ $breakpoints: (
   @media (min-width: map-get($breakpoints, "xs")) {
     @content;
   }
-};
+}
+
+;
 
 @mixin xs-landscape {
   @media (min-width: map-get($breakpoints, "xs")) and (orientation: landscape) {
     @content;
   }
-};
+}
+
+;
 
 @mixin sm {
   @media (min-width: map-get($breakpoints, "sm")) {
     @content;
   }
-};
+}
+
+;
 
 @mixin sm-landscape {
   @media (min-width: map-get($breakpoints, "sm")) and (orientation: landscape) {
     @content;
   }
-};
+}
+
+;
 
 @mixin md {
   @media (min-width: map-get($breakpoints, "md")) {
+    @content;
+  }
+}
+
+;
+
+
+@mixin max-md {
+  @media (max-width: calc(map-get($breakpoints, "md") - 1px )) {
     @content;
   }
 };
@@ -70,108 +87,145 @@ $breakpoints: (
   @media (min-width: map-get($breakpoints, "md")) and (orientation: landscape) {
     @content;
   }
-};
+}
+
+;
 
 @mixin lg {
   @media (min-width: map-get($breakpoints, "lg")) {
     @content;
   }
-};
+}
+
+;
 
 @mixin lg-landscape {
   @media (min-width: map-get($breakpoints, "lg")) and (orientation: landscape) {
     @content;
   }
-};
+}
+
+;
 
 @mixin xl {
   @media (min-width: map-get($breakpoints, "xl")) {
     @content;
   }
-};
+}
+
+;
 
 @mixin xl-landscape {
   @media (min-width: map-get($breakpoints, "xl")) and (orientation: landscape) {
     @content;
   }
-};
+}
+
+;
 
 @mixin xxl {
   @media (min-width: map-get($breakpoints, "xxl")) {
     @content;
   }
-};
+}
+
+;
 
 
 @mixin min-breakpoint($bp: 0) {
   @media (min-width: $bp) {
     @content
   }
-};
+}
+
+;
 
 @mixin max-breakpoint($bp: 0) {
   @media (max-width: $bp) {
     @content
   }
-};
+}
+
+;
 
 
 // Reused Styles
 
 @mixin hidden {
   display: none !important;
-};
+}
+
+;
 
 @mixin flex-column {
   display: flex;
   flex-direction: column;
-};
+}
+
+;
 
 @mixin flex-row {
   display: flex;
   flex-direction: row;
-};
+}
+
+;
 
 @mixin center-content {
   display: flex;
   justify-content: center;
   align-items: center;
-};
+}
+
+;
 
 @mixin text-center {
   text-align: center;
-};
+}
+
+;
 
 @mixin absolute-center {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-};
+}
+
+;
 
 @mixin full-width {
   width: 100%;
-};
+}
+
+;
 
 @mixin full-height {
   height: 100%;
-};
+}
+
+;
 
 @mixin scrollable {
   overflow: auto;
-};
+}
+
+;
 
 @mixin fixed-top {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
-};
+}
+
+;
 
 @mixin fixed-bottom {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
-};
+}
 
+;
