@@ -19,7 +19,6 @@ const Card = ({ item }) => {
                         height={400}
                         width={"100%"}
                     />
-                    {/* <img src={import.meta.env.VITE_UPLOAD_URL + item.attributes?.img?.data?.attributes?.url} alt="" className="mainImg" /> */}
                     <OptimizedImage
                         // wrapperClassName='imgWrapper'
                         className={'img secondImg'}
