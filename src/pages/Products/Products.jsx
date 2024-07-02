@@ -15,12 +15,14 @@ const Products = () => {
   const [sort, setSort] = useState("asc");
   const [selectedSubCats, setSelectedSubCats] = useState([]);
   const [showFilters, setShowFilters] = useState(false);
-  const [filtersUsed, setFiltersUsed] =  useState(false);
+  const [filtersUsed, setFiltersUsed] = useState(false);
 
   const catSlug = useParams().slug
 
   const { data: category, loading: categoryLoading, error: categoryError } = useFetch(`/categories?populate=*&filters[slug][$eq]=${catSlug}`)
   const { data: subCategories, loading: subCategoriesLoading, error: subCategoriesError } = useFetch(`/sub-categories?[filters] [categories] [slug] [$eq]=${catSlug}`)
+  const { data: products, loading:productsLoading, error } = useFetch(`/products?populate=*&[filters] [categories] [slug]=${catSlug}${selectedSubCats.map(item => `&[filters][sub_categories][id][$eq]=${item}`)}&[filters] [price] [$lte]=${maxPrice}&sort=price:${sort}`)
+
 
   const handleShowFilterToggle = () => {
     setShowFilters(!showFilters)
@@ -29,7 +31,7 @@ const Products = () => {
   const handleSubCategoryChange = (e) => {
     const value = e.target.value;
     const isChecked = e.target.checked;
-    
+
     setSelectedSubCats(isChecked ? [...selectedSubCats, value] : selectedSubCats.filter(item => item !== value))
     setFiltersUsed(true)
   }
@@ -111,12 +113,12 @@ const Products = () => {
               </div>
             </div>
           </div>
-          <button className={`btn apply-btn ${filtersUsed ? 'activated' : 'deactivated'}`} onClick={handleApplyButtonClicked} disabled={!filtersUsed}>Apply Changes</button>
+          <button className={`btn apply-btn ${filtersUsed ? 'activated' : 'deactivated'}`} onClick={handleApplyButtonClicked} disabled={!filtersUsed}>Apply Changes {filtersUsed ? `(${products && products.length})`: ''}</button>
 
         </div>
         <div className="products">
           <div className="top">
-            <span className='no-of-products'>{5} Products</span>
+            {products &&  <span className='no-of-products'>{products.length === 1 ? '1 Product' : `${products.length} Products`}</span>}
             <button className="btn filter-toggle-btn" onClick={handleShowFilterToggle}>Filters <TuneIcon fontSize='small' /> </button>
           </div>
           {/* {!category
@@ -137,10 +139,10 @@ const Products = () => {
             )
           } */}
 
+          <List products={products} productsLoading={productsLoading}/>
+          {/* <List catSlug={catSlug} maxPrice={maxPrice} sort={sort} subCats={selectedSubCats} />
           <List catSlug={catSlug} maxPrice={maxPrice} sort={sort} subCats={selectedSubCats} />
-          <List catSlug={catSlug} maxPrice={maxPrice} sort={sort} subCats={selectedSubCats} />
-          <List catSlug={catSlug} maxPrice={maxPrice} sort={sort} subCats={selectedSubCats} />
-          <List catSlug={catSlug} maxPrice={maxPrice} sort={sort} subCats={selectedSubCats} />
+          <List catSlug={catSlug} maxPrice={maxPrice} sort={sort} subCats={selectedSubCats} /> */}
 
         </div>
       </div>

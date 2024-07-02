@@ -6,10 +6,8 @@ import { CircularProgress } from '@mui/material'
 import { LazyLoadImage } from 'react-lazy-load-image-component'
 
 
-const List = ({ subCats, maxPrice, sort, catSlug }) => {
+const List = ({ products, productsLoading }) => {
 
-    const { data, loading, error } = useFetch(`/products?populate=*&[filters] [categories] [slug]=${catSlug}${subCats.map(item => `&[filters][sub_categories][id][$eq]=${item}`)}&[filters] [price] [$lte]=${maxPrice}&sort=price:${sort}`)
-    console.log(data)
     
     const interceptedData  = [
         {
@@ -3443,9 +3441,9 @@ const List = ({ subCats, maxPrice, sort, catSlug }) => {
 
     return (
         <div className="list">
-            {loading
+            {productsLoading
                 ? <CircularProgress />
-                : data?.map(item => (<Card item={item} key={item.id} />))}
+                : products?.map(item => (<Card item={item} key={item.id} />))}
             {/* {images.map((img, index) => 
                 (<LazyLoadImage
                     key={index}

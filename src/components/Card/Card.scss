@@ -9,7 +9,7 @@
     flex-direction: column;
     border-radius: 0;
 
-    gap: 10px;
+    gap: 12px;
     overflow: hidden;
     border: none;
     scroll-snap-align: start;
@@ -24,7 +24,7 @@
 
         overflow: hidden;
         position: relative;
-        border-radius: 3px;
+        border-radius: 10px;
 
         .img {
             background-color: darken($lighterGray, 1%);
@@ -76,23 +76,42 @@
         }
     }
 
-    h2 {
-        font-size: 16px;
-        font-weight: 400;
-    }
-
-    .prices {
+    .details {
         display: flex;
-        gap: 15px;
+        flex-direction: column;
 
-        h3 {
-            font-size: 18px;
-            font-weight: 500;
+        .product-title {
+            font-size: 17px;
+            font-weight: 600;
+            width: 100%;
+            text-wrap: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
 
-            &:first-child {
+        }
+
+        .prices {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+
+            h3 {
+                vertical-align: middle;
+            }
+
+            .price {
                 color: gray;
                 text-decoration: line-through;
+                font-size: 15px;
+
             }
+
+            .discountedPrice {
+                font-size: 16px;
+                font-weight: 600;
+                color: $charcoal;
+            }
+
 
         }
     }
