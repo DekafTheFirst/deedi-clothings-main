@@ -10,19 +10,13 @@
         position: relative;
         display: flex;
         align-items: flex-end;
-        background-color: darken($lighterGray, 2%);
-        background-color: $lighterGray;
+        background-color: $veryLightGray;
 
 
         @include max-breakpoint(575px) {
-            margin: 12px;
-            border-radius: 15px;
+      
             aspect-ratio: 16/9;
-            background-color: rgba($lightBrown, 0.4);
-            background-color: $lightGray;
-            background-color: darken($lighterGray, 2%);
-
-
+            background-color: $veryLightGray;
 
         }
 
@@ -58,6 +52,7 @@
         .container-fluid {
             height: 100%;
             display: flex;
+            position: relative; //Because of making blob go behind it
 
             .row {
                 padding: 0;
@@ -125,7 +120,7 @@
 
 
                         @include md-landscape {
-                            font-size: clamp(24px, 10vw, 80px);
+                            font-size: clamp(24px, 7vw, 95px);
                         }
 
                         span.deedi {
@@ -151,7 +146,7 @@
                             @include btn-1();
 
                             @include md {
-                                padding: 10px 35px;
+                                padding: 15px 45px;
                             }
                         }
                     }
@@ -189,7 +184,6 @@
         }
 
         .blob-1 {
-
             display: none;
 
             @include sm {
@@ -199,27 +193,28 @@
                 left: -90px;
                 width: 30%;
                 object-fit: contain;
-                opacity: 0.2;
+                opacity: 0.1;
+                
             }
 
             @include md {
                 bottom: -50px;
                 left: -90px;
-                width: 20%;
+                width: 18%;
             }
 
         }
 
         .blob-2 {
             position: absolute;
-            width: 110%;
+            width: 100%;
         
             object-fit: cover;
-            opacity: 0.15;
+            opacity: 0.05;
 
             @include sm {
                 
-                width: 100%;
+                width: 70%;
             }
         }
 

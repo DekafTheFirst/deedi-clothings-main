@@ -30,6 +30,20 @@ const Product = () => {
       <div className="container-fluid">
         {loading ? "loading" : (<>
           <div className="images-wrapper">
+            <div className="mainImg">
+              <OptimizedImage
+                // wrapperClassName='imgWrapper'
+                className={'img'}
+                alt=""
+                src={
+                  import.meta.env.VITE_UPLOAD_URL + data?.attributes.img?.data[selectedImg]?.attributes?.url
+                }
+                effect="blur"
+                height={400}
+                width={"100%"}
+              />
+
+            </div>
             <div className="thumbnail-images">
               {data?.attributes?.img?.data.map((image, index) =>
 
@@ -46,20 +60,7 @@ const Product = () => {
                 />
               )}
             </div>
-            <div className="mainImg">
-              <OptimizedImage
-                // wrapperClassName='imgWrapper'
-                className={'img'}
-                alt=""
-                src={
-                  import.meta.env.VITE_UPLOAD_URL + data?.attributes.img?.data[selectedImg]?.attributes?.url
-                }
-                effect="blur"
-                height={400}
-                width={"100%"}
-              />
 
-            </div>
           </div>
           <div className="right">
             <h1 className="title">{data?.attributes?.title}</h1>

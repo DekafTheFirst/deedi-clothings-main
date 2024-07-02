@@ -18,27 +18,34 @@
 
         .images-wrapper {
             display: flex;
-            
-            gap: 20px;
-            height: 50vh;
+            flex-direction: column;
+            gap: 10px;
 
             .thumbnail-images {
-                display: none;
                 width: 100%;
-
+                display: flex;
+                gap: 10px;
                 @include md {
                     display: block;
                 }
-                .img {
+
+                .thumbnail {
+
                     width: 100%;
                     object-fit: contain;
                     object-position: top;
                     cursor: pointer;
                     margin-bottom: 10px;
+                    background-color: $lighterGray;
+                    width: 70px;
+                    height: 70px;
+
                 }
             }
 
             .mainImg {
+                aspect-ratio: 5/4;
+
                 width: 100%;
                 background-color: $lighterGray;
 
@@ -107,8 +114,7 @@
                 //     transition: all 0.1s ease-in;
                 // }
 
-                @include btn-1()
-
+                @include btn-1($padding: 15px)
             }
 
             .links {
