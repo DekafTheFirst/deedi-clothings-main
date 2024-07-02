@@ -10,54 +10,68 @@ import TuneIcon from '@mui/icons-material/Tune';
 import { Close } from '@mui/icons-material'
 
 const Products = () => {
-  const [maxPrice, setMaxPrice] = useState(1000)
-  const [sort, setSort] = useState("asc")
-  const [selectedSubCats, setSelectedSubCats] = useState([])
-  const [filterVisibility, setFilterVisibility] = useState(false)
-
+  const [maxPrice, setMaxPrice] = useState(1000);
+  const [tempMaxPrice, setTempMaxPrice] = useState(maxPrice);
+  const [sort, setSort] = useState("asc");
+  const [selectedSubCats, setSelectedSubCats] = useState([]);
+  const [showFilters, setShowFilters] = useState(false);
+  const [filtersUsed, setFiltersUsed] =  useState(false);
 
   const catSlug = useParams().slug
 
   const { data: category, loading: categoryLoading, error: categoryError } = useFetch(`/categories?populate=*&filters[slug][$eq]=${catSlug}`)
   const { data: subCategories, loading: subCategoriesLoading, error: subCategoriesError } = useFetch(`/sub-categories?[filters] [categories] [slug] [$eq]=${catSlug}`)
 
-  const handleFilterVisibilityToggle = () => {
-    setFilterVisibility(!filterVisibility)
+  const handleShowFilterToggle = () => {
+    setShowFilters(!showFilters)
   }
 
-  const handleChange = (e) => {
+  const handleSubCategoryChange = (e) => {
     const value = e.target.value;
     const isChecked = e.target.checked;
-
+    
     setSelectedSubCats(isChecked ? [...selectedSubCats, value] : selectedSubCats.filter(item => item !== value))
-
+    setFiltersUsed(true)
   }
 
+  const handleMaxPriceMouseUp = () => {
+    setMaxPrice(tempMaxPrice);
+    setFiltersUsed(true)
+  };
+
+  const handleTempMaxPriceChange = (event) => {
+    setTempMaxPrice(event.target.value);
+  };
+
+  const handleApplyButtonClicked = () => {
+    handleShowFilterToggle()
+    setFiltersUsed(false)
+  }
 
 
   // console.log(selectedSubCats)
 
   return (
-    <div className="product-list-page">
+    <div className={`product-list-page ${showFilters ? 'filter-is-visible' : ''}`}>
 
       <div className="container-fluid">
 
-        <div className={`filters-wrapper ${filterVisibility ? 'show' : ''}`}>
+        <div className={`filters-wrapper ${showFilters ? 'show' : ''}`}>
           <div className={`filters `} >
             <div className="heading-mobile-only">
               <h6 className="filterTitle">Filters</h6>
-              <Close className='close' onClick={handleFilterVisibilityToggle} />
+              <Close className='close' onClick={handleShowFilterToggle} />
             </div>
             <div className="filterItem">
               <h6 className="filterTitle">Product Categories</h6>
               {subCategories?.map((item) =>
               (<div className="inputItem" key={item.id}>
-                <input type="checkbox" id={item.id} value={item.id} onChange={handleChange} />
+                <input type="checkbox" id={item.id} value={item.id} onChange={handleSubCategoryChange} />
                 <label htmlFor={item.id}>{item.attributes.title}</label>
               </div>)
               )}
             </div>
-            <div className="filterItem">
+            <div className="filterItem price">
               <h6 className="filterTitle">Filter by price</h6>
               <div className="inputItem">
                 <span>0</span>
@@ -65,9 +79,12 @@ const Products = () => {
                   type="range"
                   min={0}
                   max={1000}
-                  onChange={(e) => setMaxPrice(e.target.value)}
+                  value={tempMaxPrice}
+                  onMouseUp={handleMaxPriceMouseUp}
+                  onTouchEnd={handleMaxPriceMouseUp}
+                  onChange={handleTempMaxPriceChange}
                 />
-                <span>{maxPrice}</span>
+                <span>{tempMaxPrice}</span>
               </div>
             </div>
             <div className="filterItem">
@@ -94,11 +111,13 @@ const Products = () => {
               </div>
             </div>
           </div>
+          <button className={`btn apply-btn ${filtersUsed ? 'activated' : 'deactivated'}`} onClick={handleApplyButtonClicked} disabled={!filtersUsed}>Apply Changes</button>
+
         </div>
         <div className="products">
           <div className="top">
             <span className='no-of-products'>{5} Products</span>
-            <button className="btn filter-toggle-btn" onClick={handleFilterVisibilityToggle}>Filters <TuneIcon fontSize='small' /> </button>
+            <button className="btn filter-toggle-btn" onClick={handleShowFilterToggle}>Filters <TuneIcon fontSize='small' /> </button>
           </div>
           {/* {!category
             ?

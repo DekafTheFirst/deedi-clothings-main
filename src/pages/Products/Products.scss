@@ -5,6 +5,12 @@
     // padding: 30px 50px;
     display: flex;
 
+    @include max-md {
+        &.filter-is-visible {
+            height: calc(100vh - $navbarHeight);
+            overflow: hidden;
+        }
+    }
 
     .container-fluid {
         display: flex;
@@ -21,9 +27,25 @@
             position: sticky;
             top: calc($navbarHeight + 20px);
             flex: 1;
-            padding: 12px;
             margin-top: 20px;
 
+            .apply-btn {
+                display: none;
+                padding: 15px;
+                margin: 10px;
+                background-color: $lightGray;
+                color: $darkGray;
+                font-weight: 500;
+
+                &.activated {
+                    color: white;
+                    background: #212121;
+                }
+
+                &.deactivated {
+                    border: none;
+                }
+            }
 
             @include max-md {
                 position: fixed;
@@ -36,6 +58,15 @@
                 background-color: $offWhite;
                 transition: left 0.5s ease;
 
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+
+                .apply-btn {
+                    display: block;
+                }
+
+
                 &.show {
                     right: 0;
                     transition: left 0.5s ease;
@@ -43,9 +74,14 @@
             }
 
             .filters {
+                padding: 12px;
+                overflow-y: auto;
+
                 .heading-mobile-only {
                     display: none;
                 }
+
+
 
 
                 @include max-md {
@@ -58,9 +94,11 @@
                     .heading-mobile-only {
                         display: flex;
                         justify-content: space-between;
-                        margin-bottom: 40px;
+                        margin-bottom: 20px;
                         margin-top: 20px;
                     }
+
+
                 }
 
                 .filterItem {
@@ -78,6 +116,13 @@
 
                         label {
                             margin-left: 10px;
+                        }
+                    }
+
+                    &.price {
+                        .inputItem{
+                            display: flex;
+                            gap: 10px;
                         }
                     }
                 }
