@@ -24,6 +24,10 @@ const Product = () => {
   //   "/img/products/1.2.jpg"
   // ]
 
+  const handleThumbnailClicked = (index) => {
+    setSelectedImg(index)
+  }
+
   return (
     <div className="product-page">
 
@@ -39,26 +43,23 @@ const Product = () => {
                   import.meta.env.VITE_UPLOAD_URL + data?.attributes.img?.data[selectedImg]?.attributes?.url
                 }
                 effect="blur"
-                height={400}
-                width={"100%"}
               />
 
             </div>
             <div className="thumbnail-images">
               {data?.attributes?.img?.data.map((image, index) =>
-
-                <OptimizedImage
-                  // wrapperClassName='imgWrapper'
-                  className={'thumbnail'}
-                  alt=""
-                  src={
-                    import.meta.env.VITE_UPLOAD_URL + data?.attributes.img?.data[selectedImg]?.attributes?.url
-                  }
-                  effect="blur"
-                  height={400}
-                  width={"100%"}
-                />
+                <div className={`thumbnail-wrapper ${index === selectedImg ? 'selected':''}`} onClick={() => handleThumbnailClicked(index)} key={index}>
+                  <OptimizedImage
+                    // wrapperClassName='imgWrapper'
+                    className={'thumbnail'}
+                    alt=""
+                    src={
+                      import.meta.env.VITE_UPLOAD_URL + image?.attributes?.formats?.thumbnail?.url
+                    }
+                  />
+                </div>
               )}
+
             </div>
 
           </div>
