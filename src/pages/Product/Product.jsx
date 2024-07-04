@@ -48,7 +48,7 @@ const Product = () => {
             </div>
             <div className="thumbnail-images">
               {data?.attributes?.img?.data.map((image, index) =>
-                <div className={`thumbnail-wrapper ${index === selectedImg ? 'selected':''}`} onClick={() => handleThumbnailClicked(index)} key={index}>
+                <div className={`thumbnail-wrapper ${index === selectedImg ? 'selected' : ''}`} onClick={() => handleThumbnailClicked(index)} key={index}>
                   <OptimizedImage
                     // wrapperClassName='imgWrapper'
                     className={'thumbnail'}
@@ -64,35 +64,58 @@ const Product = () => {
 
           </div>
           <div className="right">
-            <h1 className="title">{data?.attributes?.title}</h1>
-            <span className="price">{`$${data?.attributes?.price}`}</span>
-            <p>Best Selling Product</p>
-            <div className="quantity">
+            <div className="section heading">
+              <h1 className="title">{data?.attributes?.title}</h1>
+              <span className="price">{`$${data?.attributes?.price}`}</span>
+            </div>
+            <div className="section filters">
+              <div className="filter-item sizes">
+                <span className="title">Available Sizes</span>
+                <div className="options">
+                  <span className="option active">S</span>
+                  <span className="option">M</span>
+                  <span className="option">L</span>
+                </div>
+              </div>
+
+              <div className="filter-item colors">
+                <span className="title">Available Colors</span>
+                <div className="options">
+                  <div className="option burgundy active"><span></span></div>
+                  <div className="option gray"><span></span></div>
+                  <div className="option black"><span></span></div>
+                </div>
+              </div>
+            </div>
+
+            <div className="section add-to-cart">
+              <div className="quantity">
+                <button
+                  onClick={() =>
+                    setQuantity((prev) => (prev === 1 ? 1 : prev - 1))
+                  }
+                >
+                  <span>-</span>
+                </button>
+                <span className="no-of-items">{quantity}</span>
+                <button onMouseDown={() => setQuantity((prev) => prev + 1)}><span>+</span></button>
+              </div>
               <button
+                className="add"
                 onClick={() =>
-                  setQuantity((prev) => (prev === 1 ? 1 : prev - 1))
+                  dispatch(addToCart({
+                    id: data.id,
+                    title: data.attributes.title,
+                    desc: data.attributes.desc,
+                    img: data.attributes.img.data[0].attributes.url,
+                    quantity,
+                    price: data.attributes.price
+                  }))
                 }
               >
-                -
+                <AddShoppingCartIcon /> ADD TO CART
               </button>
-              <span>{quantity}</span>
-              <button onClick={() => setQuantity((prev) => prev + 1)}>+</button>
             </div>
-            <button
-              className="add"
-              onClick={() =>
-                dispatch(addToCart({
-                  id: data.id,
-                  title: data.attributes.title,
-                  desc: data.attributes.desc,
-                  img: data.attributes.img.data[0].attributes.url,
-                  quantity,
-                  price: data.attributes.price
-                }))
-              }
-            >
-              <AddShoppingCartIcon /> ADD TO CART
-            </button>
             <div className="links">
               <div className="item">
                 <FavoriteBorderIcon /> ADD TO WISH LIST

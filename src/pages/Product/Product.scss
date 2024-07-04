@@ -5,13 +5,14 @@
 
     .container-fluid {
         display: flex;
-        gap: 20px;
         flex-direction: column;
         padding: 0;
 
         @include md {
             flex-direction: row;
             gap: 50px;
+            padding: 12px;
+            max-width: 1000px;
 
         }
 
@@ -20,9 +21,14 @@
             display: flex;
             flex-direction: column;
             gap: 10px;
-            background-color: $lighterGray;
+            background-color: darken($lighterGray, 3%);
             height: 40vh;
             position: relative;
+
+            @include md {
+                height: 80vh;
+                width: 50%;
+            }
 
 
             .thumbnail-images {
@@ -36,20 +42,19 @@
                 gap: 5px;
 
                 @include md {
-                    display: block;
+                    gap: 10px;
                 }
 
                 .thumbnail-wrapper {
-                    background-color: darken($lightGray, 1%);
-                    filter: brightness(90%);
+                    background-color: darken($lighterGray, 2%);
                     border: 0.5px solid $mediumGray;
-                    width: 55px;
-                    height: 55px;
+                    width: 60px;
+                    height: 60px;
 
 
                     &.selected {
                         border: 2px solid $charcoal;
-                        background-color: $lightGray;
+                        background-color: $lighterGray;
                         filter: brightness(100%);
 
 
@@ -57,9 +62,6 @@
 
                     .thumbnail {
                         cursor: pointer;
-
-
-
 
                         img {
                             object-fit: contain;
@@ -75,6 +77,7 @@
                 .img {
                     img {
                         object-fit: contain;
+
                     }
                 }
             }
@@ -85,62 +88,185 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            padding: 12px;
-
-            .title {
-                font-weight: 500;
-            }
-
-            .price {
-                font-size: 30px;
-                font-weight: 700;
-            }
-
-            p {
-                font-size: 18px;
-                font-weight: 300;
-                text-align: justify;
-            }
-
-            .quantity {
-                display: flex;
-                align-items: center;
-                gap: 10px;
+            padding-inline: 12px;
 
 
+            .section {
+                padding-block: 15px;
+                border-bottom: 1px solid $lightGray;
 
-                button {
-                    width: 50px;
-                    height: 50px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    cursor: pointer;
-                    border: none;
+                &.heading {
+                    .title {
+                        font-size: 26px;
+                        font-weight: 600;
+                    }
+
+                    .price {
+                        font-size: 26px;
+                        font-weight: 600;
+                    }
                 }
+
+                &.filters {
+                    display: flex;
+                    gap: 40px;
+
+
+                    .filter-item {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 10px;
+
+                        .title {
+                            color: $darkGray;
+                        }
+
+
+                        .options {
+                            display: flex;
+                            gap: 10px;
+                        }
+
+                        &.sizes {
+                            .options {
+                                .option {
+                                    padding: 10px;
+                                    width: 42px;
+                                    height: 42px;
+                                    border: 1px solid $lightGray;
+                                    border-radius: 8px;
+                                    text-align: center;
+                                    vertical-align: middle;
+                                    font-size: 14px;
+                                    font-weight: 500;
+
+
+                                    &.active {
+                                        background-color: $deepCharcoal;
+                                        color: $offWhite;
+                                    }
+                                }
+                            }
+                        }
+
+                        &.colors {
+
+
+                            .options {
+                                align-items: center;
+
+                                .option {
+                                    height: 35px;
+                                    width: 35px;
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    border-radius: 50%;
+                                    padding: 6px;
+
+                                    &.active {
+                                        border: 2px solid $deepCharcoal;
+
+                                    }
+
+
+                                    span {
+                                        content: "";
+                                        width: 100%;
+                                        height: 100%;
+                                        display: block;
+                                        border-radius: 50%;
+
+
+                                    }
+
+                                    &.burgundy span {
+                                        background-color: $burgundy;
+                                    }
+
+                                    &.gray span {
+                                        background-color: $mediumGray;
+                                    }
+
+                                    &.black span {
+                                        background-color: black;
+                                    }
+                                }
+                            }
+
+                        }
+
+
+                    }
+                }
+
+                &.add-to-cart {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 10px;
+
+                    .quantity {
+                        display: flex;
+                        align-items: center;
+                        gap: 12px;
+                 
+                        .no-of-items {
+                            width: 15px;
+                            text-align: center;
+                        }
+
+
+                        button {
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            cursor: pointer;
+                            border: none;
+                            color: $deepCharcoal;
+                            width: 50px;
+                            height: 50px;
+
+                            span {
+                                font-size: 25px;
+                            }
+                        }
+                    }
+
+                    .add {
+                        // width: 250px;
+                        // padding: 10px;
+                        // background-color: #93703f;
+                        // color: white;
+                        // display: flex;
+                        // align-items: center;
+                        // justify-content: center;
+                        // gap: 15px;
+                        // cursor: pointer;
+                        // border: none;
+                        // font-weight: 500;
+
+                        // &:hover {
+                        //     background-color: #D3B484;
+                        //     transition: all 0.1s ease-in;
+                        // }
+
+                        @include btn-1();
+                        background-color: $deepCharcoal;
+                        padding: 15px 20px;
+                        border-radius: 8px;
+                    }
+                }
+
             }
 
-            .add {
-                // width: 250px;
-                // padding: 10px;
-                // background-color: #93703f;
-                // color: white;
-                // display: flex;
-                // align-items: center;
-                // justify-content: center;
-                // gap: 15px;
-                // cursor: pointer;
-                // border: none;
-                // font-weight: 500;
 
-                // &:hover {
-                //     background-color: #D3B484;
-                //     transition: all 0.1s ease-in;
-                // }
+            // p {
+            //     font-size: 18px;
+            //     font-weight: 300;
+            //     text-align: justify;
+            // }
 
-                @include btn-1($padding: 15px)
-            }
+
 
             .links {
                 display: flex;
