@@ -142,9 +142,7 @@
                         gap: 15px;
 
 
-                        .btn {
-                            @include btn-1();
-
+                        .btn-1 {
                             @include md {
                                 padding: 15px 45px;
                             }

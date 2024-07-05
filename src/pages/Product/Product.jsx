@@ -4,6 +4,7 @@ import "./Product.scss";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import BalanceIcon from "@mui/icons-material/Balance";
+import StarBorderIcon from '@mui/icons-material/StarBorder';
 import { useParams } from "react-router-dom";
 import useFetch from "../../hooks/useFetch";
 import { useDispatch } from "react-redux";
@@ -75,6 +76,10 @@ const Product = () => {
                   <span className="option active">S</span>
                   <span className="option">M</span>
                   <span className="option">L</span>
+                  <span className="option">XL</span>
+                  <span className="option">XXL</span>
+
+
                 </div>
               </div>
 
@@ -83,7 +88,10 @@ const Product = () => {
                 <div className="options">
                   <div className="option burgundy active"><span></span></div>
                   <div className="option gray"><span></span></div>
-                  <div className="option black"><span></span></div>
+                  <div className="option green"><span></span></div>
+                  <div className="option gray"><span></span></div>
+                  <div className="option green"><span></span></div>
+
                 </div>
               </div>
             </div>
@@ -101,7 +109,7 @@ const Product = () => {
                 <button onMouseDown={() => setQuantity((prev) => prev + 1)}><span>+</span></button>
               </div>
               <button
-                className="add"
+                className="add btn-1"
                 onClick={() =>
                   dispatch(addToCart({
                     id: data.id,
@@ -115,15 +123,11 @@ const Product = () => {
               >
                 <AddShoppingCartIcon /> ADD TO CART
               </button>
+                <button className="add-to-wishlist btn-2">
+                  <StarBorderIcon /> <span>ADD TO WISH LIST</span>
+                </button>
             </div>
-            <div className="links">
-              <div className="item">
-                <FavoriteBorderIcon /> ADD TO WISH LIST
-              </div>
-              <div className="item">
-                <BalanceIcon /> ADD TO COMPARE
-              </div>
-            </div>
+
             <div className="info">
               <span>Vendor: Polo</span>
               <span>Product Type: T-Shirt</span>

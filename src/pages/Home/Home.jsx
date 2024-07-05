@@ -26,7 +26,7 @@ const Home = () => {
               </div>
               <h1>Wear <span className="deedi">Deedi</span>, <br></br><span className='weave-hope'>Weave Hope</span></h1>
               <div className="bottom">
-                <Link to="/products" className="btn">Shop Now</Link>
+                <Link to="/products" className="btn-1">Shop Now</Link>
               </div>
             </div>
 

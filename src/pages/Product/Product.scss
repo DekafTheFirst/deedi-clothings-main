@@ -21,7 +21,7 @@
             display: flex;
             flex-direction: column;
             gap: 10px;
-            background-color: darken($lighterGray, 3%);
+            background-color: darken($lighterGray, 2%);
             height: 40vh;
             position: relative;
 
@@ -47,17 +47,15 @@
 
                 .thumbnail-wrapper {
                     background-color: darken($lighterGray, 2%);
-                    border: 0.5px solid $mediumGray;
+                    border: 1px solid $darkGray;
                     width: 60px;
                     height: 60px;
 
 
                     &.selected {
-                        border: 2px solid $charcoal;
+                        border: 2px solid $deepCharcoal;
                         background-color: $lighterGray;
                         filter: brightness(100%);
-
-
                     }
 
                     .thumbnail {
@@ -109,7 +107,8 @@
 
                 &.filters {
                     display: flex;
-                    gap: 40px;
+                    flex-direction: column;
+                    gap: 20px;
 
 
                     .filter-item {
@@ -130,9 +129,8 @@
                         &.sizes {
                             .options {
                                 .option {
-                                    padding: 10px;
-                                    width: 42px;
-                                    height: 42px;
+                                    padding: 10px 15px;
+
                                     border: 1px solid $lightGray;
                                     border-radius: 8px;
                                     text-align: center;
@@ -191,25 +189,32 @@
                                     &.black span {
                                         background-color: black;
                                     }
+
+                                    &.green span {
+                                        background-color: green;
+                                    }
+
+
                                 }
                             }
 
                         }
-
-
                     }
                 }
 
                 &.add-to-cart {
                     display: flex;
                     flex-direction: column;
+                    padding-block: 25px;
                     gap: 10px;
 
                     .quantity {
-                        display: flex;
+                        display: none;
                         align-items: center;
                         gap: 12px;
-                 
+
+                        
+
                         .no-of-items {
                             width: 15px;
                             text-align: center;
@@ -250,11 +255,29 @@
                         //     transition: all 0.1s ease-in;
                         // }
 
-                        @include btn-1();
-                        background-color: $deepCharcoal;
-                        padding: 15px 20px;
-                        border-radius: 8px;
+                        
+                        // padding: 15px 20px;
+                        // border-radius: 8px;
+                        // font-size: 14px;
                     }
+
+
+
+                    .add-to-wishlist {
+                        // display: flex;
+                        // align-items: center;
+                        // justify-content: center;
+                        // gap: 10px;
+                        // border: 1px solid $deepCharcoal;
+                        // padding: 15px 20px;
+                        // border-radius: 8px;
+
+                        // span {
+                        //     vertical-align: middle;
+                        //     font-size: 14px;
+                        // }
+                    }
+
                 }
 
             }
@@ -268,18 +291,7 @@
 
 
 
-            .links {
-                display: flex;
-                gap: 20px;
 
-                .item {
-                    display: flex;
-                    align-items: center;
-                    gap: 10px;
-                    color: #9C6644;
-                    font-size: 14px;
-                }
-            }
 
             .info {
                 display: flex;

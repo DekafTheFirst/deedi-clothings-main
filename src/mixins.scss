@@ -1,27 +1,7 @@
 @import 'variables.scss';
 
 @mixin btn-1($bg-color: black, $text-color: $offWhite, $padding: 9px 28px, $border-radius: 4px) {
-  background-color: $bg-color;
-  color: $text-color;
-  padding: $padding;
-  border: none;
-  border-radius: $border-radius;
-  cursor: pointer;
-  font-size: 12px;
-  text-align: center;
-  display: inline-block;
-  font-weight: 500;
-  text-decoration: none;
-  text-transform: uppercase;
-
-  &:hover {
-    background-color: lighten($bg-color, 10%);
-  }
-
-  &:focus {
-    outline: none;
-    box-shadow: 0 0 0 3px lighten($bg-color, 40%);
-  }
+  
 }
 
 
