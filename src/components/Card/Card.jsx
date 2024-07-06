@@ -32,8 +32,8 @@ const Card = ({ item }) => {
                 <div className="details">
                     <span className='product-title'>{item.attributes.title}</span>
                     <div className="prices">
-                        <span className='price'>${item.attributes.oldPrice || item.attributes.price + 20}</span>
                         <span className='discountedPrice'>${item.attributes.price}</span>
+                        <span className='price'>${item.attributes.oldPrice || item.attributes.price + 20}</span>
                     </div>
                 </div>
             </Link>

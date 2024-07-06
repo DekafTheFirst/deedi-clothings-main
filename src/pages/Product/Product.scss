@@ -102,26 +102,19 @@
 
                     }
                 }
-                
+
                 @include md {
-                    border-radius: 5px;
+                    border-radius: 10px;
                     flex-grow: 1;
                     height: 60%;
 
                     .img {
                         img {
-                            object-fit: cover;
-                            object-position: top;
+                            // object-fit: cover;
+                            // object-position: top;
 
                         }
                     }
-
-                    // .img {
-                    //     img {
-                    //         object-fit: contain;
-
-                    //     }
-                    // }
                 }
 
                 @include lg {
@@ -133,7 +126,7 @@
                     height: calc(100vh - $navbarHeight - 12px - 12px);
                 }
 
-                
+
             }
         }
 
@@ -163,11 +156,36 @@
                         color: $darkGray;
                     }
 
-                    .price {
+
+                    .prices {
                         margin-top: 10px;
-                        font-size: 19px;
-                        font-weight: 600;
+                        display: flex;
+                        align-items: center;
+                        gap: 10px;
+
+
+                        .price,.discountedPrice {
+                            line-height: 30px;
+                        }
+
+                        .price {
+                            color: gray;
+                            text-decoration: line-through;
+                            font-size: 17px;
+                            font-weight: 300;
+                            vertical-align: middle;
+                        }
+
+                        .discountedPrice {
+                            font-size: 20px;
+                            font-weight: 600;
+                            color: $charcoal;
+                            vertical-align: middle;
+                        }
+
+
                     }
+
                 }
 
                 &.filters {
@@ -183,6 +201,7 @@
 
                         .title {
                             color: $darkGray;
+                            font-size: 15px;
                         }
 
 
@@ -195,15 +214,19 @@
                             .options {
                                 .option {
                                     padding: 10px 15px;
-
+                                    text-transform: uppercase;
                                     border: 1px solid $lightGray;
                                     border-radius: 8px;
                                     text-align: center;
                                     vertical-align: middle;
                                     font-size: 14px;
                                     font-weight: 500;
+                                    cursor: pointer;
+                                    transition: .3s ease all;
 
-
+                                    &:hover {
+                                        border: 1px solid $deepCharcoal;
+                                    }
                                     &.active {
                                         background-color: $deepCharcoal;
                                         color: $offWhite;

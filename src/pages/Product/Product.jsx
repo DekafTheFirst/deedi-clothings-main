@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import "./Product.scss";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
@@ -17,7 +17,17 @@ const Product = () => {
   const [quantity, setQuantity] = useState(1)
 
   const dispatch = useDispatch()
-  const { data, loading, error } = useFetch(`/products/${id}?populate=*`)
+  const { data: product, loading, error } = useFetch(`/products/${id}?populate=*`)
+
+  const sortedSizes = product?.attributes?.availableSizes?.data?.sort((a, b) => a.id - b.id);
+
+
+
+  const [selectedSize, setSelectedSize] = useState('small');
+
+  useEffect(() => {
+    setSelectedSize(sortedSizes?.[0]?.attributes.size)
+  }, [product])
 
 
   // const images = [
@@ -41,14 +51,14 @@ const Product = () => {
                 className={'img'}
                 alt=""
                 src={
-                  import.meta.env.VITE_UPLOAD_URL + data?.attributes.img?.data[selectedImg]?.attributes?.url
+                  import.meta.env.VITE_UPLOAD_URL + product?.attributes.img?.data[selectedImg]?.attributes?.url
                 }
                 effect="blur"
               />
 
             </div>
             <div className="thumbnail-images">
-              {data?.attributes?.img?.data.map((image, index) =>
+              {product?.attributes?.img?.data.map((image, index) =>
                 <div className={`thumbnail-wrapper ${index === selectedImg ? 'selected' : ''}`} onClick={() => handleThumbnailClicked(index)} key={index}>
                   <OptimizedImage
                     // wrapperClassName='imgWrapper'
@@ -66,19 +76,38 @@ const Product = () => {
           </div>
           <div className="right">
             <div className="section heading">
-              <h1 className="title">{data?.attributes?.title}</h1>
+              <h1 className="title">{product?.attributes?.title}</h1>
               <h6 className="category">Women's Dresses</h6>
-              <span className="price">{`$${data?.attributes?.price}`}</span>
+              <div className="prices">
+                <p className='discountedPrice'>{`$${product?.attributes.price}`}</p>
+                <p className="price">{`$${product?.attributes?.oldPrice || product?.attributes.price + 20}`}</p>
+              </div>
             </div>
             <div className="section filters">
               <div className="filter-item sizes">
                 <span className="title">Available Sizes</span>
                 <div className="options">
-                  <span className="option active">S</span>
-                  <span className="option">M</span>
+
+                  {sortedSizes?.map((sizeObject, index) => {
+
+                    const size = sizeObject.attributes.size
+                    const sizeShortForm = sizeObject.attributes.shortForm
+
+                    return (
+                      <span
+                        className={`option ${size == selectedSize ? 'active' : ''}`}
+                        key={sizeObject.id}
+                        onClick={() => setSelectedSize(size)}
+                      >
+                        {sizeShortForm}
+                      </span>
+                    )
+                  }
+                  )}
+                  {/* <span className="option">M</span>
                   <span className="option">L</span>
                   <span className="option">XL</span>
-                  <span className="option">XXL</span>
+                  <span className="option">XXL</span> */}
 
 
                 </div>
@@ -90,8 +119,7 @@ const Product = () => {
                   <div className="option burgundy active"><span></span></div>
                   <div className="option gray"><span></span></div>
                   <div className="option green"><span></span></div>
-                  <div className="option gray"><span></span></div>
-                  <div className="option green"><span></span></div>
+
 
                 </div>
               </div>
@@ -113,20 +141,20 @@ const Product = () => {
                 className="add btn-1"
                 onClick={() =>
                   dispatch(addToCart({
-                    id: data.id,
-                    title: data.attributes.title,
-                    desc: data.attributes.desc,
-                    img: data.attributes.img.data[0].attributes.url,
-                    quantity,
-                    price: data.attributes.price
+                    id: product.id,
+                    title: product.attributes.title,
+                    desc: product.attributes.desc,
+                    img: product.attributes.img.data[0].attributes.url,
+                    selectedSize,
+                    price: product.attributes.price
                   }))
                 }
               >
                 <AddShoppingCartIcon /> ADD TO CART
               </button>
-                <button className="add-to-wishlist btn-2">
-                  <StarBorderIcon /> <span>ADD TO WISH LIST</span>
-                </button>
+              <button className="add-to-wishlist btn-2">
+                <StarBorderIcon /> <span>ADD TO WISH LIST</span>
+              </button>
             </div>
 
             <div className="info">
