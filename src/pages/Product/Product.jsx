@@ -67,6 +67,7 @@ const Product = () => {
           <div className="right">
             <div className="section heading">
               <h1 className="title">{data?.attributes?.title}</h1>
+              <h6 className="category">Women's Dresses</h6>
               <span className="price">{`$${data?.attributes?.price}`}</span>
             </div>
             <div className="section filters">

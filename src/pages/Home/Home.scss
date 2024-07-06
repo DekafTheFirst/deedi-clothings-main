@@ -10,13 +10,12 @@
         position: relative;
         display: flex;
         align-items: flex-end;
-        background-color: $veryLightGray;
+        background-color: $gray94;
 
 
         @include max-breakpoint(575px) {
       
             aspect-ratio: 16/9;
-            background-color: $veryLightGray;
 
         }
 

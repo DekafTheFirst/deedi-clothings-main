@@ -7,55 +7,77 @@
         display: flex;
         flex-direction: column;
         padding: 0;
+        gap: 10px;
 
         @include md {
             flex-direction: row;
             gap: 50px;
             padding: 12px;
-            max-width: 1000px;
-
+            max-width: 1100px;
         }
 
 
         .images-wrapper {
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            background-color: darken($lighterGray, 2%);
-            height: 40vh;
+            gap: 5px;
             position: relative;
 
             @include md {
+                gap: 10px;
+
                 height: 80vh;
                 width: 50%;
+                flex-direction: row-reverse;
             }
 
 
             .thumbnail-images {
-                max-height: 90%;
-                overflow-y: auto;
-                position: absolute;
-                top: 10px;
-                left: 10px;
                 display: flex;
-                flex-direction: column;
                 gap: 5px;
+
+                // Special Rules for mobile to make thumbnail images scrollable horizontally
+                @include max-md {
+                    margin-inline: 5px;
+
+                    overflow-x: scroll;
+
+                    -webkit-overflow-scrolling: touch;
+                    scroll-snap-type: x mandatory;
+
+                    &::-webkit-scrollbar {
+                        display: none;
+                    }
+
+                    -ms-overflow-style: none;
+                    scrollbar-width: 0;
+
+                }
 
                 @include md {
                     gap: 10px;
+                    flex-direction: column;
                 }
 
                 .thumbnail-wrapper {
-                    background-color: darken($lighterGray, 2%);
-                    border: 1px solid $darkGray;
-                    width: 60px;
-                    height: 60px;
+                    scroll-snap-align: start;
+                    background-color: $lighterGray;
+                    flex-shrink: 0;
+                    width: 65px;
+                    height: 70px;
+                    border-radius: 5px;
+                    border: 1px solid transparent;
 
+                    &:hover {
+                        filter: brightness(90%);
+
+                    }
 
                     &.selected {
-                        border: 2px solid $deepCharcoal;
+                        border: 1px solid $deepCharcoal;
                         background-color: $lighterGray;
-                        filter: brightness(100%);
+                        filter: brightness(90%);
+
                     }
 
                     .thumbnail {
@@ -70,7 +92,9 @@
             }
 
             .mainImg {
-                height: 100%;
+                background-color: $lighterGray;
+                height: 300px;
+                overflow: hidden;
 
                 .img {
                     img {
@@ -78,6 +102,38 @@
 
                     }
                 }
+                
+                @include md {
+                    border-radius: 5px;
+                    flex-grow: 1;
+                    height: 60%;
+
+                    .img {
+                        img {
+                            object-fit: cover;
+                            object-position: top;
+
+                        }
+                    }
+
+                    // .img {
+                    //     img {
+                    //         object-fit: contain;
+
+                    //     }
+                    // }
+                }
+
+                @include lg {
+                    height: 80%;
+
+                }
+
+                @include xl {
+                    height: calc(100vh - $navbarHeight - 12px - 12px);
+                }
+
+                
             }
         }
 
@@ -94,13 +150,22 @@
                 border-bottom: 1px solid $lightGray;
 
                 &.heading {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 3px;
+
                     .title {
-                        font-size: 26px;
-                        font-weight: 600;
+                        font-size: 24px;
+                        font-weight: 500;
+                    }
+
+                    .category {
+                        color: $darkGray;
                     }
 
                     .price {
-                        font-size: 26px;
+                        margin-top: 10px;
+                        font-size: 19px;
                         font-weight: 600;
                     }
                 }
@@ -213,7 +278,7 @@
                         align-items: center;
                         gap: 12px;
 
-                        
+
 
                         .no-of-items {
                             width: 15px;
@@ -255,7 +320,7 @@
                         //     transition: all 0.1s ease-in;
                         // }
 
-                        
+
                         // padding: 15px 20px;
                         // border-radius: 8px;
                         // font-size: 14px;
