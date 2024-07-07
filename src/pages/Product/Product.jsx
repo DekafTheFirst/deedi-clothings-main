@@ -159,7 +159,7 @@ const Product = () => {
             </div>
 
             <div className="info">
-              <span className="product-type">Product Type: {product?.attributes?.sub_categories?.data?.map((subCategory)=>{
+              <span className="product-type">Product Type: {product?.attributes?.sub_categories?.data?.map((subCategory) => {
                 return <span className="subCategory" key={subCategory.id}> {subCategory.attributes.title}, </span>
               })}</span>
               <span>Tag(s): T-Shirt, Women, Top</span>
@@ -170,7 +170,9 @@ const Product = () => {
               <span>ADDITIONAL INFORMATION</span>
               <hr />
               <span>FAQ</span> */}
-              {product && <Accordion description={product?.attributes?.desc}/>}
+              {product?.attributes?.desc &&
+                <Accordion description={product?.attributes?.desc} />
+              }
             </div>
           </div>
         </>)}

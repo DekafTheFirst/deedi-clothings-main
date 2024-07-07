@@ -1,7 +1,8 @@
 import React from 'react'
 import './Accordion.scss'
+import { BlocksRenderer } from '@strapi/blocks-react-renderer';
 
-const Accordion = ({description}) => {
+const Accordion = ({ description }) => {
     return (
         <div class="accordion myAccordion" id="accordionPanelsStayOpenExample">
             <div class="accordion-item">
@@ -12,7 +13,7 @@ const Accordion = ({description}) => {
                 </h2>
                 <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingOne">
                     <div class="accordion-body">
-                        {description}
+                        {description && <BlocksRenderer content={description}/>}
                     </div>
                 </div>
             </div>
@@ -28,7 +29,6 @@ const Accordion = ({description}) => {
                     </div>
                 </div>
             </div>
-            
         </div>
     )
 }
