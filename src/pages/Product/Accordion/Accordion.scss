@@ -1,0 +1,26 @@
+@import '../../../variables.scss';
+@import '../../../mixins.scss';
+
+.myAccordion {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    .accordion-item {
+        border: 1px solid $mediumGray;
+        border-radius: 5px;
+        overflow: hidden;
+    }
+
+    .accordion-button:not(.collapsed) {
+        background-color: transparent;
+        color: black;
+        box-shadow: none;
+        border-bottom: 1px solid $mediumGray;
+
+    }
+
+    .accordion-button:focus {
+        box-shadow: none;
+    }
+}

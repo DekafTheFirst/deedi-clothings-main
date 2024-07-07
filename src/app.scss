@@ -98,7 +98,7 @@ p {
 .btn-2 {
     background-color: transparent;
     color: $deepCharcoal;
-    border: 1px solid $deepCharcoal;
+    border: 1.5px solid $deepCharcoal;
     padding: 15px 20px;
     border-radius: 8px;
     cursor: pointer;
@@ -115,7 +115,7 @@ p {
 
 
     &:hover {
-        background-color: lighten($deepCharcoal, 5%);
+        background-color: lighten($darkGray, 5%);
         color: $offWhite;
     }
 

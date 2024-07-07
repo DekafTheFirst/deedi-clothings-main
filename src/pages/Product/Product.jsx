@@ -10,6 +10,7 @@ import useFetch from "../../hooks/useFetch";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../../redux/cartReducer";
 import OptimizedImage from "../../components/OptimizedImage/OptimizedImage";
+import Accordion from "./Accordion/Accordion";
 
 const Product = () => {
   const id = useParams().id
@@ -18,7 +19,7 @@ const Product = () => {
 
   const dispatch = useDispatch()
   const { data: product, loading, error } = useFetch(`/products/${id}?populate=*`)
-
+  console.log(product)
   const sortedSizes = product?.attributes?.availableSizes?.data?.sort((a, b) => a.id - b.id);
 
 
@@ -34,6 +35,8 @@ const Product = () => {
   //   "/img/products/1.1.jpg",
   //   "/img/products/1.2.jpg"
   // ]
+
+
 
   const handleThumbnailClicked = (index) => {
     setSelectedImg(index)
@@ -113,16 +116,14 @@ const Product = () => {
                 </div>
               </div>
 
-              <div className="filter-item colors">
+              {/* <div className="filter-item colors">
                 <span className="title">Available Colors</span>
                 <div className="options">
                   <div className="option burgundy active"><span></span></div>
                   <div className="option gray"><span></span></div>
                   <div className="option green"><span></span></div>
-
-
                 </div>
-              </div>
+              </div> */}
             </div>
 
             <div className="section add-to-cart">
@@ -158,17 +159,18 @@ const Product = () => {
             </div>
 
             <div className="info">
-              <span>Vendor: Polo</span>
-              <span>Product Type: T-Shirt</span>
-              <span>Tag: T-Shirt, Women, Top</span>
+              <span className="product-type">Product Type: {product?.attributes?.sub_categories?.data?.map((subCategory)=>{
+                return <span className="subCategory" key={subCategory.id}> {subCategory.attributes.title}, </span>
+              })}</span>
+              <span>Tag(s): T-Shirt, Women, Top</span>
             </div>
-            <hr />
             <div className="info">
-              <span>DESCRIPTION </span>
+              {/* <span>DESCRIPTION: </span>
               <hr />
               <span>ADDITIONAL INFORMATION</span>
               <hr />
-              <span>FAQ</span>
+              <span>FAQ</span> */}
+              {product && <Accordion description={product?.attributes?.desc}/>}
             </div>
           </div>
         </>)}
