@@ -64,22 +64,44 @@
                 .thumbnail-wrapper {
                     scroll-snap-align: start;
                     background-color: $lighterGray;
+                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Adjust values as needed */
+
                     flex-shrink: 0;
                     width: 65px;
                     height: 70px;
                     border-radius: 5px;
                     border: 1px solid transparent;
+                    cursor: pointer;
 
                     &:hover {
-                        filter: brightness(90%);
+                        position: relative;
 
+                        &::after {
+                            position: absolute;
+                            content: " ";
+                            top: 0px;
+                            left: 0px;
+                            width: 100%;
+                            height: 100%;
+                            background: rgba(17, 17, 17, 0.15);
+                        }
                     }
 
                     &.selected {
                         background-color: $lighterGray;
-                        filter: brightness(60%);
+                        position: relative;
 
+                        &::after {
+                            position: absolute;
+                            content: " ";
+                            top: 0px;
+                            left: 0px;
+                            width: 100%;
+                            height: 100%;
+                            background: rgba(17, 17, 17, 0.15);
+                        }
                     }
+
 
                     .thumbnail {
                         cursor: pointer;
@@ -94,6 +116,8 @@
 
             .mainImg {
                 background-color: $lighterGray;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08); /* Adjust values as needed */
+
                 height: 300px;
                 overflow: hidden;
 
@@ -124,7 +148,7 @@
                 }
 
                 @include xl {
-                    height: calc(100vh - $navbarHeight - 12px - 12px);
+                    height: calc(100vh - $navbarHeight - 30px - 15px);
                 }
 
 
@@ -215,6 +239,16 @@
                         .options {
                             display: flex;
                             gap: 10px;
+                        }
+
+                        .error {
+                            color: red;
+                            font-size: 14px;
+                            display: none;
+
+                            &.showError {
+                                display: inline-block;
+                            }
                         }
 
                         &.sizes {

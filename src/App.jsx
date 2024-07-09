@@ -10,16 +10,16 @@ import Navbar from './components/Navbar/Navbar';
 import Footer from './components/Footer/Footer';
 import "./app.scss"
 import { useEffect, useState } from 'react';
-import Cart from './components/Cart/Cart';
+import Cart from './components/MiniCart/MiniCart';
+import CartPage from './pages/CartPage/CartPage';
 
 const Layout = () => {
   const [showCart, setShowCart] = useState(false);
 
   useEffect(() => {
     const handleOutsideClick = (event) => {
-      if (!event.target.closest('.cart, .cartIcon, .delete')) {
+      if (!event.target.closest('.mini-cart, .cartIcon, .delete')) {
         setShowCart((prev) => false); // Close the navbar if clicked outside
-        console.log('clicked outside')
       }
     };
 
@@ -57,6 +57,10 @@ const router = createBrowserRouter([
         element: <Home />
       },
       {
+        path: "/cart-page",
+        element: <CartPage />
+      },
+      {
         path: '/products/:slug',
         element: <Products />
       },
@@ -64,6 +68,7 @@ const router = createBrowserRouter([
         path: '/product/:id',
         element: <Product />
       },
+
     ]
   }
 

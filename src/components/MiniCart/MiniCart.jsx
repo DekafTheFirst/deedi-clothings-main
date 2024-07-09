@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import "./Cart.scss"
+import "./MiniCart.scss"
 import { Close, DeleteOutlineOutlined } from '@mui/icons-material'
 import { useDispatch, useSelector } from 'react-redux'
 import { removeItem, resetCart } from '../../redux/cartReducer'
@@ -16,13 +16,13 @@ const Cart = ({ showCart, setShowCart }) => {
 
   const totalPrice = () => {
     let total = 0
-    products.forEach(item => (total += item.quantity * item.price));
+    products.forEach(item => (total += item.price));
     return total.toFixed(2)
   }
 
   const dispatch = useDispatch()
 
-  
+
 
   const stripePromise = loadStripe('pk_test_51OzQqiP8nMwtf7KwjeDBvSrJh0QU2AMmJncITWpVrXW9Cm8XesZc1MqofLogMUrphlOB0exTEsHSQ91mJoA5V94u00JrVmVkWL');
 
@@ -48,37 +48,52 @@ const Cart = ({ showCart, setShowCart }) => {
   }
 
   return (
-    <div className="cart">
-      <div className="products">
-        {products.map(item => (
-          <div className="item" key={item.id}>
-            <div className="img-wrapper">
-              <OptimizedImage
-                // wrapperClassName='imgWrapper'
-                className={'img'}
-                alt=""
-                src={import.meta.env.VITE_UPLOAD_URL + item.img}
-                effect="blur"
-              />
-            </div>
-
-            <div className="details">
-              <h1 className='title'>{item.title}</h1>
-              {/* <p>{item.desc.substring(0, 100)}</p> */}
-              <div className="bottom">
-                <span className='size'>SIZE : {item.size}</span>
-                <span className='price'>${item.price}</span>
-
-              </div>
-            </div>
-            <Close className='delete' onClick={() => dispatch(removeItem(item.id))} />
-          </div>
-        ))}
-      </div>
+    <div className="mini-cart">
       <div className="total">
         <span>{`SUBTOTAL(${products ? products.length : '0'})`}</span>
         <span>${totalPrice()}</span>
       </div>
+
+      <div className="products">
+        {products.length > 0 ?
+          <>
+            {
+              products.map(item => (
+                <div
+                  className="item"
+                  key={item.idPerSize}
+                >
+                  <Link
+                    to={`/product/${item.productId}`}
+                    onClick={() => setShowCart(false)}
+                    className="left">
+                    <div className="img-wrapper">
+                      <OptimizedImage
+                        // wrapperClassName='imgWrapper'
+                        className={'img'}
+                        alt=""
+                        src={import.meta.env.VITE_UPLOAD_URL + item.img}
+                        effect="blur"
+                      />
+                    </div>
+                    <div className="details">
+                      <h1 className='title'>{item.title}</h1>
+                      {/* <p>{item.desc.substring(0, 100)}</p> */}
+                      <div className="bottom">
+                        <span className='size'>SIZE : {item.size}</span>
+                        <span className='price'>{`$${item.price}`}</span>
+                      </div>
+                    </div>
+                  </Link>
+                  <Close className='delete' onClick={() => dispatch(removeItem(item.cartItemId))} />
+                </div>
+              ))
+            }
+          </>
+          :
+          <span className='list-empty'>No Products</span>}
+      </div>
+
       <div className="actions">
         <button onClick={handlePayment} className='btn-1'>PROCEED TO CHECKOUT</button>
         {/* <span className="reset" onClick={() => dispatch(resetCart())}>Reset Cart</span> */}

@@ -12,6 +12,9 @@ import { addToCart } from "../../redux/cartReducer";
 import OptimizedImage from "../../components/OptimizedImage/OptimizedImage";
 import Accordion from "./Accordion/Accordion";
 
+import { v4 as uuidv4 } from 'uuid';
+
+
 const Product = () => {
   const id = useParams().id
   const [selectedImg, setSelectedImg] = useState(0);
@@ -19,16 +22,17 @@ const Product = () => {
 
   const dispatch = useDispatch()
   const { data: product, loading, error } = useFetch(`/products/${id}?populate=*`)
-  console.log(product)
   const sortedSizes = product?.attributes?.availableSizes?.data?.sort((a, b) => a.id - b.id);
 
 
 
-  const [selectedSize, setSelectedSize] = useState('small');
+  const [selectedSize, setSelectedSize] = useState(null);
+  const [selectedSizeError, setSelectedSizeError] = useState(null)
 
   useEffect(() => {
-    setSelectedSize(sortedSizes?.[0]?.attributes.size)
-  }, [product])
+    setSelectedSize(selectedSize)
+    // console.log(selectedSize);
+  }, [selectedSize])
 
 
   // const images = [
@@ -99,7 +103,10 @@ const Product = () => {
                       <span
                         className={`option ${size == selectedSize ? 'active' : ''}`}
                         key={sizeObject.id}
-                        onClick={() => setSelectedSize(size)}
+                        onClick={() => {
+                          setSelectedSize(size);
+                          setSelectedSizeError(null)
+                        }}
                       >
                         {size}
                       </span>
@@ -113,6 +120,7 @@ const Product = () => {
 
 
                 </div>
+                <span className={`error ${selectedSizeError ? 'showError' : ''}`}>Please select a size</span>
               </div>
 
               {/* <div className="filter-item colors">
@@ -139,16 +147,29 @@ const Product = () => {
               </div>
               <button
                 className="add btn-1"
-                onClick={() =>
-                  dispatch(addToCart({
-                    id: product.id,
-                    title: product.attributes.title,
-                    desc: 'description',
-                    quantity: 1,
-                    img: product.attributes.img.data[0].attributes.url,
-                    size: selectedSize,
-                    price: product.attributes.price
-                  }))
+
+                onClick={() => {
+                  if (selectedSize) {
+
+                    const prefix = 'cartItem_'; // Example prefix
+                    const cartItemId = `${prefix}${uuidv4()}`;
+
+
+                    dispatch(addToCart({
+                      productId: product.id,
+                      cartItemId,
+                      title: product.attributes.title,
+                      desc: 'description',
+                      img: product.attributes.img.data[0].attributes.url,
+                      size: selectedSize,
+                      price: product.attributes.price
+                    }))
+                  }
+                  else {
+                    setSelectedSizeError(true)
+                  }
+                }
+
                 }
               >
                 <AddShoppingCartIcon /> ADD TO CART
