@@ -9,12 +9,36 @@ import Product from './pages/Product/Product';
 import Navbar from './components/Navbar/Navbar';
 import Footer from './components/Footer/Footer';
 import "./app.scss"
+import { useEffect, useState } from 'react';
+import Cart from './components/Cart/Cart';
 
 const Layout = () => {
+  const [showCart, setShowCart] = useState(false);
+
+  useEffect(() => {
+    const handleOutsideClick = (event) => {
+      if (!event.target.closest('.cart, .cartIcon, .delete')) {
+        setShowCart((prev) => false); // Close the navbar if clicked outside
+        console.log('clicked outside')
+      }
+    };
+
+    // Add event listener when component mounts
+    document.addEventListener('click', handleOutsideClick);
+
+    // Remove event listener when component unmounts
+    return () => {
+      document.removeEventListener('click', handleOutsideClick);
+    };
+
+  }, []);
+
   return (
     <div className="app">
-      <Navbar />
+      <Navbar setShowCart={setShowCart} />
       <div id="content">
+        {showCart && <Cart setShowCart={setShowCart} showCart={showCart} />}
+        <div className={`darkOverlay ${showCart ? 'show' : ''}`}></div>
         <Outlet />
       </div>
       {/* <Footer /> */}

@@ -94,7 +94,6 @@ const Product = () => {
                   {sortedSizes?.map((sizeObject, index) => {
 
                     const size = sizeObject.attributes.size
-                    const sizeShortForm = sizeObject.attributes.shortForm
 
                     return (
                       <span
@@ -102,7 +101,7 @@ const Product = () => {
                         key={sizeObject.id}
                         onClick={() => setSelectedSize(size)}
                       >
-                        {sizeShortForm}
+                        {size}
                       </span>
                     )
                   }
@@ -144,9 +143,10 @@ const Product = () => {
                   dispatch(addToCart({
                     id: product.id,
                     title: product.attributes.title,
-                    desc: product.attributes.desc,
+                    desc: 'description',
+                    quantity: 1,
                     img: product.attributes.img.data[0].attributes.url,
-                    selectedSize,
+                    size: selectedSize,
                     price: product.attributes.price
                   }))
                 }

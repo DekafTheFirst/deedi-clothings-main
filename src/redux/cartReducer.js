@@ -12,9 +12,9 @@ export const cartSlice = createSlice({
         const item =  state.products.find(item => item.id === action.payload.id);
 
         if (item) {
-            item.quantity += action.payload.quantity;
-
-        }else {
+            item.quantity += 1;
+        }
+        else {
             state.products.push(action.payload)
         }
     },

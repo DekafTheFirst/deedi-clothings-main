@@ -2,7 +2,6 @@
 @import '../../mixins.scss';
 
 .product-page {
-
     .container-fluid {
         display: flex;
         flex-direction: column;
@@ -77,9 +76,8 @@
                     }
 
                     &.selected {
-                        border: 1px solid $deepCharcoal;
                         background-color: $lighterGray;
-                        filter: brightness(90%);
+                        filter: brightness(60%);
 
                     }
 
@@ -156,6 +154,7 @@
 
                     .title {
                         font-size: 24px;
+                        text-transform: uppercase;
                         font-weight: 500;
                     }
 
@@ -407,10 +406,10 @@
                 }
 
 
-               
+
             }
 
-           
+
 
         }
     }

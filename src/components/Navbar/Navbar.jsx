@@ -10,8 +10,7 @@ import Cart from '../Cart/Cart';
 import { useSelector } from 'react-redux';
 import { Close, Menu, MenuOpen } from '@mui/icons-material';
 
-const Navbar = () => {
-  const [showcart, setShowCart] = useState(false);
+const Navbar = ({ setShowCart }) => {
   const [toggle, setToggle] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -38,6 +37,24 @@ const Navbar = () => {
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
+  }, []);
+
+
+  useEffect(() => {
+    const handleOutsideClick = (event) => {
+      if (!event.target.closest('.navbar')) {
+        setToggle(false); // Close the navbar if clicked outside
+      }
+    };
+
+    // Add event listener when component mounts
+    document.addEventListener('click', handleOutsideClick);
+
+    // Remove event listener when component unmounts
+    return () => {
+      document.removeEventListener('click', handleOutsideClick);
+    };
+
   }, []);
 
   return (
@@ -86,7 +103,7 @@ const Navbar = () => {
               <span>My Account</span>
               <KeyboardArrowDownIcon className='icon down-arrow' fontSize="small" />
             </div>
-            <div className="cartIcon" onClick={() => setShowCart(!showcart)}>
+            <div className="cartIcon" onClick={() => setShowCart((prev) => !prev)}>
               <ShoppingCartOutlinedIcon className='icon' />
               <span>{products.length}</span>
             </div>
@@ -95,7 +112,7 @@ const Navbar = () => {
           </div>
         </div>
       </div>
-      {showcart && <Cart />}
+
     </div>
   )
 }
