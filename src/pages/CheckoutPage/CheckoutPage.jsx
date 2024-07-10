@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import "./CheckoutPage.scss"
 import { Close, DeleteOutlineOutlined, ShoppingBag, ShoppingBagOutlined } from '@mui/icons-material'
 import { useDispatch, useSelector } from 'react-redux'
@@ -7,6 +7,8 @@ import { loadStripe } from "@stripe/stripe-js";
 import { makeRequest } from '../../makeRequest'
 import { Link } from 'react-router-dom'
 import OptimizedImage from '../../components/OptimizedImage/OptimizedImage'
+import FormComponent from '../../components/Form/Form'
+import * as yup from "yup";
 
 
 const CheckoutPage = ({ showCart, setShowCart }) => {
@@ -14,15 +16,18 @@ const CheckoutPage = ({ showCart, setShowCart }) => {
 
   console.log(products)
 
-  const totalPrice = () => {
-    let total = 0
-    products.forEach(item => (total += item.price));
-    return total.toFixed(2)
-  }
+  const price = useMemo(() => {
+    let total = 0;
+    products.forEach(item => {
+      total += item.price;
+    });
+    return total.toFixed(2);
+  }, [products]);
+
+  const vat = useMemo(() => (price * 0.2).toFixed(2), [price]);
+  const totalPrice = useMemo(() => (parseFloat(price) + parseFloat(vat)).toFixed(2), [price, vat]);
 
   const dispatch = useDispatch()
-
-
 
   const stripePromise = loadStripe('pk_test_51OzQqiP8nMwtf7KwjeDBvSrJh0QU2AMmJncITWpVrXW9Cm8XesZc1MqofLogMUrphlOB0exTEsHSQ91mJoA5V94u00JrVmVkWL');
 
@@ -45,21 +50,68 @@ const CheckoutPage = ({ showCart, setShowCart }) => {
     catch (err) {
       console.log(err)
     }
-
-
   }
+
+  // Form Matters
+  const formItems = [
+    {
+      name: 'firstName',
+      label: 'First Name',
+      type: 'text',
+      placeholder: '',
+      initialValue: '',
+    },
+    {
+      name: 'lastName',
+      label: 'Last Name',
+      type: 'text',
+      placeholder: '',
+      initialValue: ''
+    },
+    {
+      name: 'email',
+      label: 'Email',
+      type: 'email',
+      placeholder: '',
+      initialValue: ''
+    },
+    {
+      name: 'phoneNumber',
+      label: 'Phone Number',
+      type: 'tel',
+      placeholder: '',
+      initialValue: ''
+    },
+    {
+      name: 'details',
+      label: 'Details',
+      type: 'text',
+      as: 'textarea',
+      placeholder: '',
+      initialValue: ''
+    },
+
+  ]
+
+  const validationSchema = yup.object().shape({
+    firstName: yup.string().required('First name is required'),
+    lastName: yup.string().required('Last Name is required'),
+    email: yup.string().email().required('Email is required'),
+    phoneNumber: yup.string().matches(
+      /^(\+\d{1,3})?(\d{10,14})$/, // Regex for phone number with or without country code
+      'Invalid phone number'
+    ).required('Phone Number is required'),
+    details: yup.string().required('Please fill in the details')
+  })
 
   return (
     <div className="checkout-page">
       <div className="container-fluid">
         <div className="row">
-          <div className="col-md-7 cart-body">
+          <div className="col-md-6 cart-body">
             <div className="top">
-              <span className="heading">SHOPPING BAG</span>
-              <div className="total">
-                <span>{`SUBTOTAL(${products ? products.length : '0'})`}</span>
-                <span className='amount'>${totalPrice()}</span>
-              </div>
+              <span className="heading">Order Summary</span>
+              <p >Check your items and select your preferred shipping method.</p>
             </div>
 
             <div className="products">
@@ -89,11 +141,13 @@ const CheckoutPage = ({ showCart, setShowCart }) => {
                             {/* <p>{item.desc.substring(0, 100)}</p> */}
                             <div className="bottom">
                               <span className='size'>SIZE : {item.size}</span>
-                              <span className='price'>{`$${item.price}`}</span>
+                              <span className='price'>{`2 x $${item.price}`}</span>
+
                             </div>
                           </div>
                         </Link>
-                        <Close className='delete' onClick={() => dispatch(removeItem(item.cartItemId))} />
+                        <span className='quantity'>QTY : {2}</span>
+                        {/* <Close className='delete' onClick={() => dispatch(removeItem(item.cartItemId))} /> */}
                       </div>
                     ))
                   }
@@ -106,25 +160,32 @@ const CheckoutPage = ({ showCart, setShowCart }) => {
                 </div>}
             </div>
           </div>
-          <div className="col-md-5 actions-wrapper">
+          <div className="col-md-6 actions-wrapper">
             <div className="actions-card">
               <div className="checkout">
                 <div className="summary">
-                  <h5 className="heading"> ORDER SUMMARY</h5>
-                  <div className="summary-items">
-                    <div className="summary-item">Subtotal: <span className="value">${totalPrice()}</span></div>
-                    <div className="summary-item">No. of Items: <span className="value">{products.length}</span></div>
+                  <h5 className="heading"> Shipping Details</h5>
+                  <p>Select your preferred shipping method and fill in your details</p>
 
-                  </div>
+                  <FormComponent
+                    items={formItems}
+                    validationSchema={validationSchema}
+                    submitBtnText="PROCEED TO CHECKOUT">
+                    <div className="summary-items">
+                      <div className="summary-item">No. of Items: <span className="value">{products.length}</span></div>
+                      <div className="summary-item">Subtotal: <span className="value">${price}</span></div>
+                      <div className="summary-item">VAT(20%): <span className="value">${vat}</span></div>
+                      <div className="summary-item total">Total: <span className="value">${totalPrice}</span></div>
+                    </div>
+                    
+                  </FormComponent>
+
+
                 </div>
-                <button onClick={handlePayment} className='btn-1'>PROCEED TO CHECKOUT</button>
+                {/* <button onClick={handlePayment} className='btn-1'>PROCEED TO CHECKOUT</button> */}
                 {/* <span className="reset" onClick={() => dispatch(resetCart())}>Reset Cart</span> */}
-                <Link to="/cart-page" className='secondary-action'> Continue Shopping </Link>
               </div>
-              <div className="info">
-                <h5 className="heading"> Accepted Payment Methods</h5>
-                <img src="/img/payment-removebg.png" alt="" />
-              </div>
+
             </div>
           </div>
         </div>

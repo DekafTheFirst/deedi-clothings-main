@@ -121,6 +121,10 @@
           @include flex-column;
           gap: 5px;
 
+          .title {
+            
+          }
+
           p {
             display: none;
             font-size: 15px;

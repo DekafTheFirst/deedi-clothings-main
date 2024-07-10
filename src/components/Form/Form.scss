@@ -1,0 +1,70 @@
+@import '../../variables.scss';
+@import '../../mixins.scss';
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  .items {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    column-gap: 15px;
+    row-gap: 3px;
+  }
+
+  .input-item {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    font-size: 13px;
+
+    &.text-area {
+      grid-column: 1 / -1;
+    }
+  }
+
+  .submit-btn {
+    grid-column: 1 / -1;
+    justify-self: center;
+    width: 100%;
+  }
+
+  input,
+  select,
+  textarea {
+    padding: 5px 10px;
+    font-size: 14px;
+    font-weight: 400;
+    width: 100%;
+    background-color: $lighterGray;
+    border: 1px solid $lightGray;
+    outline: none;
+    border-radius: 5px;
+
+    &:focus-visible {
+      outline: none;
+      border-color: black;
+    }
+
+    &.input-error {
+      outline: none !important;
+      border-color: #fc8181 !important;
+    }
+  }
+
+  .error-message-container {
+    color: #fc8181;
+    font-size: 12px;
+    width: 100%;
+    text-align: start;
+    min-height: 18px;
+  }
+
+  & + div {
+    padding-top: 2em;
+  }
+
+  button {
+    margin: auto;
+  }
+}
