@@ -53,12 +53,15 @@ const CartPage = ({ showCart, setShowCart }) => {
     <div className="cart-page">
       <div className="container-fluid">
         <div className="row">
-          <div className="col-md-7 left">
-          <h5 className="heading">SHOPPING BAG</h5>
-            <div className="total">
-              <span>{`SUBTOTAL(${products ? products.length : '0'})`}</span>
-              <span>${totalPrice()}</span>
+          <div className="col-md-7 cart-body">
+            <div className="top">
+              <span className="heading">SHOPPING BAG</span>
+              <div className="total">
+                <span>{`SUBTOTAL(${products ? products.length : '0'})`}</span>
+                <span className='amount'>${totalPrice()}</span>
+              </div>
             </div>
+
             <div className="products">
               {products.length > 0 ?
                 <>
@@ -90,7 +93,7 @@ const CartPage = ({ showCart, setShowCart }) => {
                             </div>
                           </div>
                         </Link>
-                        <Close className='delete' onClick={() => dispatch(removeItem(item.cartItemId))} />
+                        <Close className='delete'  onClick={() => dispatch(removeItem(item.cartItemId))} />
                       </div>
                     ))
                   }
@@ -99,7 +102,7 @@ const CartPage = ({ showCart, setShowCart }) => {
                 <span className='list-empty'>No Products</span>}
             </div>
           </div>
-          <div className="col-md-5 right">
+          <div className="col-md-5 checkout-component">
             <div className="actions">
               <button onClick={handlePayment} className='btn-1'>PROCEED TO CHECKOUT</button>
               {/* <span className="reset" onClick={() => dispatch(resetCart())}>Reset Cart</span> */}

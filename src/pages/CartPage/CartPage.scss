@@ -10,66 +10,64 @@
     .container-fluid {
         display: flex;
         justify-content: space-evenly;
-        margin-block: 30px;
 
 
         .row {
-            .left {
-                .total {
+            align-items: flex-start;
+
+            .cart-body {
+                padding-block: 30px;
+
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+
+                .top {
                     display: flex;
-                    justify-content: space-between;
-                    font-weight: 500;
-                    font-size: 15px;
-                    padding-block: 20px 15px;
-                    border-bottom: 1px solid $lightGray;
+                    flex-direction: column;
+                    gap: 10px;
+
+                    .heading {
+                        font-size: 21px;
+                        font-weight: 700;
+                    }
+
+                    .total {
+                        padding-bottom: 10px;
+                        display: flex;
+                        justify-content: space-between;
+                        font-weight: 500;
+                        font-size: 15px;
+                        border-bottom: 1px solid $lightGray;
+
+                        .amount {
+                            font-weight: 600;
+                        }
+                    }
                 }
 
                 .products {
                     display: flex;
                     flex-direction: column;
                     gap: 15px;
-                    max-height: 300px;
-                    overflow-y: auto;
-                    /* Firefox */
-                    -ms-overflow-style: none;
-                    /* IE and Edge */
-
-                    /* For WebKit browsers */
-                    &::-webkit-scrollbar {
-                        width: 3px;
-                        background: transparent;
-                        /* Hide the track */
-                    }
-
-                    &::-webkit-scrollbar-thumb {
-                        background-color: $mediumGray;
-                        /* Scrollbar color */
-                        border-radius: 4px;
-                        /* Rounded corners for scrollbar */
-                    }
-
-                    &::-webkit-scrollbar-track {
-                        background: transparent;
-                        /* Hide the track */
-                    }
 
                     .item {
                         display: flex;
-                        align-items: stretch;
+                        align-items: flex-start;
                         gap: 5px;
 
 
                         .left {
                             display: flex;
-                            gap: 10px;
+                            gap: 12px;
                             text-decoration: none;
                             color: unset;
 
                             .img {
                                 background-color: $lighterGray;
 
-                                width: 70px;
-                                height: 85px;
+                                width: 120px;
+                                height: 150px;
                                 padding: 5px;
 
                                 img {
@@ -80,10 +78,11 @@
                             .details {
                                 display: flex;
                                 flex-direction: column;
+                                justify-content: flex-start;
 
                                 .title {
                                     margin-top: 0;
-                                    font-size: 14px;
+                                    font-size: 18px;
                                     font-weight: 600;
                                     text-transform: uppercase;
                                     margin-bottom: 8px;
@@ -99,7 +98,6 @@
                                 .bottom {
                                     display: flex;
                                     flex-direction: column;
-                                    margin-top: auto;
 
                                     span {
                                         font-weight: 400;
@@ -111,8 +109,8 @@
                                         }
 
                                         &.price {
-                                            font-weight: 500;
-                                            font-size: 14px;
+                                            font-weight: 600;
+                                            font-size: 16px;
                                         }
                                     }
 
@@ -122,7 +120,7 @@
 
                         .delete {
                             cursor: pointer;
-                            font-size: 16px;
+                            font-size: 20px;
                             margin-left: auto;
                         }
                     }
@@ -136,7 +134,20 @@
 
 
 
-            .right {
+            .checkout-component {
+                padding-block: 30px;
+
+
+                @include md {
+                    position: sticky;
+                    top: calc($navbarHeight );
+                    height: calc(100vh - $navbarHeight );
+                    padding-left: 40px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+
                 .actions {
                     display: flex;
                     flex-direction: column;
