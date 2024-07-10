@@ -35,7 +35,7 @@ const Home = () => {
               <svg xmlns="http://www.w3.org/2000/svg" className="blob-2" viewBox="22.41 38.35 144.13 133.99">
                 <path fill="#707070" d="M57.3,-45.3C68.6,-31.5,68.3,-8,63,13.9C57.6,35.9,47.2,56.2,30.1,65.7C12.9,75.3,-11.1,74,-32.9,64.9C-54.7,55.7,-74.3,38.6,-77.2,19.5C-80.1,0.4,-66.2,-20.7,-50.5,-35.5C-34.9,-50.3,-17.4,-58.9,2.8,-61.1C23,-63.3,45.9,-59.1,57.3,-45.3Z" transform="translate(100 100)"></path>
               </svg>
-              <OptimizedImage src="/img/img-11-extra-large-removebg.png" className='img' />
+              <OptimizedImage src="/img/img-11-medium-removebg-cropped.png" className='img' />
 
               {/* <img src="/img/blob-1.svg" alt="blob-1" className='blob-1' /> */}
             </div>

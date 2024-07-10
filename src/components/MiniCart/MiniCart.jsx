@@ -6,10 +6,13 @@ import { removeItem, resetCart } from '../../redux/cartReducer'
 import { loadStripe } from "@stripe/stripe-js";
 import { makeRequest } from '../../makeRequest'
 import OptimizedImage from '../OptimizedImage/OptimizedImage'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 
 const Cart = ({ showCart, setShowCart }) => {
+
+  const navigate = useNavigate();
+
   const products = useSelector(state => state.cart.products)
 
   console.log(products)
@@ -45,6 +48,11 @@ const Cart = ({ showCart, setShowCart }) => {
     catch (err) {
       console.log(err)
     }
+  }
+
+  const handleCheckoutClicked = () => {
+    navigate('/checkout-page');
+    setShowCart(false);
   }
 
   return (
@@ -95,9 +103,9 @@ const Cart = ({ showCart, setShowCart }) => {
       </div>
 
       <div className="actions">
-        <button onClick={handlePayment} className='btn-1'>PROCEED TO CHECKOUT</button>
+        <button onClick={handleCheckoutClicked} className='btn-1'>PROCEED TO CHECKOUT</button>
         {/* <span className="reset" onClick={() => dispatch(resetCart())}>Reset Cart</span> */}
-        <Link to="/cart-page" className='view-cart'> View Shopping Bag </Link>
+        <Link to="/cart-page" className='view-cart' onClick={() => setShowCart(false)}> View Shopping Bag </Link>
       </div>
 
     </div>

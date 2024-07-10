@@ -64,12 +64,11 @@
                 .thumbnail-wrapper {
                     scroll-snap-align: start;
                     background-color: $lighterGray;
-                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Adjust values as needed */
 
                     flex-shrink: 0;
                     width: 65px;
                     height: 70px;
-                    border-radius: 5px;
+                    border-radius: 3px;
                     border: 1px solid transparent;
                     cursor: pointer;
 
@@ -129,7 +128,7 @@
                 }
 
                 @include md {
-                    border-radius: 10px;
+                    border-radius: 3px;
                     flex-grow: 1;
                     height: 60%;
 
@@ -390,7 +389,7 @@
 
 
                         // padding: 15px 20px;
-                        // border-radius: 8px;
+                        border-radius: 8px;
                         // font-size: 14px;
                     }
 

@@ -1,17 +1,17 @@
 import React, { useEffect } from 'react'
-import "./CartPage.scss"
+import "./CheckoutPage.scss"
 import { Close, DeleteOutlineOutlined, ShoppingBag, ShoppingBagOutlined } from '@mui/icons-material'
 import { useDispatch, useSelector } from 'react-redux'
 import { removeItem, resetCart } from '../../redux/cartReducer'
 import { loadStripe } from "@stripe/stripe-js";
 import { makeRequest } from '../../makeRequest'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import OptimizedImage from '../../components/OptimizedImage/OptimizedImage'
 
 
-const CartPage = ({ showCart, setShowCart }) => {
+const CheckoutPage = ({ showCart, setShowCart }) => {
   const products = useSelector(state => state.cart.products)
-  const navigate = useNavigate();
+
   console.log(products)
 
   const totalPrice = () => {
@@ -50,7 +50,7 @@ const CartPage = ({ showCart, setShowCart }) => {
   }
 
   return (
-    <div className="cart-page">
+    <div className="checkout-page">
       <div className="container-fluid">
         <div className="row">
           <div className="col-md-7 cart-body">
@@ -102,7 +102,7 @@ const CartPage = ({ showCart, setShowCart }) => {
 
                 <div className='list-empty'>
                   <span>No Products</span>
-                  <button onClick={()=>navigate('/products/women')} className='btn-1'><ShoppingBagOutlined fontSize='small'/> Continue Shopping</button>
+                  <button onClick={handlePayment} className='btn-1'><ShoppingBagOutlined fontSize='small' /> Continue Shopping</button>
                 </div>}
             </div>
           </div>
@@ -114,9 +114,10 @@ const CartPage = ({ showCart, setShowCart }) => {
                   <div className="summary-items">
                     <div className="summary-item">Subtotal: <span className="value">${totalPrice()}</span></div>
                     <div className="summary-item">No. of Items: <span className="value">{products.length}</span></div>
+
                   </div>
                 </div>
-                <button onClick={ () => navigate('/checkout-page')} className='btn-1'>PROCEED TO CHECKOUT</button>
+                <button onClick={handlePayment} className='btn-1'>PROCEED TO CHECKOUT</button>
                 {/* <span className="reset" onClick={() => dispatch(resetCart())}>Reset Cart</span> */}
                 <Link to="/cart-page" className='secondary-action'> Continue Shopping </Link>
               </div>
@@ -133,4 +134,4 @@ const CartPage = ({ showCart, setShowCart }) => {
   )
 }
 
-export default CartPage
+export default CheckoutPage

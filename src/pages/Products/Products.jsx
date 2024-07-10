@@ -21,7 +21,7 @@ const Products = () => {
 
   const { data: category, loading: categoryLoading, error: categoryError } = useFetch(`/categories?populate=*&filters[slug][$eq]=${catSlug}`)
   const { data: subCategories, loading: subCategoriesLoading, error: subCategoriesError } = useFetch(`/sub-categories?[filters] [categories] [slug] [$eq]=${catSlug}`)
-  const { data: products, loading:productsLoading, error } = useFetch(`/products?populate=*&[filters] [categories] [slug]=${catSlug}${selectedSubCats.map(item => `&[filters][sub_categories][id][$eq]=${item}`)}&[filters] [price] [$lte]=${maxPrice}&sort=price:${sort}`)
+  const { data: products, loading: productsLoading, error } = useFetch(`/products?populate=*&[filters] [categories] [slug]=${catSlug}${selectedSubCats.map(item => `&[filters][sub_categories][id][$eq]=${item}`)}&[filters] [price] [$lte]=${maxPrice}&sort=price:${sort}`)
 
 
   const handleShowFilterToggle = () => {
@@ -113,12 +113,12 @@ const Products = () => {
               </div>
             </div>
           </div>
-          <button className={`btn apply-btn ${filtersUsed ? 'activated' : 'deactivated'}`} onClick={handleApplyButtonClicked} disabled={!filtersUsed}>Apply Changes {filtersUsed ? `(${products && products.length})`: ''}</button>
+          <button className={`btn apply-btn ${filtersUsed ? 'activated' : 'deactivated'}`} onClick={handleApplyButtonClicked} disabled={!filtersUsed}>Apply Changes {filtersUsed ? `(${products && products.length})` : ''}</button>
 
         </div>
         <div className="products">
           <div className="top">
-            {products &&  <span className='no-of-products'>{products.length === 1 ? '1 Product' : `${products.length} Products`}</span>}
+            {products && <span className='no-of-products'>{products.length === 1 ? '1 Product' : `${products.length} Products`}</span>}
             <button className="btn filter-toggle-btn" onClick={handleShowFilterToggle}>Filters <TuneIcon fontSize='small' /> </button>
           </div>
           {/* {!category
@@ -139,7 +139,7 @@ const Products = () => {
             )
           } */}
 
-          <List products={products} productsLoading={productsLoading}/>
+          <List products={products} productsLoading={productsLoading} />
           {/* <List catSlug={catSlug} maxPrice={maxPrice} sort={sort} subCats={selectedSubCats} />
           <List catSlug={catSlug} maxPrice={maxPrice} sort={sort} subCats={selectedSubCats} />
           <List catSlug={catSlug} maxPrice={maxPrice} sort={sort} subCats={selectedSubCats} /> */}

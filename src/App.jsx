@@ -12,6 +12,7 @@ import "./app.scss"
 import { useEffect, useState } from 'react';
 import Cart from './components/MiniCart/MiniCart';
 import CartPage from './pages/CartPage/CartPage';
+import CheckoutPage from './pages/CheckoutPage/CheckoutPage';
 
 const Layout = () => {
   const [showCart, setShowCart] = useState(false);
@@ -35,9 +36,8 @@ const Layout = () => {
 
   return (
     <div className="app">
-      <Navbar setShowCart={setShowCart} />
+      <Navbar setShowCart={setShowCart} showCart={showCart} />
       <div id="content">
-        {showCart && <Cart setShowCart={setShowCart} showCart={showCart} />}
         <div className={`darkOverlay ${showCart ? 'show' : ''}`}></div>
         <Outlet />
       </div>
@@ -59,6 +59,10 @@ const router = createBrowserRouter([
       {
         path: "/cart-page",
         element: <CartPage />
+      },
+      {
+        path: "/checkout-page",
+        element: <CheckoutPage />
       },
       {
         path: '/products/:slug',

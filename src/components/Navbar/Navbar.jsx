@@ -10,7 +10,7 @@ import Cart from '../MiniCart/MiniCart';
 import { useSelector } from 'react-redux';
 import { Close, Menu, MenuOpen } from '@mui/icons-material';
 
-const Navbar = ({ setShowCart }) => {
+const Navbar = ({ setShowCart, showCart }) => {
   const [toggle, setToggle] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -107,6 +107,7 @@ const Navbar = ({ setShowCart }) => {
               <ShoppingCartOutlinedIcon className='icon' />
               <span>{products.length}</span>
             </div>
+            {showCart && <Cart setShowCart={setShowCart} showCart={showCart} />}
 
 
           </div>
