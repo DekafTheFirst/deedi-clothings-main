@@ -93,7 +93,7 @@ const CartPage = ({ showCart, setShowCart }) => {
                             </div>
                           </div>
                         </Link>
-                        <Close className='delete'  onClick={() => dispatch(removeItem(item.cartItemId))} />
+                        <Close className='delete' onClick={() => dispatch(removeItem(item.cartItemId))} />
                       </div>
                     ))
                   }
@@ -102,12 +102,27 @@ const CartPage = ({ showCart, setShowCart }) => {
                 <span className='list-empty'>No Products</span>}
             </div>
           </div>
-          <div className="col-md-5 checkout-component">
-            <div className="actions">
-              <button onClick={handlePayment} className='btn-1'>PROCEED TO CHECKOUT</button>
-              {/* <span className="reset" onClick={() => dispatch(resetCart())}>Reset Cart</span> */}
-              <Link to="/cart-page" className='view-cart'> View Shopping Bag </Link>
-            </div>
+          <div className="col-md-5 actions-wrapper">
+            <div className="actions-card">
+              <div className="checkout">
+                <div className="summary">
+                  <h5 className="heading"> ORDER SUMMARY</h5>
+                  <div className="summary-items">
+                    <div className="summary-item">Subtotal: <span className="value">${totalPrice()}</span></div>
+                    <div className="summary-item">No. of Items: <span className="value">{products.length}</span></div>
+
+                  </div>
+                </div>
+                <button onClick={handlePayment} className='btn-1'>PROCEED TO CHECKOUT</button>
+                {/* <span className="reset" onClick={() => dispatch(resetCart())}>Reset Cart</span> */}
+                <Link to="/cart-page" className='secondary-action'> Continue Shopping </Link>
+              </div>
+              <div className="checkout">
+                <button onClick={handlePayment} className='btn-1'>PROCEED TO CHECKOUT</button>
+                {/* <span className="reset" onClick={() => dispatch(resetCart())}>Reset Cart</span> */}
+                <Link to="/cart-page" className='secondary-action'> View Shopping Bag </Link>
+              </div>
+              Z            </div>
           </div>
         </div>
       </div>
