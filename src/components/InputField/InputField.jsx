@@ -1,5 +1,5 @@
 import React from 'react';
-import './InputField.css';
+import './InputField.scss';
 import { ErrorMessage, Field } from 'formik';
 
 const InputField = ({ name, label, type, placeholder, as, touched, error }) => {

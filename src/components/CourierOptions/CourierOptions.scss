@@ -1,0 +1,11 @@
+@import '../../variables.scss';
+@import '../../mixins.scss';
+
+
+form.selectCourierOptions {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+
+    
+}

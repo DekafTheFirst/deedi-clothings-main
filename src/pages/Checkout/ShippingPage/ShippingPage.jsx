@@ -1,17 +1,18 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import "./CheckoutPage.scss"
+import "./ShippingPage.scss"
 import { Close, DeleteOutlineOutlined, ShoppingBag, ShoppingBagOutlined } from '@mui/icons-material'
 import { useDispatch, useSelector } from 'react-redux'
-import { removeItem, resetCart } from '../../redux/cartReducer'
+import { removeItem, resetCart } from '../../../redux/cartReducer'
 import { loadStripe } from "@stripe/stripe-js";
-import { makeRequest } from '../../makeRequest'
+import { makeRequest } from '../../../makeRequest'
 import { Link } from 'react-router-dom'
-import OptimizedImage from '../../components/OptimizedImage/OptimizedImage'
-import FormComponent from '../../components/Form/Form'
+import OptimizedImage from '../../../components/OptimizedImage/OptimizedImage'
+import FormComponent from '../../../components/Form/Form'
 import * as yup from "yup";
+import CourierOptions from '../../../components/CourierOptions/CourierOptions'
 
 
-const CheckoutPage = ({ showCart, setShowCart }) => {
+const ShippingPage = ({ showCart, setShowCart }) => {
   // Products
   const products = useSelector(state => state.cart.products)
   console.log(products)
@@ -109,29 +110,7 @@ const CheckoutPage = ({ showCart, setShowCart }) => {
 
 
   // Shipping
-  const shippingMethods = [
-    {
-      title: 'Fedex Delivery',
-      slug: 'fedex',
-      img: 'img/fedex.png',
-    },
-    {
-      title: 'DHL Delivery',
-      slug: 'dhl',
-      img: 'img/dhl.png'
-    },
-    {
-      title: 'UPS Delivery',
-      slug: 'ups',
-      img: 'img/ups.png'
-    },
-  ]
-
-  const [selectedShippingMethod, setSelectedShippingMethod] = useState(shippingMethods[0].slug);
-
-  const handleChangeSelectedShippingMethod = (slug) => {
-    setSelectedShippingMethod(slug)
-  }
+ 
 
   return (
     <div className="checkout-page">
@@ -194,40 +173,17 @@ const CheckoutPage = ({ showCart, setShowCart }) => {
             <div className="actions-card">
 
               <div className="top">
-                <h5 className="heading"> Shipping Details</h5>
-                <p>Select your preferred shipping method and fill in your details</p>
+                <h5 className="heading"> Shipping Address</h5>
+                <p>Enter your shipping details for delivery.</p>
               </div>
 
               <div className="checkout">
-                <form className="selectShippingMethod">
-                  {shippingMethods.map((shippingMethod, index) => (
-                    <div
-                      className={`item ${selectedShippingMethod === shippingMethod.slug ? 'selected' : ''}`}
-                      key={index}
-                      onClick={() => handleChangeSelectedShippingMethod(shippingMethod.slug)}
-                    >
-                      <div className="icon-wrapper">
-                        <img src={`${shippingMethod.img}`} alt="" className='icon' />
-
-                      </div>
-
-                      <div className="text">
-                        <h6 className="title">{shippingMethod.title}</h6>
-                        <p>Delivery: {'2-3 Work Days'}</p>
-                      </div>
-
-                      <div className="end">
-                        <span className='amount'>{'Free'}</span>
-                        <input type='radio' checked={false} />
-                      </div>
-                    </div>
-                  ))}
-                </form>
+                {/* <CourierOptions /> */}
 
                 <FormComponent
                   items={formItems}
                   validationSchema={validationSchema}
-                  submitBtnText="PROCEED TO CHECKOUT"
+                  submitBtnText="Save & Continue"
                 >
                   <div className="summary-items">
                     <div className="summary-item">No. of Items: <span className="value">{products.length}</span></div>
@@ -251,4 +207,4 @@ const CheckoutPage = ({ showCart, setShowCart }) => {
   )
 }
 
-export default CheckoutPage
+export default ShippingPage

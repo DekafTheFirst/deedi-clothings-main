@@ -55,7 +55,7 @@ const CartPage = ({ showCart, setShowCart }) => {
         <div className="row">
           <div className="col-md-7 cart-body">
             <div className="top">
-              <span className="heading">SHOPPING BAG</span>
+              <span className="heading">Shopping Bag</span>
               <div className="total">
                 <span>{`SUBTOTAL(${products ? products.length : '0'})`}</span>
                 <span className='amount'>${totalPrice()}</span>
@@ -110,7 +110,7 @@ const CartPage = ({ showCart, setShowCart }) => {
             <div className="actions-card">
               <div className="checkout">
                 <div className="summary">
-                  <h5 className="heading"> ORDER SUMMARY</h5>
+                  <h5 className="heading">Order Summary</h5>
                   <div className="summary-items">
                     <div className="summary-item">Subtotal: <span className="value">${totalPrice()}</span></div>
                     <div className="summary-item">No. of Items: <span className="value">{products.length}</span></div>

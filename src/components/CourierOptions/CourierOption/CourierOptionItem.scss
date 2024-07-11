@@ -1,0 +1,74 @@
+@import '../../../variables.scss';
+@import '../../../mixins.scss';
+
+
+.courierOptionItem {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background-color: white;
+    padding: 15px 20px;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 2px solid $lightGray;
+    cursor: pointer;
+    transition: .2s ease all;
+
+
+    &:hover {
+        border-color: $mediumGray;
+    }
+
+    &.selected {
+        border-color: $charcoal;
+    }
+    
+    
+
+
+    .icon-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 80px;
+        height: 70px;
+        background-color: $lighterGray;
+        border-radius: 8px;
+        padding: 20px 10px;
+        
+        .icon {
+            width: 100%;
+            object-fit: contain;
+        }
+    }
+
+
+    .text {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        padding-block: 5px;
+
+        .title {
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        p {
+            font-size: 13px;
+            color: $darkGray;
+        }
+    }
+
+    .end {
+        display: flex;
+        align-items: center;
+        margin-left: auto;
+        gap: 8px;
+
+        .amount {
+            font-size: 15px;
+            font-weight: 600;
+        }
+    }
+}

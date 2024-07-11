@@ -12,7 +12,7 @@ import "./app.scss"
 import { useEffect, useState } from 'react';
 import Cart from './components/MiniCart/MiniCart';
 import CartPage from './pages/CartPage/CartPage';
-import CheckoutPage from './pages/CheckoutPage/CheckoutPage';
+import ShippingPage from './pages/Checkout/ShippingPage/ShippingPage';
 
 const Layout = () => {
   const [showCart, setShowCart] = useState(false);
@@ -61,8 +61,8 @@ const router = createBrowserRouter([
         element: <CartPage />
       },
       {
-        path: "/checkout-page",
-        element: <CheckoutPage />
+        path: "/shipping-page",
+        element: <ShippingPage />
       },
       {
         path: '/products/:slug',
