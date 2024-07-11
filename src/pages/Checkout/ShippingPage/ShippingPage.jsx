@@ -87,10 +87,11 @@ const ShippingPage = ({ showCart, setShowCart }) => {
       initialValue: ''
     },
     {
-      name: 'details',
-      label: 'Details',
+      name: 'streetAddress',
+      label: 'Street Address',
       type: 'text',
-      as: 'textarea',
+      as: 'custom',
+      customInputName: 'streetAddress',
       placeholder: '',
       initialValue: ''
     },
@@ -105,7 +106,8 @@ const ShippingPage = ({ showCart, setShowCart }) => {
       /^(\+\d{1,3})?(\d{10,14})$/, // Regex for phone number with or without country code
       'Invalid phone number'
     ).required('Phone Number is required'),
-    details: yup.string().required('Please fill in the details')
+    details: yup.string().required('Please fill in the details'),
+    streetAddress
   })
 
 
@@ -184,6 +186,7 @@ const ShippingPage = ({ showCart, setShowCart }) => {
                   items={formItems}
                   validationSchema={validationSchema}
                   submitBtnText="Save & Continue"
+                  
                 >
                   <div className="summary-items">
                     <div className="summary-item">No. of Items: <span className="value">{products.length}</span></div>

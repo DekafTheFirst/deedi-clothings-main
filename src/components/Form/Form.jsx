@@ -3,7 +3,7 @@ import './Form.scss';
 import { ErrorMessage, Field, Form, Formik, useFormik } from 'formik';
 import InputField from '../InputField/InputField';
 
-const FormComponent = ({ items, onSubmit, validationSchema, submitBtnText, children }) => {
+const FormComponent = ({ items, onSubmit, validationSchema, submitBtnText, children, customInputName }) => {
     return (
         <Formik
             initialValues={Object.fromEntries(items.map(item => [item.name, item.initialValue]))}
@@ -15,7 +15,16 @@ const FormComponent = ({ items, onSubmit, validationSchema, submitBtnText, child
                     <Form className='form-component'>
                         <div className="items">
                             {items.map((item) => (
-                                <InputField key={item.name} label={item.label} name={item.name} type={item.type} as={item.as} touched={touched[item.name]} error={errors[item.name]} />
+                                <InputField
+                                    key={item.name}
+                                    label={item.label}
+                                    name={item.name}
+                                    type={item.type}
+                                    as={item.as}
+                                    touched={touched[item.name]}
+                                    error={errors[item.name]}
+                                    customInputName={item.customInputName}
+                                />
                             ))}
                         </div>
 

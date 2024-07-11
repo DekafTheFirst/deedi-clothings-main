@@ -12,14 +12,11 @@
         font-weight: 600;
     }
 
-    &.text-area {
+    &.textarea {
         grid-column: 1 / -1;
     }
 
-
-    input,
-    select,
-    textarea {
+    .inputField {
         padding: 8px 15px;
         font-size: 14px;
         font-weight: 400;
@@ -38,6 +35,10 @@
             outline: none !important;
             border-color: #fc8181 !important;
         }
+    }
+
+    &.streetAddress {
+        grid-column: 1 / -1;
     }
 
     .error-message-container {
