@@ -12,7 +12,7 @@ const FormComponent = ({ items, onSubmit, validationSchema, submitBtnText, child
         >
             {({ isSubmitting, errors, handleSubmit, initialValues, values, touched }) => {
                 return (
-                    <Form >
+                    <Form className='form-component'>
                         <div className="items">
                             {items.map((item) => (
                                 <InputField key={item.name} label={item.label} name={item.name} type={item.type} as={item.as} touched={touched[item.name]} error={errors[item.name]} />

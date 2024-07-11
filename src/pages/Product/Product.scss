@@ -172,7 +172,7 @@
                 &.heading {
                     display: flex;
                     flex-direction: column;
-                    gap: 3px;
+                    gap: 10px;
 
                     @include md {
                         padding-top: 0;
@@ -180,8 +180,8 @@
 
                     .title {
                         font-size: 24px;
-                        text-transform: uppercase;
-                        font-weight: 500;
+                        font-weight: 600;
+                        text-transform: capitalize;
                     }
 
                     .category {
@@ -190,27 +190,27 @@
 
 
                     .prices {
-                        margin-top: 10px;
+                        margin-top: 8px;
                         display: flex;
-                        align-items: center;
-                        gap: 10px;
+                        align-items: flex-start;
+                        gap: 5px;
 
 
                         .price,
                         .discountedPrice {
-                            line-height: 30px;
+                            line-height: 1;
                         }
 
                         .price {
                             color: gray;
                             text-decoration: line-through;
-                            font-size: 17px;
+                            font-size: 15px;
                             font-weight: 300;
                             vertical-align: middle;
                         }
 
                         .discountedPrice {
-                            font-size: 20px;
+                            font-size: 24px;
                             font-weight: 600;
                             color: $charcoal;
                             vertical-align: middle;
