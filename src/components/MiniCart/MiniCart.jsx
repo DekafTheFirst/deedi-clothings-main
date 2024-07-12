@@ -19,7 +19,7 @@ const Cart = ({ showCart, setShowCart }) => {
 
   const totalPrice = () => {
     let total = 0
-    products.forEach(item => (total += item.price));
+    products.forEach(item => (total += item.quantity * item.price));
     return total.toFixed(2)
   }
 
@@ -51,7 +51,7 @@ const Cart = ({ showCart, setShowCart }) => {
   }
 
   const handleCheckoutClicked = () => {
-    navigate('/checkout-page');
+    navigate('/shipping-page');
     setShowCart(false);
   }
 

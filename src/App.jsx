@@ -13,6 +13,7 @@ import { useEffect, useState } from 'react';
 import Cart from './components/MiniCart/MiniCart';
 import CartPage from './pages/CartPage/CartPage';
 import ShippingPage from './pages/Checkout/ShippingPage/ShippingPage';
+import ScrollToTop from './components/ScrollToTop';
 
 const Layout = () => {
   const [showCart, setShowCart] = useState(false);
@@ -36,6 +37,7 @@ const Layout = () => {
 
   return (
     <div className="app">
+      <ScrollToTop />
       <Navbar setShowCart={setShowCart} showCart={showCart} />
       <div id="content">
         <div className={`darkOverlay ${showCart ? 'show' : ''}`}></div>

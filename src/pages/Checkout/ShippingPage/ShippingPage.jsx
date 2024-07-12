@@ -107,7 +107,7 @@ const ShippingPage = ({ showCart, setShowCart }) => {
       'Invalid phone number'
     ).required('Phone Number is required'),
     details: yup.string().required('Please fill in the details'),
-    streetAddress
+    streetAddress: yup.string().required('Street address is required'),
   })
 
 
