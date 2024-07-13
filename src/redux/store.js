@@ -12,6 +12,7 @@ import {
   REGISTER,
 } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
+import checkoutReducer from "./checkoutReducer"
 
 const persistConfig = {
   key: 'root',
@@ -23,7 +24,8 @@ const persistedReducer = persistReducer(persistConfig, cartReducer)
 
 export const store = configureStore({
   reducer: {
-    cart: persistedReducer
+    cart: persistedReducer,
+    checkout: checkoutReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

@@ -51,7 +51,7 @@ const Cart = ({ showCart, setShowCart }) => {
   }
 
   const handleCheckoutClicked = () => {
-    navigate('/shipping-page');
+    navigate('/checkout-page');
     setShowCart(false);
   }
 

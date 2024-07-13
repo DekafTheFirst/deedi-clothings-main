@@ -12,8 +12,10 @@ import "./app.scss"
 import { useEffect, useState } from 'react';
 import Cart from './components/MiniCart/MiniCart';
 import CartPage from './pages/CartPage/CartPage';
-import ShippingPage from './pages/Checkout/ShippingPage/ShippingPage';
+import ShippingPage from './pages/Checkout/CheckoutPage';
 import ScrollToTop from './components/ScrollToTop';
+import CheckoutPage from './pages/Checkout/CheckoutPage';
+
 
 const Layout = () => {
   const [showCart, setShowCart] = useState(false);
@@ -63,9 +65,10 @@ const router = createBrowserRouter([
         element: <CartPage />
       },
       {
-        path: "/shipping-page",
-        element: <ShippingPage />
+        path: "/checkout-page",
+        element: <CheckoutPage />
       },
+      
       {
         path: '/products/:slug',
         element: <Products />

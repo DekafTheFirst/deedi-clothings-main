@@ -13,6 +13,9 @@ const FormComponent = ({ items, onSubmit, validationSchema, submitBtnText, child
             {({ isSubmitting, errors, handleSubmit, initialValues, values, touched }) => {
                 return (
                     <Form className='form-component'>
+
+                        {children}
+
                         <div className="items">
                             {items.map((item) => (
                                 <InputField
@@ -27,8 +30,6 @@ const FormComponent = ({ items, onSubmit, validationSchema, submitBtnText, child
                                 />
                             ))}
                         </div>
-
-                        {children}
 
                         <button type="submit" className="btn-1 submit-btn" disabled={isSubmitting}>
                             {submitBtnText ? submitBtnText : 'Submit'}
