@@ -9,26 +9,21 @@ import { Link, useNavigate } from 'react-router-dom'
 import OptimizedImage from '../../components/OptimizedImage/OptimizedImage'
 import CourierOptions from '../../components/CourierOptions/CourierOptions'
 import ShippingTab from './Shipping/ShippingTab'
+import StepWizard from './StepWizard/StepWizard'
 
 
 const CheckoutPage = ({ showCart, setShowCart }) => {
   const navigate = useNavigate()
   // Products
   const products = useSelector(state => state.cart.products)
+  const subtotal = useSelector(state => state.cart.subtotal);
+  const vat = useSelector(state => state.cart.vat);
+  const totalAmount = useSelector(state => state.cart.totalAmount);
+
   console.log(products)
-
+  
   // Price
-  const amount = useMemo(() => {
-    let total = 0;
-    products.forEach(item => {
-      total += item.price;
-    });
-    return total.toFixed(2);
-  }, [products]);
-
-  const vat = useMemo(() => (amount * 0.2).toFixed(2), [amount]);
-  const totalAmount = useMemo(() => (parseFloat(amount) + parseFloat(vat)).toFixed(2), [amount, vat]);
-
+  
   // dispatch
   const dispatch = useDispatch()
 
@@ -100,12 +95,12 @@ const CheckoutPage = ({ showCart, setShowCart }) => {
                             {/* <p>{item.desc.substring(0, 100)}</p> */}
                             <div className="bottom">
                               <span className='size'>SIZE : {item.size}</span>
-                              <span className='amount'>{`2 x $${item.price}`}</span>
+                              <span className='amount'>${item.price}</span>
 
                             </div>
                           </div>
                         </Link>
-                        <span className='quantity'>QTY : {2}</span>
+                        <span className='quantity'>QTY : {item.quantity}</span>
                         {/* <Close className='delete' onClick={() => dispatch(removeItem(item.cartItemId))} /> */}
                       </div>
                     ))
@@ -128,32 +123,17 @@ const CheckoutPage = ({ showCart, setShowCart }) => {
 
                   <div className="summary-items">
                     <div className="summary-item">No. of Items: <span className="value">{products.length}</span></div>
-                    <div className="summary-item">Subtotal: <span className="value">${amount}</span></div>
+                    <div className="summary-item">Subtotal: <span className="value">${subtotal}</span></div>
                     <div className="summary-item">VAT(20%): <span className="value">${vat}</span></div>
                     <div className="summary-item total">Total: <span className="value">${totalAmount}</span></div>
                   </div></div>
               </div>
+
               <div className="tabs">
-                <h5 className="heading">Checkout</h5>
-                <section class="step-wizard">
-                  <ul class="step-wizard-list">
-                    <li class="step-wizard-item current-item">
-                      <span class="progress-count ">1</span>
-                      <span class="progress-label">Billing Info</span>
-                    </li>
-                    <li class="step-wizard-item ">
-                      <span class="progress-count">2</span>
-                      <span class="progress-label">Payment Method</span>
-                    </li>
-                    
-                    <li class="step-wizard-item">
-                      <span class="progress-count ">4</span>
-                      <span class="progress-label">Success</span>
-                    </li>
-                  </ul>
-                </section>
+                <h5 className="heading">Checkout Process</h5>
+                <StepWizard />
                 <div className="current-tab">
-                  <ShippingTab amount={amount} totalAmount={totalAmount} vat={vat} quantity={products.length} />
+                  <ShippingTab subtotal={subtotal} totalAmount={totalAmount} vat={vat} quantity={products.length} />
                 </div>
               </div>
             </div>

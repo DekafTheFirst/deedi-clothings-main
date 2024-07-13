@@ -148,6 +148,7 @@ const Product = () => {
                         cartItemId,
                         title: product.attributes.title,
                         desc: 'description',
+                        quantity: 1,
                         img: product.attributes.img.data[0].attributes.url,
                         size: selectedSize,
                         price: product.attributes.price

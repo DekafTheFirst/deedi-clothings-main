@@ -89,7 +89,7 @@ const Cart = ({ showCart, setShowCart }) => {
                       {/* <p>{item.desc.substring(0, 100)}</p> */}
                       <div className="bottom">
                         <span className='size'>SIZE : {item.size}</span>
-                        <span className='price'>{`$${item.price}`}</span>
+                        <span className='price'>{`${item.quantity} x $${item.price}`}</span>
                       </div>
                     </div>
                   </Link>

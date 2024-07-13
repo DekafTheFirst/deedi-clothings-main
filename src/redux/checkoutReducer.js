@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
+  currentCheckoutStep: 1,
   shippingInfo: {},
   billingInfo: {},
   selectedCourier: null,
