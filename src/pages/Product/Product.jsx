@@ -7,8 +7,8 @@ import BalanceIcon from "@mui/icons-material/Balance";
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import { useParams } from "react-router-dom";
 import useFetch from "../../hooks/useFetch";
-import { useDispatch } from "react-redux";
-import { addToCart } from "../../redux/cartReducer";
+import { useDispatch, useSelector } from "react-redux";
+import { addToCart, updateCartItem } from "../../redux/cartReducer";
 import OptimizedImage from "../../components/OptimizedImage/OptimizedImage";
 import Accordion from "./Accordion/Accordion";
 
@@ -24,6 +24,7 @@ const Product = () => {
   const { data: product, loading, error } = useFetch(`/products/${id}?populate=*`)
   const sortedSizes = product?.attributes?.availableSizes?.data?.sort((a, b) => a.id - b.id);
 
+  const products = useSelector(state => state.cart.products)
 
 
   const [selectedSize, setSelectedSize] = useState(null);
@@ -141,18 +142,30 @@ const Product = () => {
                   className="add btn-1"
                   onClick={() => {
                     if (selectedSize) {
-                      const prefix = 'cartItem_'; // Example prefix
-                      const cartItemId = `${prefix}${uuidv4()}`;
-                      dispatch(addToCart({
-                        productId: product.id,
-                        cartItemId,
-                        title: product.attributes.title,
-                        desc: 'description',
-                        quantity: 1,
-                        img: product.attributes.img.data[0].attributes.url,
-                        size: selectedSize,
-                        price: product.attributes.price
-                      }))
+                      
+                      const item = products.find(item => item.productId === product.id && item.size === selectedSize);
+
+                      if (item) {
+                        dispatch(updateCartItem({
+                          cartItemId: item.cartItemId,
+                        }))
+                      }
+
+                      else {
+                        const prefix = 'cartItem_'; // Example prefix
+                        const cartItemId = `${prefix}${uuidv4()}`;
+
+                        dispatch(addToCart({
+                          productId: product.id,
+                          cartItemId,
+                          title: product.attributes.title,
+                          desc: 'description',
+                          quantity: 1,
+                          img: product.attributes.img.data[0].attributes.url,
+                          size: selectedSize,
+                          price: product.attributes.price
+                        }))
+                      }
                     }
                     else {
                       setSelectedSizeError(true)

@@ -2,9 +2,11 @@ import React from 'react'
 import './ShippingTab.scss'
 import FormComponent from '../../../components/Form/Form'
 import * as yup from "yup";
+import { useSelector } from 'react-redux';
 
-const ShippingTab = ({ amount, vat, totalAmount, quantity }) => {
-
+const ShippingTab = () => {
+    const shippingInfo = useSelector(state => state.checkout.shippingInfo);
+    
     const formItems = [
         {
             name: 'firstName',
@@ -35,11 +37,49 @@ const ShippingTab = ({ amount, vat, totalAmount, quantity }) => {
             initialValue: ''
         },
         {
-            name: 'streetAddress',
-            label: 'Street Address',
+            name: 'addressLine1',
+            label: 'Address Line 1',
             type: 'text',
             as: 'custom',
-            customInputName: 'streetAddress',
+            customInputName: 'addressLine',
+            placeholder: '',
+            initialValue: ''
+        },
+        
+        {
+            name: 'addressLine2',
+            label: 'Address Line 2(Optional)',
+            type: 'text',
+            as: 'custom',
+            customInputName: 'addressLine',
+            placeholder: '',
+            initialValue: ''
+        },
+        {
+            name: 'city',
+            label: 'City',
+            type: 'text',
+            placeholder: '',
+            initialValue: ''
+        },
+        {
+            name: 'postalCode',
+            label: 'Postal Code',
+            type: 'text',
+            placeholder: '',
+            initialValue: ''
+        },
+        {
+            name: 'state',
+            label: 'State',
+            type: 'text',
+            placeholder: '',
+            initialValue: ''
+        },
+        {
+            name: 'country',
+            label: 'Country',
+            type: 'text',
             placeholder: '',
             initialValue: ''
         },
@@ -55,7 +95,9 @@ const ShippingTab = ({ amount, vat, totalAmount, quantity }) => {
             'Invalid phone number'
         ).required('Phone Number is required'),
         details: yup.string().required('Please fill in the details'),
-        streetAddress: yup.string().required('Street address is required'),
+        addressLine1: yup.string().required('Street address is required'),
+        addressLine2: yup.string(),
+
     })
 
     return (

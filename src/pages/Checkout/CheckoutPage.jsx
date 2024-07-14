@@ -12,9 +12,9 @@ import ShippingTab from './Shipping/ShippingTab'
 import StepWizard from './StepWizard/StepWizard'
 
 
-const CheckoutPage = ( ) => {
+const CheckoutPage = () => {
   const navigate = useNavigate()
-  
+
   // Products
   const products = useSelector(state => state.cart.products)
   const selectedCourier = useSelector(state => state.checkout.selectedCourier);
@@ -86,62 +86,17 @@ const CheckoutPage = ( ) => {
     <div className="checkout-page">
       <div className="container-fluid">
         <div className="row">
-          <div className="col-md-6 checkout-items">
-            <div className="top">
-              <span className="heading">Order Items</span>
-              <p >Check your items and confirm them before checking out.</p>
-            </div>
-
-            <div className="products">
-              {products.length > 0 ?
-                <>
-                  {
-                    products.map((item, index) => (
-                      <div
-                        className="item"
-                        key={index}
-                      >
-                        <Link
-                          to={`/product/${item.productId}`}
-                          className="left">
-                          <div className="img-wrapper">
-                            <OptimizedImage
-                              // wrapperClassName='imgWrapper'
-                              className={'img'}
-                              alt=""
-                              src={import.meta.env.VITE_UPLOAD_URL + item.img}
-                              effect="blur"
-                            />
-                          </div>
-                          <div className="details">
-                            <h1 className='title'>{item.title}</h1>
-                            {/* <p>{item.desc.substring(0, 100)}</p> */}
-                            <div className="bottom">
-                              <span className='size'>SIZE : {item.size}</span>
-                              <span className='subtotal'>${item.price}</span>
-
-                            </div>
-                          </div>
-                        </Link>
-                        <span className='quantity'>QTY : {item.quantity}</span>
-                        {/* <Close className='delete' onClick={() => dispatch(removeItem(item.cartItemId))} /> */}
-                      </div>
-                    ))
-                  }
-                </>
-                :
-
-                <div className='list-empty'>
-                  <span>No Products</span>
-                  <button onClick={() => navigate('/products/women')} className='btn-1'><ShoppingBagOutlined fontSize='small' /> Continue Shopping</button>
-                </div>}
+          <div className="col-md-6 tabs">
+            <StepWizard />
+            <div className="current-tab">
+              <ShippingTab subtotal={subtotal} totalAmount={totalAmount} vat={vat} quantity={products.length} />
             </div>
           </div>
 
-          <div className="col-md-6 checkout-actions-col">
+          <div className="col-md-6 order-summary">
             <div className="wrapper">
               <div className="top">
-                <div className="order-summary">
+                <div className="order-total">
                   <h5 className="heading">Order Summary </h5>
 
                   <div className="summary-items">
@@ -151,14 +106,58 @@ const CheckoutPage = ( ) => {
                     <div className="summary-item total">Total: <span className="value">${totalAmount}</span></div>
                   </div></div>
               </div>
+              <div className="checkout-items">
+                {/* <div className="top">
+                  <span className="heading">Order Items</span>
+                  <p >Check your items and confirm them before checking out.</p>
+                </div> */}
 
-              <div className="tabs">
-                <h5 className="heading">Checkout Process</h5>
-                <StepWizard  />
-                <div className="current-tab">
-                  <ShippingTab subtotal={subtotal} totalAmount={totalAmount} vat={vat} quantity={products.length} />
+                <div className="products">
+                  {products.length > 0 ?
+                    <>
+                      {
+                        products.map((item, index) => (
+                          <div
+                            className="item"
+                            key={index}
+                          >
+                            <Link
+                              to={`/product/${item.productId}`}
+                              className="left">
+                              <div className="img-wrapper">
+                                <OptimizedImage
+                                  // wrapperClassName='imgWrapper'
+                                  className={'img'}
+                                  alt=""
+                                  src={import.meta.env.VITE_UPLOAD_URL + item.img}
+                                  effect="blur"
+                                />
+                              </div>
+                              <div className="details">
+                                <h1 className='title'>{item.title}</h1>
+                                {/* <p>{item.desc.substring(0, 100)}</p> */}
+                                <div className="bottom">
+                                  <span className='size'>SIZE : {item.size}</span>
+                                  <span className='subtotal'>${item.price}</span>
+
+                                </div>
+                              </div>
+                            </Link>
+                            <span className='quantity'>QTY : {item.quantity}</span>
+                            {/* <Close className='delete' onClick={() => dispatch(removeItem(item.cartItemId))} /> */}
+                          </div>
+                        ))
+                      }
+                    </>
+                    :
+
+                    <div className='list-empty'>
+                      <span>No Products</span>
+                      <button onClick={() => navigate('/products/women')} className='btn-1'><ShoppingBagOutlined fontSize='small' /> Continue Shopping</button>
+                    </div>}
                 </div>
               </div>
+
             </div>
           </div>
         </div>

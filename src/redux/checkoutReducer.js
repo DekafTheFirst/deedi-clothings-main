@@ -2,7 +2,18 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   currentStep: 1,
-  shippingInfo: {},
+  shippingInfo: {
+    firstName: '',
+    lastName: '',
+    email: '',
+    phoneNumber: '',
+    addressLine1: '',
+    addressLine2: '',
+    city:'',
+    state: '',
+    country: '',
+    postalCode: '',
+  },
   billingInfo: {},
   selectedCourier: null,
 };

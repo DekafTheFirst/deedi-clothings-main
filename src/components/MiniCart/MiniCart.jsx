@@ -14,14 +14,11 @@ const Cart = ({ showCart, setShowCart }) => {
   const navigate = useNavigate();
 
   const products = useSelector(state => state.cart.products)
+  const subtotal = useSelector(state => state.cart.subtotal)
 
   console.log(products)
 
-  const totalPrice = () => {
-    let total = 0
-    products.forEach(item => (total += item.quantity * item.price));
-    return total.toFixed(2)
-  }
+  
 
   const dispatch = useDispatch()
 
@@ -59,7 +56,7 @@ const Cart = ({ showCart, setShowCart }) => {
     <div className="mini-cart">
       <div className="total">
         <span>{`SUBTOTAL(${products ? products.length : '0'})`}</span>
-        <span>${totalPrice()}</span>
+        <span>${subtotal}</span>
       </div>
 
       <div className="products">

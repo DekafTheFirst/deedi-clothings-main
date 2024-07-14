@@ -15,171 +15,42 @@
         .row {
             align-items: flex-start;
 
-            .checkout-items {
-                padding: 40px 12px;
-
+            .tabs {
                 display: flex;
                 flex-direction: column;
+                padding: 20px 12px;
 
-                .top {
-                    display: flex;
-                    align-items: center;
-                    flex-direction: column;
-                    gap: 10px;
-                    border-bottom: 1px solid $lightGray;
+                // .heading {
+                //     margin-bottom: 10px;
+                //     text-align: center;
+                //     font-size: 24px;
+                //     font-weight: 700;
 
-
-                    @include md {
-                        align-items: flex-start;
-                    }
-
-                    .heading {
-                        font-size: 25px;
-                        font-weight: 700;
-                    }
-
-                    p {
-                        font-size: 14px;
-                        color: $darkGray;
-                        padding-bottom: 20px;
-                        text-align: center;
-
-                        @include md {
-                            width: 70%;
-                            text-align: start;
-                        }
-
-                    }
-                }
-
-                .products {
-                    display: flex;
-                    flex-direction: column;
-
-                    .item {
-                        display: flex;
-                        align-items: flex-start;
-                        gap: 10px;
-                        border-bottom: 1px solid $lightGray;
-                        padding-block: 20px;
+                //     @include md {
+                //         text-align: start;
+                //     }
+                // }
 
 
-                        .left {
-                            display: flex;
-                            gap: 12px;
-                            text-decoration: none;
-                            color: unset;
-
-                            .img {
-                                background-color: $lighterGray;
-
-                                width: 80px;
-                                height: 80px;
-                                padding: 5px;
-
-                                img {
-                                    object-fit: contain;
-                                }
-                            }
-
-                            .details {
-                                display: flex;
-                                flex-direction: column;
-                                justify-content: stretch;
-
-                                .title {
-                                    margin-top: 0;
-                                    font-size: 17px;
-                                    font-weight: 600;
-                                    // text-transform: uppercase;
-                                    margin-bottom: 8px;
-
-                                }
-
-                                p {
-                                    color: gray;
-                                    margin-bottom: 10px;
-                                    font-size: 14px;
-                                }
-
-                                .bottom {
-                                    display: flex;
-                                    flex-direction: column;
-                                    margin-top: auto;
-
-                                    span {
-                                        font-weight: 400;
-                                        font-size: 13px;
-
-                                        &.size {
-                                            text-transform: uppercase;
-
-                                        }
-
-
-
-                                        &.amount {
-                                            color: black;
-                                            font-weight: 500;
-                                            font-size: 16px;
-                                        }
-                                    }
-
-                                }
-                            }
-                        }
-
-
-                        .quantity {
-                            font-size: 13px;
-                            text-transform: uppercase;
-                            margin-left: auto;
-                            text-wrap: nowrap;
-                        }
-                    }
-
-                    .list-empty {
-                        height: 200px;
-                        display: flex;
-                        flex-direction: column;
-                        justify-content: center;
-                        align-items: center;
-                        gap: 20px;
-
-
-                        span {
-                            text-align: center;
-                            vertical-align: middle;
-                            font-size: 15px;
-                        }
-
-                        .btn-1 {
-                            font-size: 13px;
-                            font-weight: 600;
-                        }
-
-                        // font-weight: 500;
-                    }
-                }
             }
 
 
 
-            .checkout-actions-col {
+            .order-summary {
 
                 @include md {
-                    padding-left: 40px;
+                    padding: 12px 30px 12px;
                 }
 
                 .wrapper {
-                    background-color: lighten($lighterGray, 2%);
+                    display: flex;
+                    flex-direction: column;
                     padding: 20px 10px;
+                    gap: 10px;
 
 
                     @include md {
-                        padding: 40px;
-                        display: flex;
-                        flex-direction: column;
+                        padding-left: 40px;
                         gap: 20px;
                         justify-content: flex-start;
 
@@ -190,7 +61,11 @@
                         flex-direction: column;
 
 
-                        .order-summary {
+                        .order-total {
+                            border-radius: 10px;
+                            background-color: $lighterGray;
+                            padding:  30px ;
+
                             .heading {
                                 margin-bottom: 10px;
                                 text-align: center;
@@ -206,6 +81,8 @@
                                 display: flex;
                                 flex-direction: column;
                                 gap: 10px;
+                                                    background-color: $lighterGray;
+
 
 
 
@@ -223,23 +100,155 @@
                         }
                     }
 
-                    .tabs {
+                    .checkout-items {
+                        
                         display: flex;
                         flex-direction: column;
 
-                        .heading {
-                            margin-bottom: 10px;
-                            text-align: center;
-                            font-size: 24px;
-                            font-weight: 700;
+                        .top {
+                            display: flex;
+                            align-items: center;
+                            flex-direction: column;
+                            gap: 10px;
+
 
                             @include md {
-                                text-align: start;
+                                align-items: flex-start;
+                            }
+
+                            .heading {
+                                font-size: 17px;
+                                font-weight: 600;
+                            }
+
+                            p {
+                                font-size: 14px;
+                                color: $darkGray;
+                                padding-bottom: 20px;
+                                text-align: center;
+
+                                @include md {
+                                    width: 70%;
+                                    text-align: start;
+                                }
+
                             }
                         }
 
-                        
+                        .products {
+                            display: flex;
+                            flex-direction: column;
+                            gap: 15px;
+
+                            .item {
+                                display: flex;
+                                align-items: flex-start;
+                                gap: 10px;
+                                padding: 20px;
+                                border-radius: 20px;
+                                border: 1px solid $lightGray;
+
+
+                                .left {
+                                    display: flex;
+                                    gap: 12px;
+                                    text-decoration: none;
+                                    color: unset;
+
+                                    .img {
+                                        background-color: $lighterGray;
+                                        border-radius: 10px;
+                                        border: 1px solid $lightGray;
+                                        width: 80px;
+                                        height: 80px;
+                                        padding: 5px;
+
+                                        img {
+                                            object-fit: contain;
+                                        }
+                                    }
+
+                                    .details {
+                                        display: flex;
+                                        flex-direction: column;
+                                        justify-content: stretch;
+
+                                        .title {
+                                            margin-top: 0;
+                                            font-size: 17px;
+                                            font-weight: 600;
+                                            // text-transform: uppercase;
+                                            margin-bottom: 8px;
+
+                                        }
+
+                                        p {
+                                            color: gray;
+                                            margin-bottom: 10px;
+                                            font-size: 14px;
+                                        }
+
+                                        .bottom {
+                                            display: flex;
+                                            flex-direction: column;
+                                            margin-top: auto;
+
+                                            span {
+                                                font-weight: 400;
+                                                font-size: 13px;
+
+                                                &.size {
+                                                    text-transform: uppercase;
+
+                                                }
+
+
+
+                                                &.amount {
+                                                    color: black;
+                                                    font-weight: 500;
+                                                    font-size: 16px;
+                                                }
+                                            }
+
+                                        }
+                                    }
+                                }
+
+
+                                .quantity {
+                                    font-size: 13px;
+                                    text-transform: uppercase;
+                                    margin-left: auto;
+                                    text-wrap: nowrap;
+                                }
+                            }
+
+                            .list-empty {
+                                height: 200px;
+                                display: flex;
+                                flex-direction: column;
+                                justify-content: center;
+                                align-items: center;
+                                gap: 20px;
+
+
+                                span {
+                                    text-align: center;
+                                    vertical-align: middle;
+                                    font-size: 15px;
+                                }
+
+                                .btn-1 {
+                                    font-size: 13px;
+                                    font-weight: 600;
+                                }
+
+                                // font-weight: 500;
+                            }
+                        }
                     }
+
                 }
 
 
