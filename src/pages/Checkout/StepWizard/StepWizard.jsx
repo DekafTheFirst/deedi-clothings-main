@@ -1,25 +1,27 @@
-import React from 'react'
-import './StepWizard.scss'
+import React from 'react';
+import './StepWizard.scss';
+import StepWizardItem from './StepWizardItem/StepWizardItem';
+import { useSelector } from 'react-redux';
 
 const StepWizard = () => {
-    return (
-        <section class="step-wizard">
-            <ul class="step-wizard-list">
-                <li class="step-wizard-item ">
-                    <span class="progress-count ">1</span>
-                    <span class="progress-label">Shipping</span>
-                </li>
-                <li class="step-wizard-item ">
-                    <span class="progress-count">2</span>
-                    <span class="progress-label">Billing</span>
-                </li>
-                <li class="step-wizard-item current-item">
-                    <span class="progress-count ">3</span>
-                    <span class="progress-label">Complete</span>
-                </li>
-            </ul>
-        </section>
-    )
-}
 
-export default StepWizard
+  const steps = [
+    { label: 'Shipping', step: 1 },
+    { label: 'Billing', step: 2 },
+    { label: 'Complete', step: 3 },
+  ];
+
+  
+
+  return (
+    <section className="step-wizard">
+      <ul className="step-wizard-list">
+        {steps.map((stepItem, index) => (
+          <StepWizardItem key={index}  stepItem={stepItem}/>
+        ))}
+      </ul>
+    </section>
+  );
+};
+
+export default StepWizard;

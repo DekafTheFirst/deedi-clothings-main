@@ -12,18 +12,38 @@ import ShippingTab from './Shipping/ShippingTab'
 import StepWizard from './StepWizard/StepWizard'
 
 
-const CheckoutPage = ({ showCart, setShowCart }) => {
+const CheckoutPage = ( ) => {
   const navigate = useNavigate()
+  
   // Products
   const products = useSelector(state => state.cart.products)
-  const subtotal = useSelector(state => state.cart.subtotal);
-  const vat = useSelector(state => state.cart.vat);
-  const totalAmount = useSelector(state => state.cart.totalAmount);
+  const selectedCourier = useSelector(state => state.checkout.selectedCourier);
+  const shippingInfo = useSelector(state => state.checkout.shippingInfo);
+  const billingInfo = useSelector(state => state.checkout.billingInfo);
+  const currentStep = useSelector(state => state.checkout.currentStep);
 
-  console.log(products)
-  
+  // Calculate totals
+  const subtotal = useMemo(() => {
+    let total = 0;
+    products.forEach(item => {
+      total += item.price;
+    });
+    return total.toFixed(2);
+  }, [products]);
+
+  const vat = useMemo(() => (subtotal * 0.2).toFixed(2), [subtotal]);
+
+  const totalAmount = useMemo(() => {
+    let total = parseFloat(subtotal) + parseFloat(vat);
+    if (selectedCourier) {
+      total += selectedCourier.cost;
+    }
+    return total.toFixed(2);
+  }, [subtotal, vat, selectedCourier]);
+  console.log(products);
+
   // Price
-  
+
   // dispatch
   const dispatch = useDispatch()
 
@@ -51,7 +71,11 @@ const CheckoutPage = ({ showCart, setShowCart }) => {
     }
   }
 
-  // Form Data
+  //Checkout Step
+
+  const handleChangeCheckoutStep = () => {
+
+  }
 
 
 
@@ -72,14 +96,13 @@ const CheckoutPage = ({ showCart, setShowCart }) => {
               {products.length > 0 ?
                 <>
                   {
-                    products.map(item => (
+                    products.map((item, index) => (
                       <div
                         className="item"
-                        key={item.idPerSize}
+                        key={index}
                       >
                         <Link
                           to={`/product/${item.productId}`}
-                          onClick={() => setShowCart(false)}
                           className="left">
                           <div className="img-wrapper">
                             <OptimizedImage
@@ -95,7 +118,7 @@ const CheckoutPage = ({ showCart, setShowCart }) => {
                             {/* <p>{item.desc.substring(0, 100)}</p> */}
                             <div className="bottom">
                               <span className='size'>SIZE : {item.size}</span>
-                              <span className='amount'>${item.price}</span>
+                              <span className='subtotal'>${item.price}</span>
 
                             </div>
                           </div>
@@ -131,7 +154,7 @@ const CheckoutPage = ({ showCart, setShowCart }) => {
 
               <div className="tabs">
                 <h5 className="heading">Checkout Process</h5>
-                <StepWizard />
+                <StepWizard  />
                 <div className="current-tab">
                   <ShippingTab subtotal={subtotal} totalAmount={totalAmount} vat={vat} quantity={products.length} />
                 </div>

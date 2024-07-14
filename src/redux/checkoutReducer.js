@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  currentCheckoutStep: 1,
+  currentStep: 1,
   shippingInfo: {},
   billingInfo: {},
   selectedCourier: null,
@@ -20,9 +20,17 @@ const checkoutSlice = createSlice({
     setSelectedCourier: (state, action) => {
       state.selectedCourier = action.payload;
     },
+    setCurrentStep: (state, action) => {
+      state.currentStep = action.payload;
+    },
   },
 });
 
-export const { setShippingInfo, setBillingInfo, setSelectedCourier } = checkoutSlice.actions;
+export const { 
+  setSelectedCourier,
+  setShippingInfo,
+  setBillingInfo,
+  setCurrentStep,
+ } = checkoutSlice.actions;
 
 export default checkoutSlice.reducer;

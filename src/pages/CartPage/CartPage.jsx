@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import "./CartPage.scss"
 import { Close, DeleteOutlineOutlined, ShoppingBag, ShoppingBagOutlined } from '@mui/icons-material'
 import { useDispatch, useSelector } from 'react-redux'
-import { removeItem, resetCart } from '../../redux/cartReducer'
+import {  removeItem, resetCart } from '../../redux/cartReducer'
 import { loadStripe } from "@stripe/stripe-js";
 import { makeRequest } from '../../makeRequest'
 import { Link, useNavigate } from 'react-router-dom'
