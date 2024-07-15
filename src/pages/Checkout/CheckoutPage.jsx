@@ -8,8 +8,8 @@ import { makeRequest } from '../../makeRequest'
 import { Link, useNavigate } from 'react-router-dom'
 import OptimizedImage from '../../components/OptimizedImage/OptimizedImage'
 import CourierOptions from '../../components/CourierOptions/CourierOptions'
-import ShippingTab from './Shipping/ShippingTab'
 import StepWizard from './StepWizard/StepWizard'
+import ShippingTab from './ShippingTab/ShippingTab'
 
 
 const CheckoutPage = () => {

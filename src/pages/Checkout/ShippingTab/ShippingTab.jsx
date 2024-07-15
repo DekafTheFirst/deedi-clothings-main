@@ -3,17 +3,18 @@ import './ShippingTab.scss'
 import FormComponent from '../../../components/Form/Form'
 import * as yup from "yup";
 import { useSelector } from 'react-redux';
+import axios from 'axios';
 
 const ShippingTab = () => {
     const shippingInfo = useSelector(state => state.checkout.shippingInfo);
-    
+
     const formItems = [
         {
             name: 'firstName',
             label: 'First Name',
             type: 'text',
             placeholder: '',
-            initialValue: '',
+            initialValue: 'Dekaf',
         },
         {
             name: 'lastName',
@@ -45,7 +46,7 @@ const ShippingTab = () => {
             placeholder: '',
             initialValue: ''
         },
-        
+
         {
             name: 'addressLine2',
             label: 'Address Line 2(Optional)',
@@ -76,14 +77,6 @@ const ShippingTab = () => {
             placeholder: '',
             initialValue: ''
         },
-        {
-            name: 'country',
-            label: 'Country',
-            type: 'text',
-            placeholder: '',
-            initialValue: ''
-        },
-
     ]
 
     const validationSchema = yup.object().shape({
@@ -97,8 +90,27 @@ const ShippingTab = () => {
         details: yup.string().required('Please fill in the details'),
         addressLine1: yup.string().required('Street address is required'),
         addressLine2: yup.string(),
-
+        city: yup.string().required('City is required'),
+        postalCode: yup.string().required('Postal code is required'),
+        state: yup.string().required('State is required'),
+        country: yup.string().required('Country is required'),
+        items: yup.array().of(
+            yup.object().shape({
+                quantity: yup.number().required('Quantity is required'),
+                weight: yup.number().required('Weight is required'),
+                dimensions: yup.object().shape({
+                    length: yup.number().required('Length is required'),
+                    width: yup.number().required('Width is required'),
+                    height: yup.number().required('Height is required'),
+                }),
+            })
+        ).required('Items are required'),
     })
+
+    const initialValues = Object.fromEntries(formItems.map(item => [item.name, item.initialValue]))
+    console.log(initialValues)
+
+
 
     return (
         <div className="shipping-tab">
@@ -115,7 +127,7 @@ const ShippingTab = () => {
                     items={formItems}
                     validationSchema={validationSchema}
                     submitBtnText="Save & Continue"
-
+                    initialValues={initialValues}
                 >
                 </FormComponent>
 
