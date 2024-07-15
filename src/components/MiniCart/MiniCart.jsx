@@ -14,6 +14,8 @@ const Cart = ({ showCart, setShowCart }) => {
   const navigate = useNavigate();
 
   const products = useSelector(state => state.cart.products)
+  const noOfProducts = useSelector(state => state.cart.noOfProducts)
+
   const subtotal = useSelector(state => state.cart.subtotal)
 
   console.log(products)
@@ -55,7 +57,7 @@ const Cart = ({ showCart, setShowCart }) => {
   return (
     <div className="mini-cart">
       <div className="total">
-        <span>{`SUBTOTAL(${products ? products.length : '0'})`}</span>
+        <span>{`SUBTOTAL(${noOfProducts > 0 ? noOfProducts : '0'})`}</span>
         <span>${subtotal}</span>
       </div>
 

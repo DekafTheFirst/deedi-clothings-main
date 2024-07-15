@@ -31,7 +31,6 @@
                 //     }
                 // }
 
-
             }
 
 
@@ -64,7 +63,7 @@
                         .order-total {
                             border-radius: 10px;
                             background-color: $lighterGray;
-                            padding:  30px ;
+                            padding: 30px;
 
                             .heading {
                                 margin-bottom: 10px;
@@ -81,7 +80,7 @@
                                 display: flex;
                                 flex-direction: column;
                                 gap: 10px;
-                                                    background-color: $lighterGray;
+                                background-color: $lighterGray;
 
 
 
@@ -101,7 +100,7 @@
                     }
 
                     .checkout-items {
-                        
+
                         display: flex;
                         flex-direction: column;
 

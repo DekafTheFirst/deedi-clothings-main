@@ -15,6 +15,7 @@ const Navbar = ({ setShowCart, showCart }) => {
   const [scrolled, setScrolled] = useState(false);
 
   const products = useSelector(state => state.cart.products)
+  const noOfProducts = useSelector(state => state.cart.noOfProducts)
 
 
   useEffect(() => {
@@ -84,7 +85,6 @@ const Navbar = ({ setShowCart, showCart }) => {
               <Link className="link" to="/contact">Contact</Link>
             </div>
           </div>
-
         </div>
         <div className="center">
           <Link className="brand" to='/'><img src='/img/deedi-logo.png' /></Link>
@@ -105,7 +105,8 @@ const Navbar = ({ setShowCart, showCart }) => {
             </div>
             <div className="cartIcon" onClick={() => setShowCart((prev) => !prev)}>
               <ShoppingCartOutlinedIcon className='icon' />
-              <span>{products.length}</span>
+              <span>{noOfProducts}</span>
+
             </div>
             {showCart && <Cart setShowCart={setShowCart} showCart={showCart} />}
 
