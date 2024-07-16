@@ -10,6 +10,7 @@ import OptimizedImage from '../../components/OptimizedImage/OptimizedImage'
 import CourierOptions from '../../components/CourierOptions/CourierOptions'
 import StepWizard from './StepWizard/StepWizard'
 import ShippingTab from './ShippingTab/ShippingTab'
+import calculateNoOfProducts from '../../utils/calculateNoOfProducts'
 
 
 const CheckoutPage = () => {
@@ -100,7 +101,7 @@ const CheckoutPage = () => {
                   <h5 className="heading">Order Summary </h5>
 
                   <div className="summary-items">
-                    <div className="summary-item">No. of Items: <span className="value">{products.length}</span></div>
+                    <div className="summary-item">No. of Items: <span className="value">{calculateNoOfProducts(products)}</span></div>
                     <div className="summary-item">Subtotal: <span className="value">${subtotal}</span></div>
                     <div className="summary-item">VAT(20%): <span className="value">${vat}</span></div>
                     <div className="summary-item total">Total: <span className="value">${totalAmount}</span></div>

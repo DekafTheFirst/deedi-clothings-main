@@ -9,13 +9,18 @@ import "./Navbar.scss"
 import Cart from '../MiniCart/MiniCart';
 import { useSelector } from 'react-redux';
 import { Close, Menu, MenuOpen } from '@mui/icons-material';
+import calculateNoOfProducts from '../../utils/calculateNoOfProducts';
 
 const Navbar = ({ setShowCart, showCart }) => {
   const [toggle, setToggle] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-
+  const [noOfProducts, setNoOfProducts] = useState(0)
   const products = useSelector(state => state.cart.products)
-  const noOfProducts = useSelector(state => state.cart.noOfProducts)
+
+  useEffect(() => {
+    const noOfProducts = calculateNoOfProducts(products);
+    setNoOfProducts(noOfProducts);
+  }, [products])
 
 
   useEffect(() => {

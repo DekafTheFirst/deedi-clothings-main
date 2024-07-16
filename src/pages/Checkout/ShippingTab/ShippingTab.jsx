@@ -14,7 +14,7 @@ const ShippingTab = () => {
             label: 'First Name',
             type: 'text',
             placeholder: '',
-            initialValue: 'Dekaf',
+            initialValue: '',
         },
         {
             name: 'lastName',
@@ -108,7 +108,6 @@ const ShippingTab = () => {
     })
 
     const initialValues = Object.fromEntries(formItems.map(item => [item.name, item.initialValue]))
-    console.log(initialValues)
 
 
 

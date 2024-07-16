@@ -65,7 +65,7 @@ const FormComponent = ({ items, validationSchema, submitBtnText, children, initi
                         </div>
                     </div>
 
-                    <button type="submit" className="btn-1 submit-btn" disabled={isSubmitting}>
+                    <button type="submit" className="btn-1 submit-btn" >
                         {submitBtnText ? submitBtnText : 'Submit'}
                     </button>
                 </Form>
