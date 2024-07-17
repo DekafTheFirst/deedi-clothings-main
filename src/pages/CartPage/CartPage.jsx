@@ -10,7 +10,7 @@ import OptimizedImage from '../../components/OptimizedImage/OptimizedImage'
 
 
 const CartPage = ({ showCart, setShowCart }) => {
-  const products = useSelector(state => state.cart.products)
+  const products = useSelector(state => state.cart.cartItems)
   const navigate = useNavigate();
   console.log(products)
 

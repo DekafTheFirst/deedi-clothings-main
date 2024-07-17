@@ -13,7 +13,7 @@ import * as yup from "yup";
 
 const ShippingPage = ({ showCart, setShowCart }) => {
   // Products
-  const products = useSelector(state => state.cart.products)
+  const products = useSelector(state => state.cart.cartItems)
   console.log(products)
 
   // Price

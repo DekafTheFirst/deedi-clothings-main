@@ -24,7 +24,7 @@ const Product = () => {
   const { data: product, loading, error } = useFetch(`/products/${id}?populate=*`)
   const sortedSizes = product?.attributes?.availableSizes?.data?.sort((a, b) => a.id - b.id);
 
-  const products = useSelector(state => state.cart.products)
+  const products = useSelector(state => state.cart.cartItems)
 
 
   const [selectedSize, setSelectedSize] = useState(null);

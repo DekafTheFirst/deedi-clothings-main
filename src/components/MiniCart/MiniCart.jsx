@@ -7,18 +7,17 @@ import { loadStripe } from "@stripe/stripe-js";
 import { makeRequest } from '../../makeRequest'
 import OptimizedImage from '../OptimizedImage/OptimizedImage'
 import { Link, useNavigate } from 'react-router-dom'
+import calculateNoOfProducts from '../../utils/calculateNoOfProducts'
 
 
 const Cart = ({ showCart, setShowCart }) => {
 
   const navigate = useNavigate();
 
-  const products = useSelector(state => state.cart.products)
-  const noOfProducts = useSelector(state => state.cart.noOfProducts)
+  const products = useSelector(state => state.cart.cartItems)
 
   const subtotal = useSelector(state => state.cart.subtotal)
 
-  console.log(products)
 
   
 
@@ -57,7 +56,7 @@ const Cart = ({ showCart, setShowCart }) => {
   return (
     <div className="mini-cart">
       <div className="total">
-        <span>{`SUBTOTAL(${noOfProducts > 0 ? noOfProducts : '0'})`}</span>
+        <span>{`SUBTOTAL(${calculateNoOfProducts(products)})`}</span>
         <span>${subtotal}</span>
       </div>
 
@@ -68,7 +67,7 @@ const Cart = ({ showCart, setShowCart }) => {
               products.map(item => (
                 <div
                   className="item"
-                  key={item.idPerSize}
+                  key={item.cartItemId}
                 >
                   <Link
                     to={`/product/${item.productId}`}

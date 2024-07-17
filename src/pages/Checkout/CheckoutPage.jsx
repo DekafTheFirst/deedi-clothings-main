@@ -17,7 +17,7 @@ const CheckoutPage = () => {
   const navigate = useNavigate()
 
   // Products
-  const products = useSelector(state => state.cart.products)
+  const products = useSelector(state => state.cart.cartItems)
   const selectedCourier = useSelector(state => state.checkout.selectedCourier);
   const shippingInfo = useSelector(state => state.checkout.shippingInfo);
   const billingInfo = useSelector(state => state.checkout.billingInfo);
@@ -41,7 +41,7 @@ const CheckoutPage = () => {
     }
     return total.toFixed(2);
   }, [subtotal, vat, selectedCourier]);
-  console.log(products);
+  // console.log(products);
 
   // Price
 

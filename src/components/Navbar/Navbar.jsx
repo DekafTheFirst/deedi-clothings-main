@@ -15,7 +15,7 @@ const Navbar = ({ setShowCart, showCart }) => {
   const [toggle, setToggle] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [noOfProducts, setNoOfProducts] = useState(0)
-  const products = useSelector(state => state.cart.products)
+  const products = useSelector(state => state.cart.cartItems)
 
   useEffect(() => {
     const noOfProducts = calculateNoOfProducts(products);
