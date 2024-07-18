@@ -5,8 +5,11 @@ import InputField from '../InputField/InputField';
 import Select from 'react-select';
 import countryList from 'react-select-country-list';
 import axios from 'axios'; // Import axios for making HTTP requests
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import * as yup from "yup";
+import { nextStep, setCurrentStep, setShippingInfo } from '../../redux/checkoutReducer';
+import CircularProgress from '@mui/material/CircularProgress';
+
 
 const FormComponent = ({ }) => {
     const countries = countryList().getData();
@@ -82,6 +85,13 @@ const FormComponent = ({ }) => {
             placeholder: '',
             initialValue: ''
         },
+        {
+            name: 'country',
+            label: 'Country',
+            type: 'country-selector',
+            placeholder: '',
+            initialValue: ''
+        },
 
     ]
 
@@ -99,7 +109,6 @@ const FormComponent = ({ }) => {
         postalCode: yup.string().required('Postal code is required'),
         state: yup.string().required('State is required'),
         country: yup.string().required('Country is required'),
-
     })
 
     const items = useSelector(state => state.cart.cartItems);
@@ -124,10 +133,10 @@ const FormComponent = ({ }) => {
     //     //     setSubmitting(false); // Ensure form submission state is properly managed
     //     // }
     // };
+    const dispatch = useDispatch()
 
-
-    const handleShippingSubmit = async (address, { setSubmitting }) => {
-        console.log(address)
+    const handleShippingSubmit = async (filledShippingInfo, { setSubmitting }) => {
+        console.log(filledShippingInfo)
         try {
             const itemsWithDimensions = items.map(item => ({
                 ...item,
@@ -136,8 +145,10 @@ const FormComponent = ({ }) => {
                 height: 1, // Replace with actual value from item
                 weight: 1.5, // Replace with actual value from item
             }));
-            const response = await axios.post('http://localhost:1337/api/orders/couriers', { address, items: itemsWithDimensions });
+            const response = await axios.post('http://localhost:1337/api/orders/couriers', { address: filledShippingInfo, items: itemsWithDimensions });
             // const couriers = response.data.rates;
+            dispatch(setShippingInfo(filledShippingInfo))
+            dispatch(nextStep())
             console.log('Fetched couriers:', response.data);
         } catch (error) {
             console.error('Error fetching couriers', error);
@@ -145,6 +156,8 @@ const FormComponent = ({ }) => {
             setSubmitting(false);
         }
     };
+
+    
 
 
     return (
@@ -155,40 +168,32 @@ const FormComponent = ({ }) => {
         >
             {({ isSubmitting, setSubmitting, errors, values, touched, setFieldValue, handleBlur }) => {
                 return (
-                    <Form className='form-component'>
-                        <div className="items">
-                            {formItems.map((item) => (
-                                <InputField
-                                    key={item.name}
-                                    label={item.label}
-                                    name={item.name}
-                                    type={item.type}
-                                    as={item.as}
-                                    touched={touched[item.name]}
-                                    error={errors[item.name]}
-                                    customInputName={item.customInputName}
-                                />
-                            ))}
-
-                            <div className="input-item">
-                                <span className='label'>Country:</span>
-                                <Select
-                                    name="country"
-                                    options={countries}
-                                    value={countries.find(option => option.value === values.country)}
-                                    onChange={option => setFieldValue('country', option.value)}
-                                    onBlur={handleBlur}
-                                />
-                                <div className="error-message-container">
-                                    <ErrorMessage name="country" component='span' className='error' />
-                                </div>
+                    <>{
+                        isSubmitting ? <div className="loading-indicator"><CircularProgress /></div> : (<Form className='form-component'>
+                            <div className="items">
+                                {formItems.map((item) => (
+                                    <InputField
+                                        key={item.name}
+                                        label={item.label}
+                                        name={item.name}
+                                        type={item.type}
+                                        as={item.as}
+                                        touched={touched[item.name]}
+                                        error={errors[item.name]}
+                                        customInputName={item.customInputName}
+                                        setFieldValue={setFieldValue}
+                                        values={values}
+                                        handleBlur={handleBlur}
+                                    />
+                                ))}
                             </div>
-                        </div>
 
-                        <button type="submit" className="btn-1 submit-btn" disabled={isSubmitting} >
-                            Save & Continue
-                        </button>
-                    </Form>
+                            <button type="submit" className="btn-1 submit-btn" disabled={isSubmitting} >
+                                Save & Continue
+                            </button>
+                        </Form>)
+                    }</>
+
                 )
             }}
         </Formik>

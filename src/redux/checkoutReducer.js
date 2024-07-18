@@ -34,6 +34,9 @@ const checkoutSlice = createSlice({
     setCurrentStep: (state, action) => {
       state.currentStep = action.payload;
     },
+    nextStep: (state) => {
+      state.currentStep += 1;
+    },
   },
 });
 
@@ -42,6 +45,7 @@ export const {
   setShippingInfo,
   setBillingInfo,
   setCurrentStep,
+  nextStep,
  } = checkoutSlice.actions;
 
 export default checkoutSlice.reducer;

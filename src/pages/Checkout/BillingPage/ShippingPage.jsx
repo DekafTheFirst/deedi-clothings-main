@@ -3,7 +3,6 @@ import "./ShippingPage.scss"
 import { Close, DeleteOutlineOutlined, ShoppingBag, ShoppingBagOutlined } from '@mui/icons-material'
 import { useDispatch, useSelector } from 'react-redux'
 import { removeItem, resetCart } from '../../../redux/cartReducer'
-import { loadStripe } from "@stripe/stripe-js";
 import { makeRequest } from '../../../makeRequest'
 import { Link } from 'react-router-dom'
 import OptimizedImage from '../../../components/OptimizedImage/OptimizedImage'
@@ -32,28 +31,8 @@ const ShippingPage = ({ showCart, setShowCart }) => {
   const dispatch = useDispatch()
 
   // Payment
-  const stripePromise = loadStripe('pk_test_51OzQqiP8nMwtf7KwjeDBvSrJh0QU2AMmJncITWpVrXW9Cm8XesZc1MqofLogMUrphlOB0exTEsHSQ91mJoA5V94u00JrVmVkWL');
 
-  const handlePayment = async () => {
-    try {
-      const stripe = await stripePromise;
-      console.log(products)
-
-      const res = await makeRequest.post("/orders", {
-        products,
-      })
-
-      await stripe.redirectToCheckout({
-        sessionId: res.data.stripeSession.id
-      })
-
-
-
-    }
-    catch (err) {
-      console.log(err)
-    }
-  }
+  
 
   // Form Data
   const formItems = [
@@ -185,7 +164,7 @@ const ShippingPage = ({ showCart, setShowCart }) => {
 
                 <div className='list-empty'>
                   <span>No Products</span>
-                  <button onClick={handlePayment} className='btn-1'><ShoppingBagOutlined fontSize='small' /> Continue Shopping</button>
+                  <button className='btn-1'><ShoppingBagOutlined fontSize='small' /> Continue Shopping</button>
                 </div>}
             </div>
           </div>

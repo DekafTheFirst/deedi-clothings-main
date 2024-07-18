@@ -3,7 +3,6 @@ import "./MiniCart.scss"
 import { Close, DeleteOutlineOutlined } from '@mui/icons-material'
 import { useDispatch, useSelector } from 'react-redux'
 import { removeItem, resetCart } from '../../redux/cartReducer'
-import { loadStripe } from "@stripe/stripe-js";
 import { makeRequest } from '../../makeRequest'
 import OptimizedImage from '../OptimizedImage/OptimizedImage'
 import { Link, useNavigate } from 'react-router-dom'
@@ -25,28 +24,7 @@ const Cart = ({ showCart, setShowCart }) => {
 
 
 
-  const stripePromise = loadStripe('pk_test_51OzQqiP8nMwtf7KwjeDBvSrJh0QU2AMmJncITWpVrXW9Cm8XesZc1MqofLogMUrphlOB0exTEsHSQ91mJoA5V94u00JrVmVkWL');
 
-  const handlePayment = async () => {
-    try {
-      const stripe = await stripePromise;
-      console.log(products)
-
-      const res = await makeRequest.post("/orders", {
-        products,
-      })
-
-      await stripe.redirectToCheckout({
-        sessionId: res.data.stripeSession.id
-      })
-
-
-
-    }
-    catch (err) {
-      console.log(err)
-    }
-  }
 
   const handleCheckoutClicked = () => {
     navigate('/checkout-page');

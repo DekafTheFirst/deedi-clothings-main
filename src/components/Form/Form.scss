@@ -1,6 +1,15 @@
 @import '../../variables.scss';
 @import '../../mixins.scss';
 
+
+.loading-indicator {
+  height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
 .form-component {
     display: flex;
     flex-direction: column;
