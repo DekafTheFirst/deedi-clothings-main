@@ -11,7 +11,7 @@ import { nextStep, setCurrentStep, setShippingInfo } from '../../redux/checkoutR
 import CircularProgress from '@mui/material/CircularProgress';
 
 
-const FormComponent = ({ }) => {
+const FormComponent = () => {
     const countries = countryList().getData();
 
     const shippingInfo = useSelector(state => state.checkout.shippingInfo);
@@ -42,6 +42,23 @@ const FormComponent = ({ }) => {
             name: 'phoneNumber',
             label: 'Phone Number',
             type: 'tel',
+            placeholder: '',
+            initialValue: ''
+        },
+
+        {
+            name: 'country',
+            label: 'Country',
+            as: 'country-selector',
+            type: 'text',
+            placeholder: '',
+            initialValue: ''
+        },
+
+        {
+            name: 'state',
+            label: 'State',
+            type: 'text',
             placeholder: '',
             initialValue: ''
         },
@@ -78,20 +95,9 @@ const FormComponent = ({ }) => {
             placeholder: '',
             initialValue: ''
         },
-        {
-            name: 'state',
-            label: 'State',
-            type: 'text',
-            placeholder: '',
-            initialValue: ''
-        },
-        {
-            name: 'country',
-            label: 'Country',
-            type: 'country-selector',
-            placeholder: '',
-            initialValue: ''
-        },
+
+
+
 
     ]
 
@@ -157,7 +163,7 @@ const FormComponent = ({ }) => {
         }
     };
 
-    
+
 
 
     return (

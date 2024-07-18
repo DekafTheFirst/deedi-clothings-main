@@ -1,11 +1,11 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import './InputField.scss';
 import { ErrorMessage, Field } from 'formik';
 import Select from 'react-select';
 import countryList from 'react-select-country-list';
 
 const InputField = ({ name, label, type, placeholder, as, touched, error, customInputName, values, handleBlur, setFieldValue }) => {
-    const countries = countryList().getData();
+    const countries = useMemo(() => countryList().getData(), []);
 
     // This deals with "as" prop and not "type", okay???
     const inputVariations = [
@@ -38,39 +38,57 @@ const InputField = ({ name, label, type, placeholder, as, touched, error, custom
     //         break;
     // }
 
+    const CountrySelector = ({
+        field, // { name, value, onChange, onBlur }
+        form: { touched, errors, }, // also values, setXXXX, handleXXXX, dirty, isValid, status, etc.
+        ...props
+    }) => {
+       
+        return (
+            <Select
+                name={name}
+                options={countries}
+                value={countries.find(option => option.value === field.value)}
+                onChange={option => {
+                    console.log(option)
+                    setFieldValue(name, option.value);
+                }}
+                onBlur={field.onBlur}
+                onInputChange={() => {
+                    console.log('change')
+                }}
 
-    const selectInputRef = useRef(null);
+            />
+        );
+    }
 
-    useEffect(() => {
-        const handleAutofill = (event) => {
-            const target = event.target;
-            if (target.name === name) {
-                setFieldValue(name, target.value);
-            }
-        };
-
-        const inputElement = selectInputRef.current;
-        inputElement.addEventListener('input', handleAutofill);
-
-        return () => {
-            inputElement.removeEventListener('input', handleAutofill);
-        };
-    }, [name, setFieldValue]);
 
 
     return (
         <div className={`input-item ${as == 'textarea' ? 'textarea' : ''} ${as == 'custom' ? customInputName : ''}`}>
             <span className='label'>{label}:</span>
 
-            {type === 'country-selector' ?
-                (<Select
-                    name="country"
-                    options={countries}
-                    value={countries.find(option => option.value === values.country)}
-                    onChange={option => setFieldValue('country', option.value)}
-                    onBlur={handleBlur}
-                    ref={selectInputRef}
-                />)
+            {as === 'country-selector' ?
+                (
+                    // <Select
+                    //     name='country'
+                    //     options={countries}
+                    //     value={countries.find(option => option.value === values.country)}
+                    //     onChange={option => setFieldValue('country', option.value)}
+                    //     onBlur={handleBlur}
+
+                    // />
+                    <Field
+                        name={name}
+                        type={type}
+                        placeholder={placeholder}
+                        className={`inputField ${touched && error ? 'input-error' : ''}`}
+                        component={CountrySelector}
+                        autoComplete='my-name'
+                    >
+
+                    </Field>
+                )
                 :
                 (<Field
                     as={as == 'textarea' ? 'textarea' : 'input'}
@@ -78,6 +96,7 @@ const InputField = ({ name, label, type, placeholder, as, touched, error, custom
                     name={name}
                     placeholder={placeholder}
                     className={`inputField ${touched && error ? 'input-error' : ''}`}
+
                 />)}
 
             <div className="error-message-container">
