@@ -25,50 +25,124 @@ const InputField = memo(({ name, label, type, placeholder, as, touched, error, c
     //     );
     // };
 
-    const [countryId, setCountryId] = useState(null);
+    const [country, setCountry] = useState(null);
     const [stateId, setStateId] = useState(null);
 
-    useEffect(() => {
-        console.log(countryId)
-    }, [countryId])
+    // useEffect(() => {
+    // }, [country])
 
+    const countryRef = useRef(null);
+    const stateRef = useRef(null);
+
+
+    const [countriesList, setCountriesList] = useState([]);
+    const [stateList, setStateList] = useState([]);
+    const [cityList, setCityList] = useState([]);
+    const [languageList, setLanguageList] = useState([]);
+  
+    useEffect(() => {
+      GetCountries().then((result) => {
+        setCountries(result);
+      });
+  
+      GetLanguages().then((result) => {
+        setLanguageList(result);
+      });
+    }, []);
+
+    useEffect(() => {
+        // const handleCountryChange = () => {
+        //     if (countryRef.current) {
+        //         const selectedCountry = countryRef.current.querySelector('input').value;
+        //         if (selectedCountry && selectedCountry !== values[name]) {
+        //             setFieldValue(name, selectedCountry);
+        //         }
+        //     }
+        // };
+
+        // if (countryRef.current) {
+        //     countryRef.current.addEventListener('change', handleCountryChange);
+        // }
+
+        // return () => {
+        //     if (countryRef.current) {
+        //         countryRef.current.removeEventListener('change', handleCountryChange);
+        //     }
+        // };
+        if (countryRef.current) {
+            const input = countryRef.current.querySelector('input');
+            console.log(input)
+            if (input) {
+                input.setAttribute('autocomplete', 'off');
+            }
+        }
+    }, [countryRef, name, setFieldValue, values]);
+
+
+    useEffect(() => {
+        const handleStateChange = () => {
+            if (stateRef.current) {
+                const selectedState = stateRef.current.querySelector('input').value;
+                if (selectedState && selectedState !== values[name]) {
+                    setFieldValue(name, selectedState);
+                }
+            }
+        };
+
+        if (stateRef.current) {
+            stateRef.current.addEventListener('change', handleStateChange);
+        }
+
+        return () => {
+            if (stateRef.current) {
+                stateRef.current.removeEventListener('change', handleStateChange);
+            }
+        };
+    }, [stateRef, name, setFieldValue, values]);
 
     const renderInput = () => {
         switch (as) {
             case 'country-selector':
                 return (
-                    <CountrySelect
-                        onChange={(e) => {
-                            // console.log(e)
-                            setCountryId(e.id)
-                            setFieldValue(name, e.iso2)
-                        }}
-                        placeHolder="Select Country"
-                    />
+                    <div ref={countryRef}>
+
+                        <CountrySelect
+                            onChange={(e) => {
+                                // console.log('country changed:', e)
+                                // setCountry(e)
+                                setFieldValue('country', e.iso2)
+                                setFieldValue('countryData', e)
+                            }}
+                            placeHolder={values.countryData ? values.countryData.name : 'Select Country'}
+                        />
+                    </div>
                 );
 
             case 'state-selector': {
-                console.log('countryId from state-selector', countryId);
                 return (
-                    <StateSelect
-                        countryid={values.country}
-                        onChange={(e) => {
-                            setStateId(e.id);
-                            setFieldValue(() => name, e.iso2);
-                        }}
-                        placeHolder="Select State"
-                    />
+                    <div ref={stateRef}>
+                        <StateSelect
+                            countryid={values.countryData?.id}
+                            onChange={(state) => {
+                                setFieldValue('state', state.name);
+                                setFieldValue('stateData', state);
+                            }}
+                            placeHolder={values.stateData ? values.stateData.name : 'Select State'}
+                        />
+                    </div>
                 );
             }
             case 'city-selector':
                 return (
                     <CitySelect
-                        country={values.country} // Ensure you have the selected country in state
-                        state={values.state} // Ensure you have the selected state in state
-                        onChange={(e) => setFieldValue(name, e.id)}
-                        placeHolder="Select City"
-                        inputClassname={name}
-                        name={name}
+
+                        countryid={values.countryData?.id} // Ensure you have the selected country in state
+                        stateid={values.stateData?.id} // Ensure you have the selected state in state
+                        onChange={(city) => {
+                            setFieldValue('city', city.name);
+                            setFieldValue('cityData', city)
+                        }}
+                        placeHolder={values.cityData ? values.cityData.name : 'Select City'}
                     />
                 );
             case 'textarea':

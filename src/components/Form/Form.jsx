@@ -31,8 +31,6 @@ const FormComponent = () => {
             initialValue: ''
         },
 
-
-
         {
             name: 'addressLine1',
             label: 'Address Line 1',
@@ -73,6 +71,7 @@ const FormComponent = () => {
         {
             name: 'city',
             label: 'City',
+            as: 'city-selector',
             type: 'text',
             placeholder: '',
             initialValue: ''
@@ -172,13 +171,15 @@ const FormComponent = () => {
 
     return (
         <Formik
-            initialValues={{ ...initialValues }}
+            initialValues={{ ...initialValues, countryData: null, stateCode: null, cityData: null, }}
             onSubmit={handleShippingSubmit}
             validationSchema={validationSchema}
         >
             {({ isSubmitting, setSubmitting, errors, values, touched, setFieldValue, handleBlur }) => {
-                console.log('values:', values);
-                console.log('errors:', errors)
+                useEffect(() => {
+                    console.log('values:', values);
+                    // console.log('errors:', errors);
+                }, [values, errors])
                 return (
                     <>{
                         isSubmitting ? <div className="loading-indicator"><CircularProgress /></div> : (<Form className='form-component'>
