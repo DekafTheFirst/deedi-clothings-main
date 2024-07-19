@@ -183,7 +183,7 @@ const FormComponent = () => {
                 return (
                     <>{
                         isSubmitting ? <div className="loading-indicator"><CircularProgress /></div> : (
-                            <Form className='form-component' autoComplete='off'>
+                            <Form className='form-component' autoComplete='off' aria-autocomplete='off'>
                                 <div className="items">
                                     {formItems.map((item) => (
                                         <InputField
