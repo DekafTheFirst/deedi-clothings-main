@@ -10,7 +10,6 @@ import * as yup from "yup";
 import { nextStep, setCurrentStep, setShippingInfo } from '../../redux/checkoutReducer';
 import CircularProgress from '@mui/material/CircularProgress';
 
-
 const FormComponent = () => {
     const countries = countryList().getData();
 
@@ -31,21 +30,29 @@ const FormComponent = () => {
             placeholder: '',
             initialValue: ''
         },
+
+
+
         {
-            name: 'email',
-            label: 'Email',
-            type: 'email',
-            placeholder: '',
-            initialValue: ''
-        },
-        {
-            name: 'phoneNumber',
-            label: 'Phone Number',
-            type: 'tel',
+            name: 'addressLine1',
+            label: 'Address Line 1',
+            type: 'text',
+            as: 'custom',
+            customInputName: 'addressLine',
             placeholder: '',
             initialValue: ''
         },
 
+
+        {
+            name: 'addressLine2',
+            label: 'Address Line 2(Optional)',
+            type: 'text',
+            as: 'custom',
+            customInputName: 'addressLine',
+            placeholder: '',
+            initialValue: ''
+        },
         {
             name: 'country',
             label: 'Country',
@@ -58,26 +65,8 @@ const FormComponent = () => {
         {
             name: 'state',
             label: 'State',
+            as: 'state-selector',
             type: 'text',
-            placeholder: '',
-            initialValue: ''
-        },
-        {
-            name: 'addressLine1',
-            label: 'Address Line 1',
-            type: 'text',
-            as: 'custom',
-            customInputName: 'addressLine',
-            placeholder: '',
-            initialValue: ''
-        },
-
-        {
-            name: 'addressLine2',
-            label: 'Address Line 2(Optional)',
-            type: 'text',
-            as: 'custom',
-            customInputName: 'addressLine',
             placeholder: '',
             initialValue: ''
         },
@@ -95,6 +84,21 @@ const FormComponent = () => {
             placeholder: '',
             initialValue: ''
         },
+        {
+            name: 'phoneNumber',
+            label: 'Phone Number',
+            type: 'tel',
+            placeholder: '',
+            initialValue: ''
+        },
+        {
+            name: 'email',
+            label: 'Email',
+            type: 'email',
+            placeholder: '',
+            initialValue: ''
+        },
+
 
 
 
@@ -173,6 +177,8 @@ const FormComponent = () => {
             validationSchema={validationSchema}
         >
             {({ isSubmitting, setSubmitting, errors, values, touched, setFieldValue, handleBlur }) => {
+                console.log('values:', values);
+                console.log('errors:', errors)
                 return (
                     <>{
                         isSubmitting ? <div className="loading-indicator"><CircularProgress /></div> : (<Form className='form-component'>

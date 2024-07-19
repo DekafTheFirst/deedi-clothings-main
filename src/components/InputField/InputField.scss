@@ -35,6 +35,10 @@
             outline: none !important;
             border-color: #fc8181 !important;
         }
+
+        &.country-input-field {
+            padding: 0;
+        }
     }
 
     &.addressLine {
