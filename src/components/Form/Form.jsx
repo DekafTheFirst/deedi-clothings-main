@@ -171,7 +171,7 @@ const FormComponent = () => {
 
     return (
         <Formik
-            initialValues={{ ...initialValues, countryData: null, stateCode: null, cityData: null, }}
+            initialValues={{ ...initialValues, countryData: null, stateData: null, cityData: null, }}
             onSubmit={handleShippingSubmit}
             validationSchema={validationSchema}
         >
@@ -182,29 +182,30 @@ const FormComponent = () => {
                 }, [values, errors])
                 return (
                     <>{
-                        isSubmitting ? <div className="loading-indicator"><CircularProgress /></div> : (<Form className='form-component'>
-                            <div className="items">
-                                {formItems.map((item) => (
-                                    <InputField
-                                        key={item.name}
-                                        label={item.label}
-                                        name={item.name}
-                                        type={item.type}
-                                        as={item.as}
-                                        touched={touched[item.name]}
-                                        error={errors[item.name]}
-                                        customInputName={item.customInputName}
-                                        setFieldValue={setFieldValue}
-                                        values={values}
-                                        handleBlur={handleBlur}
-                                    />
-                                ))}
-                            </div>
+                        isSubmitting ? <div className="loading-indicator"><CircularProgress /></div> : (
+                            <Form className='form-component' autoComplete='off'>
+                                <div className="items">
+                                    {formItems.map((item) => (
+                                        <InputField
+                                            key={item.name}
+                                            label={item.label}
+                                            name={item.name}
+                                            type={item.type}
+                                            as={item.as}
+                                            touched={touched[item.name]}
+                                            error={errors[item.name]}
+                                            customInputName={item.customInputName}
+                                            setFieldValue={setFieldValue}
+                                            values={values}
+                                            handleBlur={handleBlur}
+                                        />
+                                    ))}
+                                </div>
 
-                            <button type="submit" className="btn-1 submit-btn" disabled={isSubmitting} >
-                                Save & Continue
-                            </button>
-                        </Form>)
+                                <button type="submit" className="btn-1 submit-btn" disabled={isSubmitting} >
+                                    Save & Continue
+                                </button>
+                            </Form>)
                     }</>
 
                 )

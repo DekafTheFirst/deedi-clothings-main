@@ -8,6 +8,7 @@ import {
     CountrySelect,
     StateSelect,
     LanguageSelect,
+    GetCountries,
 } from "react-country-state-city";
 import "react-country-state-city/dist/react-country-state-city.css";
 import { compose } from 'redux';
@@ -34,113 +35,128 @@ const InputField = memo(({ name, label, type, placeholder, as, touched, error, c
     const countryRef = useRef(null);
     const stateRef = useRef(null);
 
+    const [countryList, setCountryList] = useState([]);
 
-    const [countriesList, setCountriesList] = useState([]);
-    const [stateList, setStateList] = useState([]);
-    const [cityList, setCityList] = useState([]);
-    const [languageList, setLanguageList] = useState([]);
-  
-    useEffect(() => {
-      GetCountries().then((result) => {
-        setCountries(result);
-      });
-  
-      GetLanguages().then((result) => {
-        setLanguageList(result);
-      });
-    }, []);
-
-    useEffect(() => {
-        // const handleCountryChange = () => {
-        //     if (countryRef.current) {
-        //         const selectedCountry = countryRef.current.querySelector('input').value;
-        //         if (selectedCountry && selectedCountry !== values[name]) {
-        //             setFieldValue(name, selectedCountry);
-        //         }
-        //     }
-        // };
-
-        // if (countryRef.current) {
-        //     countryRef.current.addEventListener('change', handleCountryChange);
-        // }
-
-        // return () => {
-        //     if (countryRef.current) {
-        //         countryRef.current.removeEventListener('change', handleCountryChange);
-        //     }
-        // };
-        if (countryRef.current) {
-            const input = countryRef.current.querySelector('input');
-            console.log(input)
-            if (input) {
-                input.setAttribute('autocomplete', 'off');
+    useEffect(()=> {
+        const fetchCountryList = async () => {
+            try {
+                const countryData = await GetCountries();
+                setCountryList(countryData); // Store fetched country data in state
+            } catch (error) {
+                console.error('Error fetching country data:', error);
             }
-        }
-    }, [countryRef, name, setFieldValue, values]);
+        };
 
+        // Fetch the country list only if it's not already fetched
+        if (countryList.length === 0) {
+            fetchCountryList();
+        }
+    }, [])
 
     useEffect(() => {
-        const handleStateChange = () => {
-            if (stateRef.current) {
-                const selectedState = stateRef.current.querySelector('input').value;
-                if (selectedState && selectedState !== values[name]) {
-                    setFieldValue(name, selectedState);
+        
+
+
+        const handleCountryChange = async () => {
+            if (countryRef.current) {
+                const selectedCountry = countryRef.current.querySelector('input').value;
+
+                if (selectedCountry && selectedCountry !== values['name']) {
+                    // console.log(countryList[1]);
+                    const selectedCountryData = countryList.find(country => country.name === selectedCountry);
+                    console.log(selectedCountryData)
+
+                    setFieldValue('country', selectedCountry);
+                    setFieldValue('countryData', selectedCountryData);
+                    // setFieldValue('state', '');
+                    // setFieldValue('stateData', null);
+                    // setFieldValue('city', '');
+                    // setFieldValue('cityData', null);
+
+                }
+                else {
+                    console.log('matches already')
                 }
             }
         };
 
-        if (stateRef.current) {
-            stateRef.current.addEventListener('change', handleStateChange);
+        if (countryRef.current) {
+            countryRef.current.addEventListener('change', handleCountryChange);
         }
 
         return () => {
-            if (stateRef.current) {
-                stateRef.current.removeEventListener('change', handleStateChange);
+            if (countryRef.current) {
+                countryRef.current.removeEventListener('change', handleCountryChange);
             }
         };
-    }, [stateRef, name, setFieldValue, values]);
+    }, [countryRef, name, setFieldValue, values]);
+
+
+    // useEffect(() => {
+    //     const handleStateChange = () => {
+    //         if (stateRef.current) {
+    //             const selectedState = stateRef.current.querySelector('input').value;
+    //             if (selectedState && selectedState !== values[name]) {
+    //                 setFieldValue('state', '');
+    //             }
+    //         }
+    //     };
+
+    //     if (stateRef.current) {
+    //         stateRef.current.addEventListener('change', handleStateChange);
+    //     }
+
+    //     return () => {
+    //         if (stateRef.current) {
+    //             stateRef.current.removeEventListener('change', handleStateChange);
+    //         }
+    //     };
+    // }, [stateRef, name, setFieldValue, values]);
 
     const renderInput = () => {
         switch (as) {
             case 'country-selector':
                 return (
                     <div ref={countryRef}>
-
                         <CountrySelect
                             onChange={(e) => {
-                                // console.log('country changed:', e)
+                                console.log('country changed:', e)
                                 // setCountry(e)
-                                setFieldValue('country', e.iso2)
-                                setFieldValue('countryData', e)
+                                setFieldValue('country', e.iso2);
+                                setFieldValue('countryData', e);
+                                setFieldValue('state', '');
+                                setFieldValue('stateData', null);
+                                setFieldValue('city', '');
+                                setFieldValue('cityData', null);
                             }}
                             placeHolder={values.countryData ? values.countryData.name : 'Select Country'}
+                            showFlag={false}
                         />
                     </div>
                 );
 
             case 'state-selector': {
                 return (
-                    <div ref={stateRef}>
-                        <StateSelect
-                            countryid={values.countryData?.id}
-                            onChange={(state) => {
-                                setFieldValue('state', state.name);
-                                setFieldValue('stateData', state);
-                            }}
-                            placeHolder={values.stateData ? values.stateData.name : 'Select State'}
-                        />
-                    </div>
+                    <StateSelect
+                        countryid={values.countryData?.id}
+                        onChange={(state) => {
+                            setFieldValue('state', state.name);
+                            setFieldValue('stateData', state);
+                            setFieldValue('city', '');
+                            setFieldValue('cityData', null);
+                        }}
+                        placeHolder={values.stateData ? values.stateData.name : 'Select State'}
+                    />
                 );
             }
             case 'city-selector':
                 return (
                     <CitySelect
-
                         countryid={values.countryData?.id} // Ensure you have the selected country in state
                         stateid={values.stateData?.id} // Ensure you have the selected state in state
                         onChange={(city) => {
                             setFieldValue('city', city.name);
-                            setFieldValue('cityData', city)
+                            setFieldValue('cityData', city);
                         }}
                         placeHolder={values.cityData ? values.cityData.name : 'Select City'}
                     />
