@@ -209,10 +209,7 @@ const FormComponent = () => {
                     try {
                         const stateData = await GetState(countryId);
                         setStateList(stateData);
-                        setFieldValue('state', stateData[0].name);
-                        setFieldValue('stateData', stateData[0]);
-                        console.log('state list fetched', stateData)
-
+                        
                     } catch (error) {
                         console.error('Error fetching state data:', error);
                     }
@@ -220,7 +217,6 @@ const FormComponent = () => {
 
                 const fetchCityList = async (countryId, stateId) => {
                     // console.log('countryId:', countryId, '\n\nstateId:', stateId);
-
                     try {
                         const cityData = await GetCity(countryId, stateId);
                         setCityList(cityData);
@@ -240,8 +236,8 @@ const FormComponent = () => {
                         fetchCityList(values.countryData?.id, values.stateData?.id);
                     }
                 }, [values.stateData]);
-            
-                
+
+
                 return (
                     <>{
                         isSubmitting ? <div className="loading-indicator"><CircularProgress /></div> : (

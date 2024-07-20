@@ -37,17 +37,6 @@ const InputField = memo(({ name, label, type, placeholder, as, touched, error, c
     const countryRef = useRef(null);
     const stateRef = useRef(null);
 
-    
-
-
-
-    
-
-
-    
-
-    
-
 
     const handleCountryChange = (e) => {
         const country = countryList[e.target.value];
@@ -60,12 +49,11 @@ const InputField = memo(({ name, label, type, placeholder, as, touched, error, c
         // setFieldValue("cityData", null);
     };
 
+
     const handleStateChange = (e) => {
         const state = stateList[e.target.value];
         setFieldValue('state', state.name);
         setFieldValue('stateData', state);
-        // setFieldValue('city', '');
-        // setFieldValue('cityData', null);
     };
 
     const handleCityChange = (e) => {
@@ -208,8 +196,7 @@ const InputField = memo(({ name, label, type, placeholder, as, touched, error, c
                         onChange={handleStateChange}
                         className='inputField'
                         defaultValue={'placeholder'}
-                        value={stateList[0]}
-
+                        // value={stateList[0]}
                     >
                         <option value="placeholder" disabled >Select your state</option>
 
@@ -236,7 +223,6 @@ const InputField = memo(({ name, label, type, placeholder, as, touched, error, c
                         onChange={handleCityChange}
                         className='inputField'
                         defaultValue='placeholder'
-
                     >
                         <option value="placeholder" disabled>Select your city</option>
 
