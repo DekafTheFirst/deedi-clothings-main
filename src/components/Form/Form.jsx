@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './Form.scss';
-import { ErrorMessage, Form, Formik } from 'formik';
+import { ErrorMessage, Form, Formik, useFormikContext } from 'formik';
 import InputField from '../InputField/InputField';
 import Select from 'react-select';
 import countryList from 'react-select-country-list';
@@ -9,10 +9,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import * as yup from "yup";
 import { nextStep, setCurrentStep, setShippingInfo } from '../../redux/checkoutReducer';
 import CircularProgress from '@mui/material/CircularProgress';
+import { GetCountries, GetState } from 'react-country-state-city/dist/cjs';
 
 const FormComponent = () => {
-    const countries = countryList().getData();
-
     const shippingInfo = useSelector(state => state.checkout.shippingInfo);
 
     const formItems = [
@@ -121,7 +120,7 @@ const FormComponent = () => {
     })
 
     const items = useSelector(state => state.cart.cartItems);
-    console.log(items)
+    // console.log(items)
 
     const initialValues = Object.fromEntries(formItems.map(item => [item.name, item.initialValue]))
 
@@ -166,6 +165,30 @@ const FormComponent = () => {
         }
     };
 
+    const [countryList, setCountryList] = useState([]);
+    const [stateList, setStateList] = useState([]);
+
+    const fetchCountryList = async () => {
+        try {
+            const countryData = await GetCountries();
+            setCountryList(countryData);
+            console.log('fetchingCountryList again')
+
+        } catch (error) {
+            console.error('Error fetching country data:', error);
+        }
+    };
+
+    useEffect(() => {
+        fetchCountryList();
+    }, [])
+
+
+
+    
+
+    
+
 
 
 
@@ -180,6 +203,25 @@ const FormComponent = () => {
                     console.log('values:', values);
                     // console.log('errors:', errors);
                 }, [values, errors])
+
+                const fetchStateList = async (countryId) => {
+                    try {
+                        const stateData = await GetState(countryId);
+                        setStateList(stateData);
+                        setFieldValue('state', stateData[0].name);
+                        setFieldValue('stateData', stateData[0]);
+                        console.log('state list fetched')
+            
+                    } catch (error) {
+                        console.error('Error fetching state data:', error);
+                    }
+                };
+                
+                useEffect(() => {
+                    if (values.countryData?.id) {
+                        fetchStateList(values.countryData.id);
+                    }
+                }, [values.countryData]);
                 return (
                     <>{
                         isSubmitting ? <div className="loading-indicator"><CircularProgress /></div> : (
@@ -198,6 +240,9 @@ const FormComponent = () => {
                                             setFieldValue={setFieldValue}
                                             values={values}
                                             handleBlur={handleBlur}
+                                            countryList={countryList}
+                                            fetchStateList={fetchStateList}
+                                            stateList={stateList}
                                         />
                                     ))}
                                 </div>

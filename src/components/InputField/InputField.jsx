@@ -15,7 +15,7 @@ import {
 import "react-country-state-city/dist/react-country-state-city.css";
 import { compose } from 'redux';
 
-const InputField = memo(({ name, label, type, placeholder, as, touched, error, customInputName, values, handleBlur, setFieldValue }) => {
+const InputField = memo(({ name, label, type, placeholder, as, touched, error, customInputName, values, handleBlur, setFieldValue, countryList, fetchStateList, stateList}) => {
     // const CountrySelector = ({
     //     field, // { name, value, onChange, onBlur }
     //     form: { setFieldValue }, // also values, setXXXX, handleXXXX, dirty, isValid, status, etc.
@@ -37,32 +37,21 @@ const InputField = memo(({ name, label, type, placeholder, as, touched, error, c
     const countryRef = useRef(null);
     const stateRef = useRef(null);
 
-    const [countryList, setCountryList] = useState([]);
-    const [stateList, setStateList] = useState([]);
+    
     const [cityList, setCityList] = useState([]);
 
-    const fetchCountryList = async () => {
-        try {
-            const countryData = await GetCountries();
-            setCountryList(countryData);
-        } catch (error) {
-            console.error('Error fetching country data:', error);
-        }
-    };
 
-    const fetchStateList = async (countryId) => {
-        try {
-            const stateData = await GetState(countryId);
-            setStateList(stateData);
-        } catch (error) {
-            console.error('Error fetching state data:', error);
-        }
-    };
 
-    const fetchCityList = async (stateId) => {
-        console.log(stateId)
+    
+
+
+    
+
+    const fetchCityList = async (countryId, stateId) => {
+        console.log('countryId:', countryId, '\n\nstateId:', stateId);
+
         try {
-            const cityData = await GetCity(stateId);
+            const cityData = await GetCity(countryId, stateId);
             setCityList(cityData);
         } catch (error) {
             console.error('Error fetching city data:', error);
@@ -74,18 +63,19 @@ const InputField = memo(({ name, label, type, placeholder, as, touched, error, c
         const country = countryList[e.target.value];
         setFieldValue("country", country.iso2);
         setFieldValue("countryData", country);
-        setFieldValue("state", '');
-        setFieldValue("stateData", null);
-        setFieldValue("city", '');
-        setFieldValue("cityData", null);
+
+        // setFieldValue("state", '');
+        // setFieldValue("stateData", null);
+        // setFieldValue("city", '');
+        // setFieldValue("cityData", null);
     };
 
     const handleStateChange = (e) => {
         const state = stateList[e.target.value];
         setFieldValue('state', state.name);
         setFieldValue('stateData', state);
-        setFieldValue('city', '');
-        setFieldValue('cityData', null);
+        // setFieldValue('city', '');
+        // setFieldValue('cityData', null);
     };
 
     const handleCityChange = (e) => {
@@ -95,21 +85,16 @@ const InputField = memo(({ name, label, type, placeholder, as, touched, error, c
     };
 
     useEffect(() => {
-        fetchCountryList();
     }, []);
 
+   
     useEffect(() => {
-        if (values.countryData?.id) {
-            fetchStateList(values.countryData.id);
-        }
-    }, [values.countryData]);
-
-    useEffect(() => {
-        if (values.stateData?.id) {
-            fetchCityList(values.stateData.id);
+        if (values.countryData?.id && values.stateData?.id) {
+            fetchCityList(values.countryData?.id, values.stateData?.id);
         }
     }, [values.stateData]);
 
+    
 
 
 
@@ -212,7 +197,10 @@ const InputField = memo(({ name, label, type, placeholder, as, touched, error, c
                             // aria-autocomplete='off'
                             // autocomplete='off'
                             className='inputField'
+                            defaultValue={'placeholder'}
                         >
+                            <option value="placeholder" disabled>Select your country</option>
+
                             {countryList.map((item, index) => (
                                 <option key={index} value={index}>
                                     {item.name}
@@ -237,7 +225,12 @@ const InputField = memo(({ name, label, type, placeholder, as, touched, error, c
                     <select
                         onChange={handleStateChange}
                         className='inputField'
+                        defaultValue={'placeholder'}
+                        value={stateList[0]}
+
                     >
+                        <option value="placeholder" disabled >Select your state</option>
+
                         {stateList.map((item, index) => (
                             <option key={index} value={index}>
                                 {item.name}
@@ -260,8 +253,11 @@ const InputField = memo(({ name, label, type, placeholder, as, touched, error, c
                     <select
                         onChange={handleCityChange}
                         className='inputField'
-                        value={values.cityData ? values.cityData.id : ''}
+                        defaultValue='placeholder'
+
                     >
+                        <option value="placeholder" disabled>Select your city</option>
+
                         {cityList.map((item, index) => (
                             <option key={index} value={index}>
                                 {item.name}
