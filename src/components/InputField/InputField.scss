@@ -39,6 +39,10 @@
         &.country-input-field {
             padding: 0;
         }
+
+        .placeholder{
+            background-color: $lightGray;
+        }
     }
 
     &.addressLine {

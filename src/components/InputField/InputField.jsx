@@ -15,7 +15,7 @@ import {
 import "react-country-state-city/dist/react-country-state-city.css";
 import { compose } from 'redux';
 
-const InputField = memo(({ name, label, type, placeholder, as, touched, error, customInputName, values, handleBlur, setFieldValue, countryList, stateList, cityList}) => {
+const InputField = memo(({ name, label, type, placeholder, as, touched, error, customInputName, values, handleBlur, setFieldValue, countryList, stateList, cityList }) => {
     // const CountrySelector = ({
     //     field, // { name, value, onChange, onBlur }
     //     form: { setFieldValue }, // also values, setXXXX, handleXXXX, dirty, isValid, status, etc.
@@ -62,9 +62,9 @@ const InputField = memo(({ name, label, type, placeholder, as, touched, error, c
         setFieldValue('cityData', city);
     };
 
-    
-   
-    
+
+
+
 
 
 
@@ -196,9 +196,15 @@ const InputField = memo(({ name, label, type, placeholder, as, touched, error, c
                         onChange={handleStateChange}
                         className='inputField'
                         defaultValue={'placeholder'}
-                        // value={stateList[0]}
+                    // value={stateList[0]}
                     >
-                        <option value="placeholder" disabled >Select your state</option>
+                        <option 
+                        value="placeholder" 
+                        className='placeholder'
+                        onClick={() => {
+                            setFieldValue('state', '');
+                            setFieldValue('stateData', null);
+                        }}>Select your state</option>
 
                         {stateList.map((item, index) => (
                             <option key={index} value={index}>

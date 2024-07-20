@@ -1,7 +1,8 @@
 import {
   RouterProvider,
   createBrowserRouter,
-  Outlet
+  Outlet,
+  useLocation
 } from 'react-router-dom';
 import Home from './pages/Home/Home';
 import Products from './pages/Products/Products';
@@ -20,6 +21,7 @@ import CheckoutPage from './pages/Checkout/CheckoutPage';
 const Layout = () => {
   const [showCart, setShowCart] = useState(false);
 
+
   useEffect(() => {
     const handleOutsideClick = (event) => {
       if (!event.target.closest('.mini-cart, .cartIcon, .delete')) {
@@ -36,6 +38,9 @@ const Layout = () => {
     };
 
   }, []);
+  
+
+
 
   return (
     <div className="app">
@@ -68,7 +73,7 @@ const router = createBrowserRouter([
         path: "/checkout-page",
         element: <CheckoutPage />
       },
-      
+
       {
         path: '/products/:slug',
         element: <Products />

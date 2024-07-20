@@ -4,7 +4,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import "./Navbar.scss"
 import Cart from '../MiniCart/MiniCart';
 import { useSelector } from 'react-redux';
@@ -16,11 +16,14 @@ const Navbar = ({ setShowCart, showCart }) => {
   const [scrolled, setScrolled] = useState(false);
   const [noOfProducts, setNoOfProducts] = useState(0)
   const products = useSelector(state => state.cart.cartItems)
+  const { pathname, state } = useLocation()
 
   useEffect(() => {
     const noOfProducts = calculateNoOfProducts(products);
     setNoOfProducts(noOfProducts);
   }, [products])
+
+
 
 
   useEffect(() => {
@@ -108,11 +111,11 @@ const Navbar = ({ setShowCart, showCart }) => {
               <span>My Account</span>
               <KeyboardArrowDownIcon className='icon down-arrow' fontSize="small" />
             </div>
-            <div className="cartIcon" onClick={() => setShowCart((prev) => !prev)}>
+
+            {pathname !== '/checkout-page' && <div className="cartIcon" onClick={() => setShowCart((prev) => !prev)}>
               <ShoppingCartOutlinedIcon className='icon' />
               <span>{noOfProducts}</span>
-
-            </div>
+            </div>}
             {showCart && <Cart setShowCart={setShowCart} showCart={showCart} />}
 
 
