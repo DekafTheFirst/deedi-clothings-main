@@ -15,7 +15,7 @@ import {
 import "react-country-state-city/dist/react-country-state-city.css";
 import { compose } from 'redux';
 
-const InputField = memo(({ name, label, type, placeholder, as, touched, error, customInputName, values, handleBlur, setFieldValue, countryList, fetchStateList, stateList}) => {
+const InputField = memo(({ name, label, type, placeholder, as, touched, error, customInputName, values, handleBlur, setFieldValue, countryList, stateList, cityList}) => {
     // const CountrySelector = ({
     //     field, // { name, value, onChange, onBlur }
     //     form: { setFieldValue }, // also values, setXXXX, handleXXXX, dirty, isValid, status, etc.
@@ -38,7 +38,6 @@ const InputField = memo(({ name, label, type, placeholder, as, touched, error, c
     const stateRef = useRef(null);
 
     
-    const [cityList, setCityList] = useState([]);
 
 
 
@@ -47,16 +46,7 @@ const InputField = memo(({ name, label, type, placeholder, as, touched, error, c
 
     
 
-    const fetchCityList = async (countryId, stateId) => {
-        console.log('countryId:', countryId, '\n\nstateId:', stateId);
-
-        try {
-            const cityData = await GetCity(countryId, stateId);
-            setCityList(cityData);
-        } catch (error) {
-            console.error('Error fetching city data:', error);
-        }
-    };
+    
 
 
     const handleCountryChange = (e) => {
@@ -84,16 +74,8 @@ const InputField = memo(({ name, label, type, placeholder, as, touched, error, c
         setFieldValue('cityData', city);
     };
 
-    useEffect(() => {
-    }, []);
-
+    
    
-    useEffect(() => {
-        if (values.countryData?.id && values.stateData?.id) {
-            fetchCityList(values.countryData?.id, values.stateData?.id);
-        }
-    }, [values.stateData]);
-
     
 
 

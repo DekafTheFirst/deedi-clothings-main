@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import * as yup from "yup";
 import { nextStep, setCurrentStep, setShippingInfo } from '../../redux/checkoutReducer';
 import CircularProgress from '@mui/material/CircularProgress';
-import { GetCountries, GetState } from 'react-country-state-city/dist/cjs';
+import { GetCity, GetCountries, GetState } from 'react-country-state-city/dist/cjs';
 
 const FormComponent = () => {
     const shippingInfo = useSelector(state => state.checkout.shippingInfo);
@@ -167,6 +167,7 @@ const FormComponent = () => {
 
     const [countryList, setCountryList] = useState([]);
     const [stateList, setStateList] = useState([]);
+    const [cityList, setCityList] = useState([]);
 
     const fetchCountryList = async () => {
         try {
@@ -185,9 +186,9 @@ const FormComponent = () => {
 
 
 
-    
 
-    
+
+
 
 
 
@@ -210,18 +211,37 @@ const FormComponent = () => {
                         setStateList(stateData);
                         setFieldValue('state', stateData[0].name);
                         setFieldValue('stateData', stateData[0]);
-                        console.log('state list fetched')
-            
+                        console.log('state list fetched', stateData)
+
                     } catch (error) {
                         console.error('Error fetching state data:', error);
                     }
                 };
-                
+
+                const fetchCityList = async (countryId, stateId) => {
+                    // console.log('countryId:', countryId, '\n\nstateId:', stateId);
+
+                    try {
+                        const cityData = await GetCity(countryId, stateId);
+                        setCityList(cityData);
+                    } catch (error) {
+                        console.error('Error fetching city data:', error);
+                    }
+                };
+
                 useEffect(() => {
                     if (values.countryData?.id) {
                         fetchStateList(values.countryData.id);
                     }
                 }, [values.countryData]);
+
+                useEffect(() => {
+                    if (values.countryData?.id && values.stateData?.id) {
+                        fetchCityList(values.countryData?.id, values.stateData?.id);
+                    }
+                }, [values.stateData]);
+            
+                
                 return (
                     <>{
                         isSubmitting ? <div className="loading-indicator"><CircularProgress /></div> : (
@@ -241,8 +261,8 @@ const FormComponent = () => {
                                             values={values}
                                             handleBlur={handleBlur}
                                             countryList={countryList}
-                                            fetchStateList={fetchStateList}
                                             stateList={stateList}
+                                            cityList={cityList}
                                         />
                                     ))}
                                 </div>
