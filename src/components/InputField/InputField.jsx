@@ -41,35 +41,93 @@ const InputField = memo(({ name, label, type, placeholder, as, touched, error, c
     const [stateList, setStateList] = useState([]);
     const [cityList, setCityList] = useState([]);
 
-    useEffect(() => {
-        const fetchCountryList = async () => {
-            try {
-                const countryData = await GetCountries();
-                setCountryList(countryData); // Store fetched country data in state
-            } catch (error) {
-                console.error('Error fetching country data:', error);
-            }
-        };
-        // Fetch the country list only if it's not already fetched
-        if (countryList.length === 0) {
-            fetchCountryList();
+    const fetchCountryList = async () => {
+        try {
+            const countryData = await GetCountries();
+            setCountryList(countryData);
+        } catch (error) {
+            console.error('Error fetching country data:', error);
         }
-    }, [])
+    };
+
+    const fetchStateList = async (countryId) => {
+        try {
+            const stateData = await GetState(countryId);
+            setStateList(stateData);
+        } catch (error) {
+            console.error('Error fetching state data:', error);
+        }
+    };
+
+    const fetchCityList = async (stateId) => {
+        console.log(stateId)
+        try {
+            const cityData = await GetCity(stateId);
+            setCityList(cityData);
+        } catch (error) {
+            console.error('Error fetching city data:', error);
+        }
+    };
+
+
+    const handleCountryChange = (e) => {
+        const country = countryList[e.target.value];
+        setFieldValue("country", country.iso2);
+        setFieldValue("countryData", country);
+        setFieldValue("state", '');
+        setFieldValue("stateData", null);
+        setFieldValue("city", '');
+        setFieldValue("cityData", null);
+    };
+
+    const handleStateChange = (e) => {
+        const state = stateList[e.target.value];
+        setFieldValue('state', state.name);
+        setFieldValue('stateData', state);
+        setFieldValue('city', '');
+        setFieldValue('cityData', null);
+    };
+
+    const handleCityChange = (e) => {
+        const city = cityList[e.target.value];
+        setFieldValue('city', city.name);
+        setFieldValue('cityData', city);
+    };
 
     useEffect(() => {
-        const fetchStateList = async () => {
-            try {
-                const stateList = await GetState(values.countryData.id);
-                console.log(stateList) // Store fetched country data in state
-            } catch (error) {
-                console.error('Error fetching country data:', error);
-            }
-        };
+        fetchCountryList();
+    }, []);
 
-        // Fetch the country list only if it's not already fetched
-        fetchStateList();
+    useEffect(() => {
+        if (values.countryData?.id) {
+            fetchStateList(values.countryData.id);
+        }
+    }, [values.countryData]);
 
-    }, [values.countryData])
+    useEffect(() => {
+        if (values.stateData?.id) {
+            fetchCityList(values.stateData.id);
+        }
+    }, [values.stateData]);
+
+
+
+
+    // useEffect(() => {
+    //     const fetchStateList = async () => {
+    //         try {
+    //             const stateData = await GetStates();
+    //             setStateList(countryData); // Store fetched country data in state
+    //         } catch (error) {
+    //             console.error('Error fetching country data:', error);
+    //         }
+    //     };
+
+    //     // Fetch the country list only if it's not already fetched
+    //     if (countryList.length === 0) {
+    //         fetchStateList();
+    //     }
+    // }, [])
 
     // useEffect(() => {
 
@@ -149,12 +207,7 @@ const InputField = memo(({ name, label, type, placeholder, as, touched, error, c
                             showFlag={false}
                         /> */}
                         <select
-                            onChange={(e) => {
-                                const country = countryList[e.target.value]; //here you will get full country object.
-                                setFieldValue("country", country.iso2);
-                                setFieldValue("countryData", country);
-                            }}
-                            value={values.country.name}
+                            onChange={handleCountryChange}
                             // autoComplete='off'
                             // aria-autocomplete='off'
                             // autocomplete='off'
@@ -170,7 +223,6 @@ const InputField = memo(({ name, label, type, placeholder, as, touched, error, c
                 );
 
             case 'state-selector': {
-
                 return (
                     // <StateSelect
                     //     countryid={values.countryData?.id}
@@ -183,15 +235,7 @@ const InputField = memo(({ name, label, type, placeholder, as, touched, error, c
                     //     placeHolder={values.stateData ? values.stateData.name : 'Select State'}
                     // />
                     <select
-                        onChange={async (e) => {
-                            const state = stateList[e.target.value];
-                            //here you will get full state object.
-                            setFieldValue('state', state.name);
-                            setFieldValue('stateData', state);
-                            // GetCity(values.countryData?.id, state.id).then((result) => {
-                            //     setCityList(result);
-                            // });
-                        }}
+                        onChange={handleStateChange}
                         className='inputField'
                     >
                         {stateList.map((item, index) => (
@@ -204,15 +248,26 @@ const InputField = memo(({ name, label, type, placeholder, as, touched, error, c
             }
             case 'city-selector':
                 return (
-                    <CitySelect
-                        countryid={values.countryData?.id} // Ensure you have the selected country in state
-                        stateid={values.stateData?.id} // Ensure you have the selected state in state
-                        onChange={(city) => {
-                            setFieldValue('city', city.name);
-                            setFieldValue('cityData', city);
-                        }}
-                        placeHolder={values.cityData ? values.cityData.name : 'Select City'}
-                    />
+                    // <CitySelect
+                    //     countryid={values.countryData?.id} // Ensure you have the selected country in state
+                    //     stateid={values.stateData?.id} // Ensure you have the selected state in state
+                    //     onChange={(city) => {
+                    //         setFieldValue('city', city.name);
+                    //         setFieldValue('cityData', city);
+                    //     }}
+                    //     placeHolder={values.cityData ? values.cityData.name : 'Select City'}
+                    // />
+                    <select
+                        onChange={handleCityChange}
+                        className='inputField'
+                        value={values.cityData ? values.cityData.id : ''}
+                    >
+                        {cityList.map((item, index) => (
+                            <option key={index} value={index}>
+                                {item.name}
+                            </option>
+                        ))}
+                    </select>
                 );
             case 'textarea':
                 return (
