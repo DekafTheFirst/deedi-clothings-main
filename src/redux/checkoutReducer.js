@@ -1,4 +1,5 @@
 import { createSlice, current } from '@reduxjs/toolkit';
+import { rates } from '../utils/rates';
 
 
 export const steps = [
@@ -20,7 +21,11 @@ export const steps = [
     id: 3,
     completed: false,
   }
-]
+];
+
+// Courier Options
+const courierOptions = rates.data.rates
+
 
 
 const initialState = {
@@ -40,7 +45,8 @@ const initialState = {
     postalCode: '',
   },
   billingInfo: {},
-  selectedCourier: null,
+  rates: null,
+  selectedCourier: courierOptions[0],
 };
 
 const checkoutSlice = createSlice({
@@ -81,6 +87,15 @@ const checkoutSlice = createSlice({
         state.currentStep = steps.find(step => step.id === state.currentStep.id + 1);
       }
     },
+
+
+    setRates: (state, action) => {
+      state.rates = action.payload
+    },
+
+    setSelectedCourier: (state, action) => {
+      state.selectedCourier = courierOptions.find(courier => courier.courier_id === action.payload);
+    }
   },
 });
 
@@ -91,7 +106,8 @@ export const {
   setCurrentStep,
   setPreviewedStep,
   nextStep,
-  clearPreviewedStep
+  clearPreviewedStep,
+  setRates
 } = checkoutSlice.actions;
 
 export default checkoutSlice.reducer;

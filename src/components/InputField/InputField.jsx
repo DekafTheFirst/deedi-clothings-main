@@ -30,8 +30,8 @@ const InputField = memo(({ name, label, type, placeholder, as, touched, error, c
             const countryIndex = countryList?.findIndex(item => item?.id === country.id);
 
             // console.log('e.target.value', e.target.value);
-            console.log('country', country);
-            console.log('countryIndex', countryIndex)
+            // console.log('country', country);
+            // console.log('countryIndex', countryIndex)
 
             setFieldValue("country", country.iso2);
             setFieldValue("countryData", { ...country, countryIndex });

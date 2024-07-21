@@ -1,13 +1,6 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useState } from 'react'
 import "./BillingTab.scss"
-import { Close, DeleteOutlineOutlined, ShoppingBag, ShoppingBagOutlined } from '@mui/icons-material'
-import { useDispatch, useSelector } from 'react-redux'
-import { removeItem, resetCart } from '../../../redux/cartReducer'
-import { makeRequest } from '../../../makeRequest'
-import { Link } from 'react-router-dom'
-import OptimizedImage from '../../../components/OptimizedImage/OptimizedImage'
 import FormComponent from '../../../components/Form/Form'
-import * as yup from "yup";
 
 
 const ShippingPage = ({ showCart, setShowCart }) => {

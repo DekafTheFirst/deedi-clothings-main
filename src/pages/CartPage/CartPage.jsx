@@ -3,7 +3,6 @@ import "./CartPage.scss"
 import { Close, DeleteOutlineOutlined, ShoppingBag, ShoppingBagOutlined } from '@mui/icons-material'
 import { useDispatch, useSelector } from 'react-redux'
 import {  removeItem, resetCart } from '../../redux/cartReducer'
-import { makeRequest } from '../../makeRequest'
 import { Link, useNavigate } from 'react-router-dom'
 import OptimizedImage from '../../components/OptimizedImage/OptimizedImage'
 

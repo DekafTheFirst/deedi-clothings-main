@@ -11,7 +11,7 @@ import { nextStep, setCurrentStep, setShippingInfo } from '../../redux/checkoutR
 import CircularProgress from '@mui/material/CircularProgress';
 import { GetCity, GetCountries, GetState } from 'react-country-state-city/dist/cjs';
 
-const FormComponent = ({ formItems, countryData, stateData, cityData, handleSubmit}) => {
+const FormComponent = ({ formItems, countryData, stateData, cityData, handleSubmit, errorWhileSubmittingForm, retry }) => {
     const validationSchema = yup.object().shape({
         firstName: yup.string().required('First name is required'),
         lastName: yup.string().required('Last Name is required'),
@@ -122,33 +122,46 @@ const FormComponent = ({ formItems, countryData, stateData, cityData, handleSubm
 
                 return (
                     <>{
-                        isSubmitting ? <div className="loading-indicator"><CircularProgress /></div> : (
-                            <Form className='form-component' autoComplete='off' aria-autocomplete='off'>
-                                <div className="items">
-                                    {formItems.map((item) => (
-                                        <InputField
-                                            key={item.name}
-                                            label={item.label}
-                                            name={item.name}
-                                            type={item.type}
-                                            as={item.as}
-                                            touched={touched[item.name]}
-                                            error={errors[item.name]}
-                                            customInputName={item.customInputName}
-                                            setFieldValue={setFieldValue}
-                                            values={values}
-                                            handleBlur={handleBlur}
-                                            countryList={item.as === 'country-selector' ? memoizedCountryList : undefined}
-                                            stateList={item.as === 'state-selector' ? memoizedStateList : undefined}
-                                            cityList={item.as === 'city-selector' ? memoizedCityList : undefined}
-                                        />
-                                    ))}
-                                </div>
+                        isSubmitting
+                            ?
+                            <div className="loading-indicator"><CircularProgress /></div>
+                            :
+                            (
+                                <>
+                                    {
+                                        errorWhileSubmittingForm
+                                            ?
+                                            <div className="error-submitting-form">errorWhileSubmittingForm</div> //Plus functionality for retrying.
+                                            :
+                                            (<Form className='form-component' autoComplete='off' aria-autocomplete='off'>
+                                                <div className="items">
+                                                    {formItems.map((item) => (
+                                                        <InputField
+                                                            key={item.name}
+                                                            label={item.label}
+                                                            name={item.name}
+                                                            type={item.type}
+                                                            as={item.as}
+                                                            touched={touched[item.name]}
+                                                            error={errors[item.name]}
+                                                            customInputName={item.customInputName}
+                                                            setFieldValue={setFieldValue}
+                                                            values={values}
+                                                            handleBlur={handleBlur}
+                                                            countryList={item.as === 'country-selector' ? memoizedCountryList : undefined}
+                                                            stateList={item.as === 'state-selector' ? memoizedStateList : undefined}
+                                                            cityList={item.as === 'city-selector' ? memoizedCityList : undefined}
+                                                        />
+                                                    ))}
+                                                </div>
 
-                                <button type="submit" className="btn-1 submit-btn" disabled={isSubmitting} >
-                                    Save & Continue
-                                </button>
-                            </Form>)
+                                                <button type="submit" className="btn-1 submit-btn" disabled={isSubmitting} >
+                                                    Save & Continue
+                                                </button>
+                                            </Form>)
+                                    }
+                                </>
+                            )
                     }</>
 
                 )

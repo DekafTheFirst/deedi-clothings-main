@@ -40,7 +40,7 @@ const CheckoutPage = () => {
   const totalAmount = useMemo(() => {
     let total = parseFloat(subtotal) + parseFloat(vat);
     if (selectedCourier) {
-      total += selectedCourier.cost;
+      total += selectedCourier.total_charge;
     }
     return total.toFixed(2);
   }, [subtotal, vat, selectedCourier]);
@@ -89,7 +89,7 @@ const CheckoutPage = () => {
       case 1:
         return <ShippingTab subtotal={subtotal} totalAmount={totalAmount} vat={vat} quantity={products.length} />
       case 2:
-        return <span>Step 2</span>
+        return <CourierOptions />
     }
   }
 
@@ -114,6 +114,7 @@ const CheckoutPage = () => {
                     <div className="summary-item">No. of Items: <span className="value">{calculateNoOfProducts(products)}</span></div>
                     <div className="summary-item">Subtotal: <span className="value">${subtotal}</span></div>
                     <div className="summary-item">VAT(20%): <span className="value">${vat}</span></div>
+                    {selectedCourier && <div className="summary-item">Shipping: <span className="value">${selectedCourier.total_charge}</span></div>                  }
                     <div className="summary-item total">Total: <span className="value">${totalAmount}</span></div>
                   </div></div>
               </div>

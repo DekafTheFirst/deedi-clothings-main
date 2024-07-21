@@ -1,14 +1,18 @@
-import React from 'react'
+import React, { useState } from 'react'
 import './ShippingTab.scss'
 import FormComponent from '../../../components/Form/Form'
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 import _ from 'lodash';
-import { nextStep, setShippingInfo } from '../../../redux/checkoutReducer';
+import { nextStep, setRates, setShippingInfo } from '../../../redux/checkoutReducer';
+import { makeRequest } from '../../../makeRequest';
 
 const ShippingTab = () => {
 
     const shippingInfo = useSelector(state => state.checkout.shippingInfo);
+    const [errorWhileSubmittingForm, setErrorWhileFetching] = useState(null)
+    const [retryAttempt, setRetryAttempt] = useState(0);
+
     // console.log('shipping info', shippingInfo)
     const formItems = [
         {
@@ -114,12 +118,14 @@ const ShippingTab = () => {
                 height: 1, // Replace with actual value from item
                 weight: 1.5, // Replace with actual value from item
             }));
-            const response = await axios.post('http://localhost:1337/api/orders/couriers', { address: filledShippingInfo, items: itemsWithDimensions });
+            const response = await makeRequest.post(`/orders/couriers`, { address: filledShippingInfo, items: itemsWithDimensions });
             // const couriers = response.data.rates;
             dispatch(setShippingInfo(filledShippingInfo))
+            dispatch(setRates(response.data))
             dispatch(nextStep())
             console.log('Fetched couriers:', response.data);
         } catch (error) {
+            setErrorWhileFetching(error)
             console.error('Error fetching couriers', error);
         } finally {
             setSubmitting(false);
@@ -164,6 +170,7 @@ const ShippingTab = () => {
                     stateData={shippingInfo.stateData && shippingInfo.stateData}
                     cityData={shippingInfo.cityData && shippingInfo.cityData}
                     handleSubmit={handleShippingSubmit}
+                    errorWhileSubmittingForm={errorWhileSubmittingForm}
                 >
                 </FormComponent>
 
