@@ -134,8 +134,14 @@
 
         .current-but-previewing-others {
             .progress-count {
-                color: $deepCharcoal;
-                
+                &:before {
+                    display: none;
+                }
+
+                &:after {
+                    height: 20px;
+                    width: 20px;
+                }
             }
         }
     }

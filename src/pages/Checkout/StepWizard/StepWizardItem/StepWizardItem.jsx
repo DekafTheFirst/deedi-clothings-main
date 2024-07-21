@@ -1,6 +1,6 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { setCurrentStep, setPreviewedStep } from '../../../../redux/checkoutReducer'
+import { clearPreviewedStep, setCurrentStep, setPreviewedStep } from '../../../../redux/checkoutReducer'
 
 const StepWizardItem = ({ stepItem }) => {
     const dispatch = useDispatch()
@@ -15,6 +15,9 @@ const StepWizardItem = ({ stepItem }) => {
     // console.log('previewedStep',previewedStep);
     // console.log((currentStep.id === stepItem.id || previewedStep?.id === stepItem.id))
     const handleClick = () => {
+        if(currentStep.id == stepItem.id && previewedStep) {
+            dispatch(clearPreviewedStep())
+        }
         if (stepHasBeenCompleted) {
             dispatch(setPreviewedStep(stepItem.id)); // Dispatch action to set current step
         }
@@ -25,7 +28,7 @@ const StepWizardItem = ({ stepItem }) => {
             className={`
                 step-wizard-item 
                 ${currentStep.id === stepItem.id ? 'current-item' : ''} 
-                ${previewedStep && previewedStep !== currentStep && currentStep !== stepItem.id ? 'current-but-previewing-others' : ''}
+                ${previewedStep  && previewedStep.id !== stepItem.id  && currentStep.id == stepItem.id ? 'current-but-previewing-others' : ''}
                 ${previewedStep?.id === stepItem.id && currentStep.id !== stepItem.id ? 'previewed-item' : ''}
             `}
             onClick={handleClick}

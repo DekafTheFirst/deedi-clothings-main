@@ -62,8 +62,13 @@ const checkoutSlice = createSlice({
     setCurrentStep: (state, action) => {
       state.currentStep = steps.find(step => step.id === action.payload);
     },
+
     setPreviewedStep: (state, action) => {
       state.previewedStep = steps.find(step => step.id === action.payload);
+    },
+
+    clearPreviewedStep: (state) => {
+      state.previewedStep = null;
     },
 
     nextStep: (state) => {
@@ -86,6 +91,7 @@ export const {
   setCurrentStep,
   setPreviewedStep,
   nextStep,
+  clearPreviewedStep
 } = checkoutSlice.actions;
 
 export default checkoutSlice.reducer;
