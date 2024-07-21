@@ -10,6 +10,7 @@ import * as yup from "yup";
 import { nextStep, setCurrentStep, setShippingInfo } from '../../redux/checkoutReducer';
 import CircularProgress from '@mui/material/CircularProgress';
 import { GetCity, GetCountries, GetState } from 'react-country-state-city/dist/cjs';
+import _ from 'lodash';
 
 const FormComponent = ({ formItems, countryData, stateData, cityData, }) => {
 
@@ -32,6 +33,10 @@ const FormComponent = ({ formItems, countryData, stateData, cityData, }) => {
 
     const items = useSelector(state => state.cart.cartItems);
     // console.log(items)
+    const currentStep = useSelector(state => state.cart.currentStep);
+    const previewedStep = useSelector(state => state.checkout.previewedStep);
+
+
 
     const formItemsInitalValues = Object.fromEntries(formItems.map(item => [item.name, item.initialValue]))
     const initialValues = { ...formItemsInitalValues, countryData, stateData, cityData, }
@@ -54,8 +59,33 @@ const FormComponent = ({ formItems, countryData, stateData, cityData, }) => {
     // };
     const dispatch = useDispatch()
 
-    const handleShippingSubmit = async (filledShippingInfo, { setSubmitting }) => {
-        console.log(filledShippingInfo)
+    const [countryList, setCountryList] = useState([]);
+    const [stateList, setStateList] = useState([]);
+    const [cityList, setCityList] = useState([]);
+
+    const memoizedCountryList = useMemo(() => countryList, [countryList]);
+    const memoizedStateList = useMemo(() => stateList, [stateList]);
+    const memoizedCityList = useMemo(() => cityList, [cityList]);
+
+    const fetchCountryList = async () => {
+        try {
+            const countryData = await GetCountries();
+            setCountryList(countryData);
+            // console.log('fetchingCountryList again')
+
+        } catch (error) {
+            console.error('Error fetching country data:', error);
+        }
+    };
+
+    useEffect(() => {
+        fetchCountryList();
+    }, [])
+
+
+    const arraysEqual = (arr1, arr2) => _.isEqual(arr1, arr2);
+
+    const requestRates = async (filledShippingInfo, setSubmitting) => {
         try {
             const itemsWithDimensions = items.map(item => ({
                 ...item,
@@ -74,35 +104,29 @@ const FormComponent = ({ formItems, countryData, stateData, cityData, }) => {
         } finally {
             setSubmitting(false);
         }
-    };
+    }
 
-    const [countryList, setCountryList] = useState([]);
-    const [stateList, setStateList] = useState([]);
-    const [cityList, setCityList] = useState([]);
+    const handleShippingSubmit = async (filledShippingInfo, { setSubmitting }) => {
+        if (previewedStep) {
+            console.log('currently previewing')
+            const infoIsChanged = !arraysEqual(filledShippingInfo, initialValues);
+            console.log('is info changed?', infoIsChanged)
+            console.log('filledShippingInfo', filledShippingInfo)
+            console.log('initialValues ', initialValues)
 
-    const memoizedCountryList = useMemo(() => countryList, [countryList]);
-    const memoizedStateList = useMemo(() => stateList, [stateList]);
-    const memoizedCityList = useMemo(() => cityList, [cityList]);
-
-    const fetchCountryList = async () => {
-        try {
-            const countryData = await GetCountries();
-            setCountryList(countryData);
-            console.log('fetchingCountryList again')
-
-        } catch (error) {
-            console.error('Error fetching country data:', error);
+            if (infoIsChanged) {
+                await requestRates(filledShippingInfo, setSubmitting)
+            }
+            else {
+                dispatch(nextStep())
+                setSubmitting(false);
+            }
         }
+        else {
+            await requestRates(filledShippingInfo, setSubmitting)
+        }
+
     };
-
-    useEffect(() => {
-        fetchCountryList();
-    }, [])
-
-
-
-
-
 
 
 
@@ -119,6 +143,8 @@ const FormComponent = ({ formItems, countryData, stateData, cityData, }) => {
                 //     console.log('values:', values);
                 //     // console.log('errors:', errors);
                 // }, [values, errors])
+
+
 
                 const fetchStateList = async (countryId) => {
                     try {

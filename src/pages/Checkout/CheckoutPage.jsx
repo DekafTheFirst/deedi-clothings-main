@@ -25,7 +25,7 @@ const CheckoutPage = () => {
 
   const currentStep = useSelector(state => state.checkout.currentStep);
   const previewedStep = useSelector(state => state.checkout.previewedStep);
-  console.log('previewedStep', previewedStep, '\n\n' + 'currentStep', currentStep)
+  // console.log('previewedStep', previewedStep, '\n\n' + 'currentStep', currentStep)
   // Calculate totals
   const subtotal = useMemo(() => {
     let total = 0;
