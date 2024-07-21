@@ -22,8 +22,10 @@ export const steps = [
   }
 ]
 
+
 const initialState = {
   currentStep: steps[0],
+  completedSteps: [],
   previewedStep: null,
   shippingInfo: {
     firstName: '',
@@ -70,8 +72,8 @@ const checkoutSlice = createSlice({
         state.previewedStep = null
       }
       else {
+        state.completedSteps = [...state.completedSteps, state.currentStep];
         state.currentStep = steps.find(step => step.id === state.currentStep.id + 1);
-        state.currentStep.completed = true;
       }
     },
   },
