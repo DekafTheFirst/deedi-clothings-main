@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import './Form.scss';
 import { ErrorMessage, Form, Formik, useFormikContext } from 'formik';
 import InputField from '../InputField/InputField';
@@ -11,97 +11,8 @@ import { nextStep, setCurrentStep, setShippingInfo } from '../../redux/checkoutR
 import CircularProgress from '@mui/material/CircularProgress';
 import { GetCity, GetCountries, GetState } from 'react-country-state-city/dist/cjs';
 
-const FormComponent = () => {
-    const shippingInfo = useSelector(state => state.checkout.shippingInfo);
+const FormComponent = ({ formItems, countryData, stateData, cityData, }) => {
 
-    const formItems = [
-        {
-            name: 'firstName',
-            label: 'First Name',
-            type: 'text',
-            placeholder: '',
-            initialValue: '',
-        },
-        {
-            name: 'lastName',
-            label: 'Last Name',
-            type: 'text',
-            placeholder: '',
-            initialValue: ''
-        },
-
-        {
-            name: 'addressLine1',
-            label: 'Address Line 1',
-            type: 'text',
-            as: 'custom',
-            customInputName: 'addressLine',
-            placeholder: '',
-            initialValue: ''
-        },
-
-
-        {
-            name: 'addressLine2',
-            label: 'Address Line 2(Optional)',
-            type: 'text',
-            as: 'custom',
-            customInputName: 'addressLine',
-            placeholder: '',
-            initialValue: ''
-        },
-        {
-            name: 'country',
-            label: 'Country',
-            as: 'country-selector',
-            type: 'text',
-            placeholder: '',
-            initialValue: ''
-        },
-
-        {
-            name: 'state',
-            label: 'State',
-            as: 'state-selector',
-            type: 'text',
-            placeholder: '',
-            initialValue: ''
-        },
-        {
-            name: 'city',
-            label: 'City',
-            as: 'city-selector',
-            type: 'text',
-            placeholder: '',
-            initialValue: ''
-        },
-        {
-            name: 'postalCode',
-            label: 'Postal Code',
-            type: 'text',
-            placeholder: '',
-            initialValue: ''
-        },
-        {
-            name: 'phoneNumber',
-            label: 'Phone Number',
-            type: 'tel',
-            placeholder: '',
-            initialValue: ''
-        },
-        {
-            name: 'email',
-            label: 'Email',
-            type: 'email',
-            placeholder: '',
-            initialValue: ''
-        },
-
-
-
-
-
-    ]
 
     const validationSchema = yup.object().shape({
         firstName: yup.string().required('First name is required'),
@@ -122,8 +33,8 @@ const FormComponent = () => {
     const items = useSelector(state => state.cart.cartItems);
     // console.log(items)
 
-    const initialValues = Object.fromEntries(formItems.map(item => [item.name, item.initialValue]))
-
+    const formItemsInitalValues = Object.fromEntries(formItems.map(item => [item.name, item.initialValue]))
+    const initialValues = { ...formItemsInitalValues, countryData, stateData, cityData, }
     // const handleShippingSubmit = async (values) => {
     //     try { console.log('Submitting form with values:', values); }
     //     catch (error) { console.log(error) }
@@ -156,7 +67,7 @@ const FormComponent = () => {
             const response = await axios.post('http://localhost:1337/api/orders/couriers', { address: filledShippingInfo, items: itemsWithDimensions });
             // const couriers = response.data.rates;
             dispatch(setShippingInfo(filledShippingInfo))
-            dispatch(nextStep())
+            dispatch(setCurrentStep(3))
             console.log('Fetched couriers:', response.data);
         } catch (error) {
             console.error('Error fetching couriers', error);
@@ -168,6 +79,10 @@ const FormComponent = () => {
     const [countryList, setCountryList] = useState([]);
     const [stateList, setStateList] = useState([]);
     const [cityList, setCityList] = useState([]);
+
+    const memoizedCountryList = useMemo(() => countryList, [countryList]);
+    const memoizedStateList = useMemo(() => stateList, [stateList]);
+    const memoizedCityList = useMemo(() => cityList, [cityList]);
 
     const fetchCountryList = async () => {
         try {
@@ -195,7 +110,7 @@ const FormComponent = () => {
 
     return (
         <Formik
-            initialValues={{ ...initialValues, countryData: null, stateData: null, cityData: null, }}
+            initialValues={initialValues}
             onSubmit={handleShippingSubmit}
             validationSchema={validationSchema}
         >
@@ -209,7 +124,7 @@ const FormComponent = () => {
                     try {
                         const stateData = await GetState(countryId);
                         setStateList(stateData);
-                        
+
                     } catch (error) {
                         console.error('Error fetching state data:', error);
                     }
@@ -256,9 +171,9 @@ const FormComponent = () => {
                                             setFieldValue={setFieldValue}
                                             values={values}
                                             handleBlur={handleBlur}
-                                            countryList={countryList}
-                                            stateList={stateList}
-                                            cityList={cityList}
+                                            countryList={item.as === 'country-selector' ? memoizedCountryList : undefined}
+                                            stateList={item.as === 'state-selector' ? memoizedStateList : undefined}
+                                            cityList={item.as === 'city-selector' ? memoizedCityList : undefined}
                                         />
                                     ))}
                                 </div>

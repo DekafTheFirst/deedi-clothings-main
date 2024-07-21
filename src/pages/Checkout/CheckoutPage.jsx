@@ -11,6 +11,7 @@ import CourierOptions from '../../components/CourierOptions/CourierOptions'
 import StepWizard from './StepWizard/StepWizard'
 import ShippingTab from './ShippingTab/ShippingTab'
 import calculateNoOfProducts from '../../utils/calculateNoOfProducts'
+import { current } from '@reduxjs/toolkit'
 
 
 const CheckoutPage = () => {
@@ -81,7 +82,14 @@ const CheckoutPage = () => {
 
 
 
-
+  const renderCurrentTab = () => {
+    switch (currentStep) {
+      case 1:
+        return <ShippingTab subtotal={subtotal} totalAmount={totalAmount} vat={vat} quantity={products.length} />
+      case 2:
+        return <span>Step 2</span>
+    }
+  }
 
   return (
     <div className="checkout-page">
@@ -90,7 +98,7 @@ const CheckoutPage = () => {
           <div className="col-md-6 tabs">
             <StepWizard />
             <div className="current-tab">
-              <ShippingTab subtotal={subtotal} totalAmount={totalAmount} vat={vat} quantity={products.length} />
+              {renderCurrentTab()}
             </div>
           </div>
 

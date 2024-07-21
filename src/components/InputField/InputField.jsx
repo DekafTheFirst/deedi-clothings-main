@@ -16,50 +16,63 @@ import "react-country-state-city/dist/react-country-state-city.css";
 import { compose } from 'redux';
 
 const InputField = memo(({ name, label, type, placeholder, as, touched, error, customInputName, values, handleBlur, setFieldValue, countryList, stateList, cityList }) => {
-    // const CountrySelector = ({
-    //     field, // { name, value, onChange, onBlur }
-    //     form: { setFieldValue }, // also values, setXXXX, handleXXXX, dirty, isValid, status, etc.
-    //     ...props
-    // }) => {
-    //     const countries = useMemo(() => countryList().getData(), []);
-
-    //     return (
-
-    //     );
-    // };
-
-    const [country, setCountry] = useState(null);
-    const [stateId, setStateId] = useState(null);
-
-    // useEffect(() => {
-    // }, [country])
-
     const countryRef = useRef(null);
     const stateRef = useRef(null);
 
 
     const handleCountryChange = (e) => {
-        const country = countryList[e.target.value];
-        setFieldValue("country", country.iso2);
-        setFieldValue("countryData", country);
+        if (e.target.value == 'placeholder') {
+            setFieldValue('country', '');
+            setFieldValue('countryData', null);
+        }
+        else {
+            const country = countryList[e.target.value]
+            const countryIndex = countryList?.findIndex(item => item?.id === country.id);
 
-        // setFieldValue("state", '');
-        // setFieldValue("stateData", null);
-        // setFieldValue("city", '');
-        // setFieldValue("cityData", null);
+            // console.log('e.target.value', e.target.value);
+            console.log('country', country);
+            console.log('countryIndex', countryIndex)
+
+            setFieldValue("country", country.iso2);
+            setFieldValue("countryData", { ...country, countryIndex });
+            setFieldValue('state', '');
+            setFieldValue('stateData', null);
+            setFieldValue('city', '');
+            setFieldValue('cityData', null)
+            
+        }
     };
+
 
 
     const handleStateChange = (e) => {
-        const state = stateList[e.target.value];
-        setFieldValue('state', state.name);
-        setFieldValue('stateData', state);
+        if (e.target.value == 'placeholder') {
+            setFieldValue('state', '');
+            setFieldValue('stateData', null);
+            setFieldValue('city', '');
+            setFieldValue('cityData', null)
+        }
+        else {
+            const state = stateList[e.target.value];
+            const stateIndex = stateList?.findIndex(item => item?.id === state.id);
+
+            setFieldValue('state', state.name);
+            setFieldValue('stateData', { ...state, stateIndex });
+        }
     };
 
     const handleCityChange = (e) => {
-        const city = cityList[e.target.value];
-        setFieldValue('city', city.name);
-        setFieldValue('cityData', city);
+        if (e.target.value == 'placeholder') {
+            setFieldValue('city', '');
+            setFieldValue('cityData', null);
+        }
+        else {
+            const city = cityList[e.target.value];
+            const cityIndex = cityList?.findIndex(item => item?.id === city.id);
+
+            setFieldValue('city', city.name);
+            setFieldValue('cityData', { ...city, cityIndex });
+        }
     };
 
 
@@ -147,29 +160,16 @@ const InputField = memo(({ name, label, type, placeholder, as, touched, error, c
             case 'country-selector':
                 return (
                     <div ref={countryRef}>
-                        {/* <CountrySelect
-                            onChange={(e) => {
-                                console.log('country changed:', e)
-                                // setCountry(e)
-                                setFieldValue('country', e.iso2);
-                                setFieldValue('countryData', e);
-                                setFieldValue('state', '');
-                                setFieldValue('stateData', null);
-                                setFieldValue('city', '');
-                                setFieldValue('cityData', null);
-                            }}
-                            placeHolder={values.countryData ? values.countryData.name : 'Select Country'}
-                            showFlag={false}
-                        /> */}
                         <select
                             onChange={handleCountryChange}
-                            // autoComplete='off'
-                            // aria-autocomplete='off'
-                            // autocomplete='off'
                             className='inputField'
-                            defaultValue={'placeholder'}
+                            // value={'placeholder'}
+                            value={!values.countryData?.countryIndex && values.countryData?.countryIndex !== 0 ? 'placeholder' : values.countryData.countryIndex}
                         >
-                            <option value="placeholder" disabled>Select your country</option>
+                            <option
+                                value="placeholder"
+                                className='placeholder'
+                            >Select your country</option>
 
                             {countryList.map((item, index) => (
                                 <option key={index} value={index}>
@@ -177,34 +177,20 @@ const InputField = memo(({ name, label, type, placeholder, as, touched, error, c
                                 </option>
                             ))}
                         </select>
-                    </div>
+                    </div >
                 );
 
             case 'state-selector': {
                 return (
-                    // <StateSelect
-                    //     countryid={values.countryData?.id}
-                    //     onChange={(state) => {
-                    //         setFieldValue('state', state.name);
-                    //         setFieldValue('stateData', state);
-                    //         setFieldValue('city', '');
-                    //         setFieldValue('cityData', null);
-                    //     }}
-                    //     placeHolder={values.stateData ? values.stateData.name : 'Select State'}
-                    // />
                     <select
                         onChange={handleStateChange}
                         className='inputField'
-                        defaultValue={'placeholder'}
-                    // value={stateList[0]}
+                        value={!values.stateData?.stateIndex && values.stateData?.stateIndex !== 0 ? 'placeholder' : values.stateData.stateIndex}
                     >
-                        <option 
-                        value="placeholder" 
-                        className='placeholder'
-                        onClick={() => {
-                            setFieldValue('state', '');
-                            setFieldValue('stateData', null);
-                        }}>Select your state</option>
+                        <option
+                            value="placeholder"
+                            className='placeholder'
+                        >Select your state</option>
 
                         {stateList.map((item, index) => (
                             <option key={index} value={index}>
@@ -216,21 +202,16 @@ const InputField = memo(({ name, label, type, placeholder, as, touched, error, c
             }
             case 'city-selector':
                 return (
-                    // <CitySelect
-                    //     countryid={values.countryData?.id} // Ensure you have the selected country in state
-                    //     stateid={values.stateData?.id} // Ensure you have the selected state in state
-                    //     onChange={(city) => {
-                    //         setFieldValue('city', city.name);
-                    //         setFieldValue('cityData', city);
-                    //     }}
-                    //     placeHolder={values.cityData ? values.cityData.name : 'Select City'}
-                    // />
                     <select
                         onChange={handleCityChange}
+                        
                         className='inputField'
-                        defaultValue='placeholder'
+                        value={!values.cityData?.cityIndex && values.cityData?.cityIndex !== 0 ? 'placeholder' : values.cityData.cityIndex}
                     >
-                        <option value="placeholder" disabled>Select your city</option>
+                        <option 
+                        value="placeholder"
+                        className='placeholder'
+                        >Select your city</option>
 
                         {cityList.map((item, index) => (
                             <option key={index} value={index}>
@@ -251,7 +232,6 @@ const InputField = memo(({ name, label, type, placeholder, as, touched, error, c
             case 'custom':
                 return (
                     <div className={`custom-input ${customInputName}`}>
-                        {/* Render your custom input here */}
                         <Field
                             as='input'
                             type={type}

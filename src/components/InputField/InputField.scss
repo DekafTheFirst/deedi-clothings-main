@@ -42,6 +42,15 @@
 
         .placeholder{
             background-color: $lightGray;
+            color: black;
+
+            &:focus {
+                display: none;
+            }
+
+            &:active {
+                display: none;
+            }
         }
     }
 
