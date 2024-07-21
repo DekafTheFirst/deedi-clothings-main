@@ -1,23 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './StepWizard.scss';
 import StepWizardItem from './StepWizardItem/StepWizardItem';
 import { useSelector } from 'react-redux';
+import { steps } from '../../../redux/checkoutReducer';
+
+
 
 const StepWizard = () => {
-
-  const steps = [
-    { label: 'Shipping', step: 1 },
-    { label: 'Billing', step: 2 },
-    { label: 'Complete', step: 3 },
-  ];
-
-  
-
   return (
     <section className="step-wizard">
       <ul className="step-wizard-list">
-        {steps.map((stepItem, index) => (
-          <StepWizardItem key={index}  stepItem={stepItem}/>
+        {steps.map((stepItem) => (
+          <StepWizardItem key={stepItem.id} stepItem={stepItem} />
         ))}
       </ul>
     </section>

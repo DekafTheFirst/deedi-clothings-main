@@ -1,7 +1,30 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, current } from '@reduxjs/toolkit';
+
+
+export const steps = [
+  {
+    title: 'Shipping Info',
+    slug: 'shipping-info',
+    id: 1,
+    completed: false,
+  },
+  {
+    title: 'Billing Info',
+    slug: 'billing-info',
+    id: 2,
+    completed: false,
+  },
+  {
+    title: 'Complete',
+    slug: 'complete',
+    id: 3,
+    completed: false,
+  }
+]
 
 const initialState = {
-  currentStep: 3,
+  currentStep: steps[0],
+  previewedStep: null,
   shippingInfo: {
     firstName: '',
     lastName: '',
@@ -9,7 +32,7 @@ const initialState = {
     phoneNumber: '',
     addressLine1: '',
     addressLine2: '',
-    city:'',
+    city: '',
     state: '',
     country: '',
     postalCode: '',
@@ -25,27 +48,42 @@ const checkoutSlice = createSlice({
     setShippingInfo: (state, action) => {
       state.shippingInfo = action.payload;
     },
+
     setBillingInfo: (state, action) => {
       state.billingInfo = action.payload;
     },
+
     setSelectedCourier: (state, action) => {
       state.selectedCourier = action.payload;
     },
+
     setCurrentStep: (state, action) => {
-      state.currentStep = action.payload;
+      state.currentStep = steps.find(step => step.id === action.payload);
     },
+    setPreviewedStep: (state, action) => {
+      state.previewedStep = steps.find(step => step.id === action.payload);
+    },
+
     nextStep: (state) => {
-      state.currentStep += 1;
+      if (state.previewedStep) {
+        state.currentStep = steps.find(step => step.id === state.previewedStep.id + 1);
+        state.previewedStep = null
+      }
+      else {
+        state.currentStep = steps.find(step => step.id === state.currentStep.id + 1);
+        state.currentStep.completed = true;
+      }
     },
   },
 });
 
-export const { 
+export const {
   setSelectedCourier,
   setShippingInfo,
   setBillingInfo,
   setCurrentStep,
+  setPreviewedStep,
   nextStep,
- } = checkoutSlice.actions;
+} = checkoutSlice.actions;
 
 export default checkoutSlice.reducer;

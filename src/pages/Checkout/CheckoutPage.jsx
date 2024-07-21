@@ -22,8 +22,10 @@ const CheckoutPage = () => {
   const selectedCourier = useSelector(state => state.checkout.selectedCourier);
   const shippingInfo = useSelector(state => state.checkout.shippingInfo);
   const billingInfo = useSelector(state => state.checkout.billingInfo);
-  const currentStep = useSelector(state => state.checkout.currentStep);
 
+  const currentStep = useSelector(state => state.checkout.currentStep);
+  const previewedStep = useSelector(state => state.checkout.previewedStep);
+  console.log('previewedStep', previewedStep, '\n\n' + 'currentStep', currentStep)
   // Calculate totals
   const subtotal = useMemo(() => {
     let total = 0;
@@ -83,7 +85,7 @@ const CheckoutPage = () => {
 
 
   const renderCurrentTab = () => {
-    switch (currentStep) {
+    switch (previewedStep?.id || currentStep.id) {
       case 1:
         return <ShippingTab subtotal={subtotal} totalAmount={totalAmount} vat={vat} quantity={products.length} />
       case 2:

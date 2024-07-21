@@ -67,7 +67,7 @@ const FormComponent = ({ formItems, countryData, stateData, cityData, }) => {
             const response = await axios.post('http://localhost:1337/api/orders/couriers', { address: filledShippingInfo, items: itemsWithDimensions });
             // const couriers = response.data.rates;
             dispatch(setShippingInfo(filledShippingInfo))
-            dispatch(setCurrentStep(3))
+            dispatch(nextStep())
             console.log('Fetched couriers:', response.data);
         } catch (error) {
             console.error('Error fetching couriers', error);
@@ -115,10 +115,10 @@ const FormComponent = ({ formItems, countryData, stateData, cityData, }) => {
             validationSchema={validationSchema}
         >
             {({ isSubmitting, setSubmitting, errors, values, touched, setFieldValue, handleBlur }) => {
-                useEffect(() => {
-                    console.log('values:', values);
-                    // console.log('errors:', errors);
-                }, [values, errors])
+                // useEffect(() => {
+                //     console.log('values:', values);
+                //     // console.log('errors:', errors);
+                // }, [values, errors])
 
                 const fetchStateList = async (countryId) => {
                     try {

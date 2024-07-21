@@ -91,11 +91,6 @@ const ShippingTab = () => {
             placeholder: '',
             initialValue: shippingInfo.email || '',
         },
-
-
-
-
-
     ]
 
     return (

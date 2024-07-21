@@ -121,5 +121,15 @@
                 }
             }
         }
+
+        .previewed-item {
+            .progress-count {
+                color: #fff;  
+
+                &:before {
+                    display: none;
+                }
+            }
+        }
     }
 }
