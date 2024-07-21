@@ -10,11 +10,8 @@ import * as yup from "yup";
 import { nextStep, setCurrentStep, setShippingInfo } from '../../redux/checkoutReducer';
 import CircularProgress from '@mui/material/CircularProgress';
 import { GetCity, GetCountries, GetState } from 'react-country-state-city/dist/cjs';
-import _ from 'lodash';
 
-const FormComponent = ({ formItems, countryData, stateData, cityData, }) => {
-
-
+const FormComponent = ({ formItems, countryData, stateData, cityData, handleSubmit}) => {
     const validationSchema = yup.object().shape({
         firstName: yup.string().required('First name is required'),
         lastName: yup.string().required('Last Name is required'),
@@ -31,13 +28,7 @@ const FormComponent = ({ formItems, countryData, stateData, cityData, }) => {
         country: yup.string().required('Country is required'),
     })
 
-    const items = useSelector(state => state.cart.cartItems);
-    // console.log(items)
-    const currentStep = useSelector(state => state.cart.currentStep);
-    const previewedStep = useSelector(state => state.checkout.previewedStep);
-
-
-
+    
     const formItemsInitalValues = Object.fromEntries(formItems.map(item => [item.name, item.initialValue]))
     const initialValues = { ...formItemsInitalValues, countryData, stateData, cityData, }
     // const handleShippingSubmit = async (values) => {
@@ -57,7 +48,6 @@ const FormComponent = ({ formItems, countryData, stateData, cityData, }) => {
     //     //     setSubmitting(false); // Ensure form submission state is properly managed
     //     // }
     // };
-    const dispatch = useDispatch()
 
     const [countryList, setCountryList] = useState([]);
     const [stateList, setStateList] = useState([]);
@@ -75,67 +65,18 @@ const FormComponent = ({ formItems, countryData, stateData, cityData, }) => {
 
         } catch (error) {
             console.error('Error fetching country data:', error);
-        }
+        };
     };
 
     useEffect(() => {
         fetchCountryList();
-    }, [])
-
-
-    const arraysEqual = (arr1, arr2) => _.isEqual(arr1, arr2);
-
-    const requestRates = async (filledShippingInfo, setSubmitting) => {
-        try {
-            const itemsWithDimensions = items.map(item => ({
-                ...item,
-                length: 40, // Replace with actual value from item
-                width: 14, // Replace with actual value from item
-                height: 1, // Replace with actual value from item
-                weight: 1.5, // Replace with actual value from item
-            }));
-            const response = await axios.post('http://localhost:1337/api/orders/couriers', { address: filledShippingInfo, items: itemsWithDimensions });
-            // const couriers = response.data.rates;
-            dispatch(setShippingInfo(filledShippingInfo))
-            dispatch(nextStep())
-            console.log('Fetched couriers:', response.data);
-        } catch (error) {
-            console.error('Error fetching couriers', error);
-        } finally {
-            setSubmitting(false);
-        }
-    }
-
-    const handleShippingSubmit = async (filledShippingInfo, { setSubmitting }) => {
-        if (previewedStep) {
-            console.log('currently previewing')
-            const infoIsChanged = !arraysEqual(filledShippingInfo, initialValues);
-            console.log('is info changed?', infoIsChanged)
-            console.log('filledShippingInfo', filledShippingInfo)
-            console.log('initialValues ', initialValues)
-
-            if (infoIsChanged) {
-                await requestRates(filledShippingInfo, setSubmitting)
-            }
-            else {
-                dispatch(nextStep())
-                setSubmitting(false);
-            }
-        }
-        else {
-            await requestRates(filledShippingInfo, setSubmitting)
-        }
-
-    };
-
-
-
+    }, []);
 
 
     return (
         <Formik
             initialValues={initialValues}
-            onSubmit={handleShippingSubmit}
+            onSubmit={handleSubmit}
             validationSchema={validationSchema}
         >
             {({ isSubmitting, setSubmitting, errors, values, touched, setFieldValue, handleBlur }) => {

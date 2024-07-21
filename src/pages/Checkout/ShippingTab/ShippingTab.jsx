@@ -1,8 +1,10 @@
 import React from 'react'
 import './ShippingTab.scss'
 import FormComponent from '../../../components/Form/Form'
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
+import _ from 'lodash';
+import { nextStep, setShippingInfo } from '../../../redux/checkoutReducer';
 
 const ShippingTab = () => {
 
@@ -91,7 +93,60 @@ const ShippingTab = () => {
             placeholder: '',
             initialValue: shippingInfo.email || '',
         },
-    ]
+    ];
+
+
+    const arraysEqual = (arr1, arr2) => _.isEqual(arr1, arr2);
+    const items = useSelector(state => state.cart.cartItems);
+    // console.log(items)
+    const currentStep = useSelector(state => state.cart.currentStep);
+    const previewedStep = useSelector(state => state.checkout.previewedStep);
+    
+    const dispatch = useDispatch()
+
+
+    const requestRates = async (filledShippingInfo, setSubmitting) => {
+        try {
+            const itemsWithDimensions = items.map(item => ({
+                ...item,
+                length: 40, // Replace with actual value from item
+                width: 14, // Replace with actual value from item
+                height: 1, // Replace with actual value from item
+                weight: 1.5, // Replace with actual value from item
+            }));
+            const response = await axios.post('http://localhost:1337/api/orders/couriers', { address: filledShippingInfo, items: itemsWithDimensions });
+            // const couriers = response.data.rates;
+            dispatch(setShippingInfo(filledShippingInfo))
+            dispatch(nextStep())
+            console.log('Fetched couriers:', response.data);
+        } catch (error) {
+            console.error('Error fetching couriers', error);
+        } finally {
+            setSubmitting(false);
+        }
+    }
+
+    const handleShippingSubmit = async (filledShippingInfo, { setSubmitting }) => {
+        if (previewedStep) {
+            console.log('currently previewing')
+            const infoIsChanged = !arraysEqual(filledShippingInfo, shippingInfo);
+            console.log('is info changed?', infoIsChanged)
+            console.log('filledShippingInfo', filledShippingInfo)
+            console.log('initialValues ', shippingInfo)
+
+            if (infoIsChanged) {
+                await requestRates(filledShippingInfo, setSubmitting)
+            }
+            else {
+                dispatch(nextStep())
+                setSubmitting(false);
+            }
+        }
+        else {
+            await requestRates(filledShippingInfo, setSubmitting)
+        }
+
+    };
 
     return (
         <div className="shipping-tab">
@@ -108,6 +163,7 @@ const ShippingTab = () => {
                     countryData={shippingInfo.countryData && shippingInfo.countryData}
                     stateData={shippingInfo.stateData && shippingInfo.stateData}
                     cityData={shippingInfo.cityData && shippingInfo.cityData}
+                    handleSubmit={handleShippingSubmit}
                 >
                 </FormComponent>
 
