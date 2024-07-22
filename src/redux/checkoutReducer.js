@@ -20,7 +20,7 @@ export const steps = [
     slug: 'complete',
     id: 3,
     completed: false,
-  }
+  },
 ];
 
 // Courier Options

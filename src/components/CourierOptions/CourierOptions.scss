@@ -1,11 +1,80 @@
 @import '../../variables.scss';
 @import '../../mixins.scss';
 
-
-form.selectCourierOptions {
+.courier-selection-tab {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 20px;
 
-    
+    .top {
+        .tab-title {
+            margin-bottom: 10px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: 600;
+
+            @include md {
+                text-align: center;
+            }
+        }
+
+
+        p {
+            font-size: 14px;
+            color: $darkGray;
+            text-align: center;
+
+            @include md {
+                text-align: center;
+            }
+
+        }
+    }
+
+    form.selectCourierOptions {
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+
+
+        .recommended {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+
+            .heading {
+                display: flex;
+                justify-content: space-between;
+
+                .title {
+                    font-weight: 500;
+                    font-size: 14px;
+                }
+
+                
+            }
+        }
+
+        .others {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+
+           
+            .heading {
+                display: flex;
+                justify-content: space-between;
+
+                .title {
+                    font-weight: 500;
+                    font-size: 14px;
+                }
+
+                
+            }
+        }
+
+    }
+
+
 }

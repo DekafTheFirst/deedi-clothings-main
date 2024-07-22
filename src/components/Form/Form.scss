@@ -13,7 +13,7 @@
 .form-component {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 5px;
 
 
   .items {
@@ -29,6 +29,23 @@
   }
 
   
+
+  .form-error {
+    color: red;
+    font-size: 14px;
+    margin-bottom: 5px;
+    text-align: center;
+
+
+    .try-again {
+      background-color: none;
+      cursor: pointer;
+
+      &:hover {
+        color: lighten(blue, 2%)
+      }
+    }
+  }
 
   .submit-btn {
     grid-column: 1 / -1;

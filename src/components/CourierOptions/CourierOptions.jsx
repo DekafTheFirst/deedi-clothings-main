@@ -37,22 +37,46 @@ const CourierOptions = () => {
   }, []);
 
   useEffect(() => {
-    console.log(selectedCourierOption);
+    // console.log(selectedCourierOption);
   }, [selectedCourierOption])
 
-
+  
 
   return (
-    <form className="selectCourierOptions">
-      {courierOptions.map((courierOption, index) => (
-        <CourierOptionItem
-          courierOption={courierOption}
-          key={index}
-          isSelected={courierOption.courier_id === selectedCourierOption.courier_id}
-          handleChangeCourierOption={handleChangeSelectedCourierOption}
-        />
-      ))}
-    </form>
+    <div className="courier-selection-tab">
+      <div className="top">
+        <h6 className="tab-title"> Shipping Method </h6>
+        <p>Pick your preferred shipping option and finish your order.</p>
+      </div>
+      <form className="selectCourierOptions">
+        <div class="recommended">
+          <div class="heading">
+            <span class="title">Recommended: </span>
+          </div>
+          {courierOptions.slice(0, 3).map((courierOption, index) => (
+            <CourierOptionItem
+              courierOption={courierOption}
+              key={index}
+              isSelected={courierOption.courier_id === selectedCourierOption.courier_id}
+              handleChangeCourierOption={handleChangeSelectedCourierOption}
+            />
+          ))}
+        </div>
+        <div class={`others`}>
+          <div class="heading">
+            <span class="title">Others: </span>
+          </div>
+          {courierOptions.slice(3,).map((courierOption, index) => (
+            <CourierOptionItem
+              courierOption={courierOption}
+              key={index}
+              isSelected={courierOption.courier_id === selectedCourierOption.courier_id}
+              handleChangeCourierOption={handleChangeSelectedCourierOption}
+            />
+          ))}
+        </div>
+      </form>
+    </div>
   )
 }
 

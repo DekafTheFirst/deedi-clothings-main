@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import './ShippingTab.scss'
 import FormComponent from '../../../components/Form/Form'
 import { useDispatch, useSelector } from 'react-redux';
@@ -10,9 +10,9 @@ import { makeRequest } from '../../../makeRequest';
 const ShippingTab = () => {
 
     const shippingInfo = useSelector(state => state.checkout.shippingInfo);
-    const [errorWhileSubmittingForm, setErrorWhileFetching] = useState(null)
     const [retryAttempt, setRetryAttempt] = useState(0);
 
+    
     // console.log('shipping info', shippingInfo)
     const formItems = [
         {
@@ -110,7 +110,10 @@ const ShippingTab = () => {
 
 
     const requestRates = async (filledShippingInfo, setSubmitting) => {
+
         try {
+            window.scrollTo(0, 0);
+
             const itemsWithDimensions = items.map(item => ({
                 ...item,
                 length: 40, // Replace with actual value from item
@@ -118,15 +121,17 @@ const ShippingTab = () => {
                 height: 1, // Replace with actual value from item
                 weight: 1.5, // Replace with actual value from item
             }));
-            const response = await makeRequest.post(`/orders/couriers`, { address: filledShippingInfo, items: itemsWithDimensions });
+            const response = await makeRequest.post(`/orders/couriers`, { 
+                address: filledShippingInfo, 
+                items: itemsWithDimensions 
+            });
             // const couriers = response.data.rates;
             dispatch(setShippingInfo(filledShippingInfo))
             dispatch(setRates(response.data))
             dispatch(nextStep())
             console.log('Fetched couriers:', response.data);
         } catch (error) {
-            setErrorWhileFetching(error)
-            console.error('Error fetching couriers', error);
+            setErrorSubmittingForm(error)
         } finally {
             setSubmitting(false);
         }
@@ -153,6 +158,18 @@ const ShippingTab = () => {
         }
 
     };
+
+
+    // Error Handling
+    const [errorWhileSubmittingForm, setErrorSubmittingForm] = useState(null);
+
+    useEffect(()=> {
+        console.log('Error fetching couriers', errorWhileSubmittingForm);
+    }, [errorWhileSubmittingForm])
+
+
+    
+
 
     return (
         <div className="shipping-tab">

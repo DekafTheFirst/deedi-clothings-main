@@ -28,7 +28,7 @@ const FormComponent = ({ formItems, countryData, stateData, cityData, handleSubm
         country: yup.string().required('Country is required'),
     })
 
-    
+
     const formItemsInitalValues = Object.fromEntries(formItems.map(item => [item.name, item.initialValue]))
     const initialValues = { ...formItemsInitalValues, countryData, stateData, cityData, }
     // const handleShippingSubmit = async (values) => {
@@ -79,12 +79,12 @@ const FormComponent = ({ formItems, countryData, stateData, cityData, handleSubm
             onSubmit={handleSubmit}
             validationSchema={validationSchema}
         >
-            {({ isSubmitting, setSubmitting, errors, values, touched, setFieldValue, handleBlur }) => {
-                // useEffect(() => {
-                //     console.log('values:', values);
-                //     // console.log('errors:', errors);
-                // }, [values, errors])
-
+            {({ isSubmitting, setSubmitting, errors, values, touched, setFieldValue, handleBlur, handleSubmit }) => {
+                useEffect(() => {
+                    console.log('values:', values);
+                    // console.log('errors:', errors);
+                }, [values])
+                
 
 
                 const fetchStateList = async (countryId) => {
@@ -120,6 +120,16 @@ const FormComponent = ({ formItems, countryData, stateData, cityData, handleSubm
                 }, [values.stateData]);
 
 
+                const renderError = (status) => {
+        
+                    switch (status) {
+                        case 422 : 
+                            return 'Please double-check your shipping info and'
+                        default: 
+                            return 'Something went wrong. Please check your connection and'
+                    }
+                }
+
                 return (
                     <>{
                         isSubmitting
@@ -128,38 +138,35 @@ const FormComponent = ({ formItems, countryData, stateData, cityData, handleSubm
                             :
                             (
                                 <>
-                                    {
-                                        errorWhileSubmittingForm
-                                            ?
-                                            <div className="error-submitting-form">errorWhileSubmittingForm</div> //Plus functionality for retrying.
-                                            :
-                                            (<Form className='form-component' autoComplete='off' aria-autocomplete='off'>
-                                                <div className="items">
-                                                    {formItems.map((item) => (
-                                                        <InputField
-                                                            key={item.name}
-                                                            label={item.label}
-                                                            name={item.name}
-                                                            type={item.type}
-                                                            as={item.as}
-                                                            touched={touched[item.name]}
-                                                            error={errors[item.name]}
-                                                            customInputName={item.customInputName}
-                                                            setFieldValue={setFieldValue}
-                                                            values={values}
-                                                            handleBlur={handleBlur}
-                                                            countryList={item.as === 'country-selector' ? memoizedCountryList : undefined}
-                                                            stateList={item.as === 'state-selector' ? memoizedStateList : undefined}
-                                                            cityList={item.as === 'city-selector' ? memoizedCityList : undefined}
-                                                        />
-                                                    ))}
-                                                </div>
+                                    <Form className='form-component' autoComplete='off' aria-autocomplete='off'>
+                                        {errorWhileSubmittingForm && <div className="form-error">{renderError(errorWhileSubmittingForm?.response?.status)} <a className="try-again" onClick={handleSubmit}>try again.</a></div>
+                                        }
+                                        <div className="items">
+                                            {formItems.map((item) => (
+                                                <InputField
+                                                    key={item.name}
+                                                    label={item.label}
+                                                    name={item.name}
+                                                    type={item.type}
+                                                    as={item.as}
+                                                    touched={touched[item.name]}
+                                                    error={errors[item.name]}
+                                                    customInputName={item.customInputName}
+                                                    setFieldValue={setFieldValue}
+                                                    values={values}
+                                                    handleBlur={handleBlur}
+                                                    countryList={item.as === 'country-selector' ? memoizedCountryList : undefined}
+                                                    stateList={item.as === 'state-selector' ? memoizedStateList : undefined}
+                                                    cityList={item.as === 'city-selector' ? memoizedCityList : undefined}
+                                                />
+                                            ))}
+                                        </div>
 
-                                                <button type="submit" className="btn-1 submit-btn" disabled={isSubmitting} >
-                                                    Save & Continue
-                                                </button>
-                                            </Form>)
-                                    }
+
+                                        <button type="submit" className="btn-1 submit-btn" disabled={isSubmitting} >
+                                            Save & Continue
+                                        </button>
+                                    </Form>
                                 </>
                             )
                     }</>
