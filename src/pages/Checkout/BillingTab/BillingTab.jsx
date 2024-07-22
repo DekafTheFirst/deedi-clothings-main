@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react'
-import './ShippingTab.scss'
+import './BillingTab.scss'
 import FormComponent from '../../../components/Form/Form'
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 import _ from 'lodash';
 import { nextStep, setRates, setShippingInfo } from '../../../redux/checkoutReducer';
 import { makeRequest } from '../../../makeRequest';
+import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
+import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked';
 
-const ShippingTab = () => {
+const BillingTab = () => {
 
     const shippingInfo = useSelector(state => state.checkout.shippingInfo);
     const [retryAttempt, setRetryAttempt] = useState(0);
@@ -169,27 +171,58 @@ const ShippingTab = () => {
 
 
 
+    const [sameAsShippingAddress, setSameAsShippingAddress] = useState(true);
+    // const handleToggleSameShippingAddress = () => {
+    //     console.log('changed')
+    // };
 
 
     return (
-        <div className="shipping-tab">
+        <div className="billing-tab">
+
             <div className="top">
-                <h6 className="tab-title"> Shipping Address</h6>
-                <p>Enter your shipping details for delivery.</p>
+                <h6 className="tab-title"> Billing Address</h6>
+                <p>Enter your billing details to complete your purchase.</p>
             </div>
 
             <div className="checkout">
                 {/* <CourierOptions /> */}
+                <div class="options">
+                    <div
+                        className={`option-item ${sameAsShippingAddress ? 'selected' : ''}`}
+                        onClick={() => setSameAsShippingAddress(true)}
+                    >
+                        <div className="start">
+                            <div className='radio'>{sameAsShippingAddress ? <RadioButtonCheckedIcon fontSize='small' /> : <RadioButtonUncheckedIcon fontSize='small' />}</div>
+                        </div>
 
-                <FormComponent
-                    formItems={formItems}
-                    countryData={shippingInfo.countryData && shippingInfo.countryData}
-                    stateData={shippingInfo.stateData && shippingInfo.stateData}
-                    cityData={shippingInfo.cityData && shippingInfo.cityData}
-                    handleSubmit={handleShippingSubmit}
-                    errorWhileSubmittingForm={errorWhileSubmittingForm}
-                >
-                </FormComponent>
+                        <p className="text">Same as shipping address</p>
+
+
+                    </div>
+                    <div
+                        className={`option-item ${!sameAsShippingAddress ? 'selected' : ''}`}
+                        onClick={() => setSameAsShippingAddress(false)}
+                    >
+                        <div className="start">
+                            <div className='radio'>{!sameAsShippingAddress ? <RadioButtonCheckedIcon fontSize='small' /> : <RadioButtonUncheckedIcon fontSize='small' />}</div>
+                        </div>
+
+                        <p className="text">Use a different billing address</p>
+                    </div>
+                </div>
+
+                {
+                    !sameAsShippingAddress && <FormComponent
+                        formItems={formItems}
+                        countryData={shippingInfo.countryData && shippingInfo.countryData}
+                        stateData={shippingInfo.stateData && shippingInfo.stateData}
+                        cityData={shippingInfo.cityData && shippingInfo.cityData}
+                        handleSubmit={handleShippingSubmit}
+                        errorWhileSubmittingForm={errorWhileSubmittingForm}
+                    >
+                    </FormComponent>
+                }
 
 
                 {/* <button onClick={handlePayment} className='btn-1'>PROCEED TO CHECKOUT</button> */}
@@ -200,4 +233,4 @@ const ShippingTab = () => {
     )
 }
 
-export default ShippingTab
+export default BillingTab

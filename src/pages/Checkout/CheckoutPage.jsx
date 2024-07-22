@@ -12,6 +12,7 @@ import StepWizard from './StepWizard/StepWizard'
 import ShippingTab from './ShippingTab/ShippingTab'
 import calculateNoOfProducts from '../../utils/calculateNoOfProducts'
 import { current } from '@reduxjs/toolkit'
+import BillingTab from './BillingTab/BillingTab'
 
 
 const CheckoutPage = () => {
@@ -90,6 +91,8 @@ const CheckoutPage = () => {
         return <ShippingTab subtotal={subtotal} totalAmount={totalAmount} vat={vat} quantity={products.length} />
       case 2:
         return <CourierOptions />
+      case 3:
+        return <BillingTab />
     }
   }
 
@@ -114,7 +117,7 @@ const CheckoutPage = () => {
                     <div className="summary-item">No. of Items: <span className="value">{calculateNoOfProducts(products)}</span></div>
                     <div className="summary-item">Subtotal: <span className="value">${subtotal}</span></div>
                     <div className="summary-item">VAT(20%): <span className="value">${vat}</span></div>
-                    {selectedCourier && <div className="summary-item">Shipping: <span className="value">${selectedCourier.total_charge}</span></div>                  }
+                    {selectedCourier && <div className="summary-item">Shipping: <span className="value">${selectedCourier.total_charge}</span></div>}
                     <div className="summary-item total">Total: <span className="value">${totalAmount}</span></div>
                   </div></div>
               </div>

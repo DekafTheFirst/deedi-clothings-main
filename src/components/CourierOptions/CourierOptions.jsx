@@ -3,7 +3,7 @@ import './CourierOptions.scss'
 import { useDispatch, useSelector } from 'react-redux'
 import { rates } from '../../utils/rates'
 import CourierOptionItem from './CourierOption/CourierOptionItem'
-import { setSelectedCourier } from '../../redux/checkoutReducer'
+import { nextStep, setSelectedCourier } from '../../redux/checkoutReducer'
 
 
 
@@ -40,7 +40,15 @@ const CourierOptions = () => {
     // console.log(selectedCourierOption);
   }, [selectedCourierOption])
 
-  
+  const [showAll, setShowAll] = useState(false)
+  const toggleShowAll = () => {
+    setShowAll((prev) => !prev)
+  }
+
+
+  const handleSubmitCourierOtion = () => {
+    dispatch(nextStep())
+  }
 
   return (
     <div className="courier-selection-tab">
@@ -49,11 +57,12 @@ const CourierOptions = () => {
         <p>Pick your preferred shipping option and finish your order.</p>
       </div>
       <form className="selectCourierOptions">
-        <div class="recommended">
-          <div class="heading">
-            <span class="title">Recommended: </span>
+        <div className="recommended">
+          <div className="heading">
+            <span className="title">Recommended: </span>
+            <span className={`view-all ${showAll ? 'underlined' : ''}`} onClick={toggleShowAll}>View more</span>
           </div>
-          {courierOptions.slice(0, 3).map((courierOption, index) => (
+          {courierOptions.slice(0, 2).map((courierOption, index) => (
             <CourierOptionItem
               courierOption={courierOption}
               key={index}
@@ -62,11 +71,12 @@ const CourierOptions = () => {
             />
           ))}
         </div>
-        <div class={`others`}>
-          <div class="heading">
-            <span class="title">Others: </span>
+        <div className={`others ${showAll ? 'show' : ''}`}>
+          <div className="heading">
+            <span className="title">Others: </span>
+            <span className="view-all" onClick={toggleShowAll}>Hide</span>
           </div>
-          {courierOptions.slice(3,).map((courierOption, index) => (
+          {courierOptions.slice(2,).map((courierOption, index) => (
             <CourierOptionItem
               courierOption={courierOption}
               key={index}
@@ -75,6 +85,9 @@ const CourierOptions = () => {
             />
           ))}
         </div>
+        <button onClick={handleSubmitCourierOtion} className="btn-1 submit-btn" disabled={false} >
+          Save & Continue
+        </button>
       </form>
     </div>
   )

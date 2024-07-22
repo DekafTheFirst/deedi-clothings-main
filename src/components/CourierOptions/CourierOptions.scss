@@ -51,16 +51,28 @@
                     font-size: 14px;
                 }
 
-                
+                .view-all {
+                    font-size: 13px;
+                    cursor: pointer;
+                    border-bottom: 1px solid transparent;
+
+
+                    &:hover, &.underlined {
+                        border-bottom: 1px solid $deepCharcoal;
+                    }
+                }
             }
         }
 
         .others {
-            display: flex;
+            display: none;
             flex-direction: column;
             gap: 10px;
 
-           
+            &.show {
+                display: flex;
+            }
+
             .heading {
                 display: flex;
                 justify-content: space-between;
@@ -70,8 +82,22 @@
                     font-size: 14px;
                 }
 
-                
+                .view-all {
+                    font-size: 13px;
+                    cursor: pointer;
+                    border-bottom: 1px solid transparent;
+
+
+                    &:hover {
+                        border-bottom: 1px solid $deepCharcoal;
+                    }
+                }
             }
+        }
+
+        .submit-btn {
+            width: 100%;
+            border-radius: 8px;
         }
 
     }

@@ -1,0 +1,158 @@
+@import '../../../variables.scss';
+@import '../../../mixins.scss';
+
+
+.billing-tab {
+    width: 100%;
+    height: 100%;
+    margin-bottom: 12px;
+    border-radius: 3px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    gap: 20px;
+
+    @include md {
+        margin-bottom: unset;
+    }
+
+    .top {
+        .tab-title {
+            margin-bottom: 10px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: 600;
+
+            @include md {
+                text-align: center;
+            }
+        }
+
+
+        p {
+            font-size: 14px;
+            color: $darkGray;
+            text-align: center;
+
+            @include md {
+                text-align: center;
+            }
+
+        }
+    }
+
+    .checkout {
+        display: flex;
+        flex-direction: column;
+        gap: 25px;
+        padding-bottom: 20px;
+        margin-bottom: 20px;
+
+        @include md {}
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+
+            .option-item {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                background-color: white;
+                padding: 15px 20px;
+                border-radius: 10px;
+                overflow: hidden;
+                border: 1px solid $mediumGray;
+                cursor: pointer;
+                transition: .2s ease all;
+
+
+                &:hover {
+                    border-color: $charcoal;
+                }
+
+                &.selected {
+                    border-color: $charcoal;
+                }
+                
+
+                .text {
+                    font-size: 13px;
+                }
+
+                .start {
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+
+                    .amount {
+                        font-size: 15px;
+                        font-weight: 600;
+                    }
+
+                    .radio {
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                    }
+                }
+            }
+        }
+    }
+
+    // .info {
+    //     display: flex;
+    //     flex-direction: column;
+
+
+    //     .heading {
+    //         margin-bottom: 10px;
+    //         text-align: center;
+    //         font-weight: 600;
+    //         font-size: 15px;
+    //         text-transform: uppercase;
+    //     }
+
+    //     img {
+    //         width: 80%;
+    //         margin: auto;
+    //     }
+
+    // }
+
+    button {
+        // padding: 10px;
+        // display: flex;
+        // align-items: center;
+        // justify-content: center;
+        // gap: 20px;
+        // cursor: pointer;
+        // border: none;
+        // background-color: #93703F;
+        // color: white;
+        // font-weight: 500;
+        border-radius: 3px;
+    }
+
+    .reset {
+        color: red;
+        font-size: 12px;
+        cursor: pointer;
+        text-align: center;
+    }
+
+    .secondary-action {
+        color: $darkGray;
+        text-align: center;
+        font-size: 14px;
+        text-decoration: underline;
+        padding: 7px;
+
+        &:hover {
+            color: $deepCharcoal;
+        }
+    }
+
+}

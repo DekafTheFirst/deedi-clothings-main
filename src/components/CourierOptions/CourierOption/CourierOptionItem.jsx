@@ -7,7 +7,7 @@ const CourierOptionItem = memo(({ courierOption, isSelected, handleChangeCourier
   // console.log('rendered')
   return (
     <div
-      className={`courierOptionItem ${isSelected ? 'selected' : ''}`}
+      className={`courier-option-item ${isSelected ? 'selected' : ''}`}
       onClick={() => handleChangeCourierOption(courierOption.courier_id)}
     >
       <div className="icon-wrapper">

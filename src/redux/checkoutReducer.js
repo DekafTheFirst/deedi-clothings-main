@@ -7,19 +7,19 @@ export const steps = [
     title: 'Shipping Info',
     slug: 'shipping-info',
     id: 1,
-    completed: false,
+    completed: true,
   },
   {
     title: 'Billing Info',
     slug: 'billing-info',
     id: 2,
-    completed: false,
+    completed: true,
   },
   {
     title: 'Complete',
     slug: 'complete',
     id: 3,
-    completed: false,
+    completed: true,
   },
 ];
 
@@ -29,8 +29,8 @@ const courierOptions = rates.data.rates
 
 
 const initialState = {
-  currentStep: steps[0],
-  completedSteps: [],
+  currentStep: steps[2],
+  completedSteps: [...steps],
   previewedStep: null,
   shippingInfo: {
     firstName: '',

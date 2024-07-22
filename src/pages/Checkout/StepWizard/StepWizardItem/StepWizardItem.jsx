@@ -19,7 +19,8 @@ const StepWizardItem = ({ stepItem }) => {
             dispatch(clearPreviewedStep())
         }
         if (stepHasBeenCompleted) {
-            dispatch(setPreviewedStep(stepItem.id)); // Dispatch action to set current step
+            
+            dispatch(setPreviewedStep(stepItem.id));
         }
     };
 
