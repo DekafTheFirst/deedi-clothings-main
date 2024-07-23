@@ -15,7 +15,7 @@ import {
 import "react-country-state-city/dist/react-country-state-city.css";
 import { compose } from 'redux';
 
-const InputField = memo(({ name, label, type, placeholder, as, touched, error, customInputName, values, handleBlur, setFieldValue, countryList, stateList, cityList }) => {
+const InputField = ({ name, label, type, placeholder, as, touched, error, customInputName, values, handleBlur, setFieldValue, countryList, stateList, cityList }) => {
     const countryRef = useRef(null);
     const stateRef = useRef(null);
 
@@ -79,81 +79,6 @@ const InputField = memo(({ name, label, type, placeholder, as, touched, error, c
 
 
 
-
-
-    // useEffect(() => {
-    //     const fetchStateList = async () => {
-    //         try {
-    //             const stateData = await GetStates();
-    //             setStateList(countryData); // Store fetched country data in state
-    //         } catch (error) {
-    //             console.error('Error fetching country data:', error);
-    //         }
-    //     };
-
-    //     // Fetch the country list only if it's not already fetched
-    //     if (countryList.length === 0) {
-    //         fetchStateList();
-    //     }
-    // }, [])
-
-    // useEffect(() => {
-
-    //     const handleCountryChange = async () => {
-    //         if (countryRef.current) {
-    //             const selectedCountry = countryRef.current.querySelector('input').value;
-
-    //             if (selectedCountry && selectedCountry !== values['name']) {
-    //                 // console.log(countryList[1]);
-    //                 const selectedCountryData = countryList.find(country => country.name === selectedCountry);
-    //                 console.log(selectedCountryData)
-
-    //                 setFieldValue('country', selectedCountry);
-    //                 setFieldValue('countryData', selectedCountryData);
-    //                 // setFieldValue('state', '');
-    //                 // setFieldValue('stateData', null);
-    //                 // setFieldValue('city', '');
-    //                 // setFieldValue('cityData', null);
-
-    //             }
-    //             else {
-    //                 console.log('matches already')
-    //             }
-    //         }
-    //     };
-
-    //     if (countryRef.current) {
-    //         countryRef.current.addEventListener('change', handleCountryChange);
-    //     }
-
-    //     return () => {
-    //         if (countryRef.current) {
-    //             countryRef.current.removeEventListener('change', handleCountryChange);
-    //         }
-    //     };
-    // }, [countryRef, name, setFieldValue, values]);
-
-
-    // useEffect(() => {
-    //     const handleStateChange = () => {
-    //         if (stateRef.current) {
-    //             const selectedState = stateRef.current.querySelector('input').value;
-    //             if (selectedState && selectedState !== values[name]) {
-    //                 setFieldValue('state', '');
-    //             }
-    //         }
-    //     };
-
-    //     if (stateRef.current) {
-    //         stateRef.current.addEventListener('change', handleStateChange);
-    //     }
-
-    //     return () => {
-    //         if (stateRef.current) {
-    //             stateRef.current.removeEventListener('change', handleStateChange);
-    //         }
-    //     };
-    // }, [stateRef, name, setFieldValue, values]);
 
     const renderInput = () => {
         switch (as) {
@@ -267,6 +192,6 @@ const InputField = memo(({ name, label, type, placeholder, as, touched, error, c
         </div>
 
     )
-})
+}
 
 export default InputField

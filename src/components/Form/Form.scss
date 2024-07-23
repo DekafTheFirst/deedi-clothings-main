@@ -11,9 +11,9 @@
 
 
 .form-component {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
 
 
   .items {
@@ -28,7 +28,7 @@
     }
   }
 
-  
+
 
   .form-error {
     color: red;
@@ -47,14 +47,29 @@
     }
   }
 
+  .reset {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    color: red;
+    font-size: 13px;
+    cursor: pointer;
+
+    &:hover {
+      color: darken(red, 5%);
+    }
+  }
+
+
+
   .submit-btn {
     grid-column: 1 / -1;
     justify-self: center;
     width: 100%;
   }
 
-  
-  & + div {
+
+  &+div {
     padding-top: 2em;
   }
 

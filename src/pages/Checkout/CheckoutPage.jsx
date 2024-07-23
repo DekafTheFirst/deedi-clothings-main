@@ -13,16 +13,18 @@ import ShippingTab from './ShippingTab/ShippingTab'
 import calculateNoOfProducts from '../../utils/calculateNoOfProducts'
 import { current } from '@reduxjs/toolkit'
 import BillingTab from './BillingTab/BillingTab'
+import { setShippingInfo } from '../../redux/checkoutReducer'
+import { getShippingInfoFromSession } from '../../utils/session'
 
 
 const CheckoutPage = () => {
   const navigate = useNavigate()
+  const dispatch = useDispatch()
 
+  
   // Products
   const products = useSelector(state => state.cart.cartItems)
   const selectedCourier = useSelector(state => state.checkout.selectedCourier);
-  const shippingInfo = useSelector(state => state.checkout.shippingInfo);
-  const billingInfo = useSelector(state => state.checkout.billingInfo);
 
   const currentStep = useSelector(state => state.checkout.currentStep);
   const previewedStep = useSelector(state => state.checkout.previewedStep);
@@ -50,7 +52,6 @@ const CheckoutPage = () => {
   // Price
 
   // dispatch
-  const dispatch = useDispatch()
 
   // Payment
   // const stripePromise = loadStripe('pk_test_51OzQqiP8nMwtf7KwjeDBvSrJh0QU2AMmJncITWpVrXW9Cm8XesZc1MqofLogMUrphlOB0exTEsHSQ91mJoA5V94u00JrVmVkWL');

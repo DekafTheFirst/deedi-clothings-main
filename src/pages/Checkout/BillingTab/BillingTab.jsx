@@ -12,6 +12,8 @@ import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked';
 const BillingTab = () => {
 
     const shippingInfo = useSelector(state => state.checkout.shippingInfo);
+    const billingInfo = useSelector(state => state.checkout.billingInfo);
+
     const [retryAttempt, setRetryAttempt] = useState(0);
 
 
@@ -22,14 +24,14 @@ const BillingTab = () => {
             label: 'First Name',
             type: 'text',
             placeholder: '',
-            initialValue: shippingInfo.firstName || '',
+            initialValue: billingInfo.firstName || '',
         },
         {
             name: 'lastName',
             label: 'Last Name',
             type: 'text',
             placeholder: '',
-            initialValue: shippingInfo.lastName || '',
+            initialValue: billingInfo.lastName || '',
 
         },
 
@@ -40,7 +42,7 @@ const BillingTab = () => {
             as: 'custom',
             customInputName: 'addressLine',
             placeholder: '',
-            initialValue: shippingInfo.addressLine1 || '',
+            initialValue: billingInfo.addressLine1 || '',
         },
 
 
@@ -51,7 +53,7 @@ const BillingTab = () => {
             as: 'custom',
             customInputName: 'addressLine',
             placeholder: '',
-            initialValue: shippingInfo.addressLine2 || '',
+            initialValue: billingInfo.addressLine2 || '',
         },
         {
             name: 'country',
@@ -59,7 +61,7 @@ const BillingTab = () => {
             as: 'country-selector',
             type: 'text',
             placeholder: '',
-            initialValue: shippingInfo.country || '',
+            initialValue: billingInfo.country || '',
         },
 
         {
@@ -68,7 +70,7 @@ const BillingTab = () => {
             as: 'state-selector',
             type: 'text',
             placeholder: '',
-            initialValue: shippingInfo.state || '',
+            initialValue: billingInfo.state || '',
         },
         {
             name: 'city',
@@ -76,28 +78,28 @@ const BillingTab = () => {
             as: 'city-selector',
             type: 'text',
             placeholder: '',
-            initialValue: shippingInfo.city || '',
+            initialValue: billingInfo.city || '',
         },
         {
             name: 'postalCode',
             label: 'Postal Code',
             type: 'text',
             placeholder: '',
-            initialValue: shippingInfo.postalCode || '',
+            initialValue: billingInfo.postalCode || '',
         },
         {
             name: 'phoneNumber',
             label: 'Phone Number',
             type: 'tel',
             placeholder: '',
-            initialValue: shippingInfo.phoneNumber || '',
+            initialValue: billingInfo.phoneNumber || '',
         },
         {
             name: 'email',
             label: 'Email',
             type: 'email',
             placeholder: '',
-            initialValue: shippingInfo.email || '',
+            initialValue: billingInfo.email || '',
         },
     ];
 
@@ -142,10 +144,10 @@ const BillingTab = () => {
     const handleShippingSubmit = async (filledShippingInfo, { setSubmitting }) => {
         if (previewedStep) {
             console.log('currently previewing')
-            const infoIsChanged = !arraysEqual(filledShippingInfo, shippingInfo);
+            const infoIsChanged = !arraysEqual(filledShippingInfo, billingInfo);
             console.log('is info changed?', infoIsChanged)
             console.log('filledShippingInfo', filledShippingInfo)
-            console.log('initialValues ', shippingInfo)
+            console.log('initialValues ', billingInfo)
 
             if (infoIsChanged) {
                 await requestRates(filledShippingInfo, setSubmitting)
@@ -176,6 +178,10 @@ const BillingTab = () => {
     //     console.log('changed')
     // };
 
+    const handleSubmitCourierOtion = () => {
+        dispatch(nextStep())
+    }
+
 
     return (
         <div className="billing-tab">
@@ -187,7 +193,7 @@ const BillingTab = () => {
 
             <div className="checkout">
                 {/* <CourierOptions /> */}
-                <div class="options">
+                <div className="options">
                     <div
                         className={`option-item ${sameAsShippingAddress ? 'selected' : ''}`}
                         onClick={() => setSameAsShippingAddress(true)}
@@ -213,16 +219,28 @@ const BillingTab = () => {
                 </div>
 
                 {
-                    !sameAsShippingAddress && <FormComponent
-                        formItems={formItems}
-                        countryData={shippingInfo.countryData && shippingInfo.countryData}
-                        stateData={shippingInfo.stateData && shippingInfo.stateData}
-                        cityData={shippingInfo.cityData && shippingInfo.cityData}
-                        handleSubmit={handleShippingSubmit}
-                        errorWhileSubmittingForm={errorWhileSubmittingForm}
-                    >
-                    </FormComponent>
+                    sameAsShippingAddress ?
+                        (
+                            <button onClick={handleSubmitCourierOtion} className="btn-1 submit-btn" disabled={false} >
+                                Place Order
+                            </button>
+                        )
+                        :
+                        (
+                            <FormComponent
+                                formItems={formItems}
+                                countryData={billingInfo.countryData && billingInfo.countryData}
+                                stateData={billingInfo.stateData && billingInfo.stateData}
+                                cityData={billingInfo.cityData && billingInfo.cityData}
+                                handleSubmit={handleShippingSubmit}
+                                errorWhileSubmittingForm={errorWhileSubmittingForm}
+                                submitBtnText={'Place Order'}
+                            >
+                            </FormComponent>
+                        )
                 }
+
+
 
 
                 {/* <button onClick={handlePayment} className='btn-1'>PROCEED TO CHECKOUT</button> */}

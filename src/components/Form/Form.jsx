@@ -10,8 +10,9 @@ import * as yup from "yup";
 import { nextStep, setCurrentStep, setShippingInfo } from '../../redux/checkoutReducer';
 import CircularProgress from '@mui/material/CircularProgress';
 import { GetCity, GetCountries, GetState } from 'react-country-state-city/dist/cjs';
+import { Close } from '@mui/icons-material';
 
-const FormComponent = ({ formItems, countryData, stateData, cityData, handleSubmit, errorWhileSubmittingForm, retry }) => {
+const FormComponent = ({ formItems, countryData, stateData, cityData, handleSubmit, handleReset, errorWhileSubmittingForm, retry, submitBtnText }) => {
     const validationSchema = yup.object().shape({
         firstName: yup.string().required('First name is required'),
         lastName: yup.string().required('Last Name is required'),
@@ -29,8 +30,17 @@ const FormComponent = ({ formItems, countryData, stateData, cityData, handleSubm
     })
 
 
-    const formItemsInitalValues = Object.fromEntries(formItems.map(item => [item.name, item.initialValue]))
-    const initialValues = { ...formItemsInitalValues, countryData, stateData, cityData, }
+
+    const initialValuesFromFormItems = { ...Object.fromEntries(formItems.map(item => [item.name, item.initialValue])), countryData, stateData, cityData}
+    console.log('initialValuesFromFormItems', initialValuesFromFormItems)
+    
+    const [initialValues, setInitialValues] = useState(initialValuesFromFormItems)
+    
+    // useEffect(()=> {
+    //     setInitialValues(initialValuesFromFormItems)
+    // }, [initialValuesFromFormItems]);
+
+    // console.log(initialValuesFromFormItems)
     // const handleShippingSubmit = async (values) => {
     //     try { console.log('Submitting form with values:', values); }
     //     catch (error) { console.log(error) }
@@ -79,12 +89,17 @@ const FormComponent = ({ formItems, countryData, stateData, cityData, handleSubm
             onSubmit={handleSubmit}
             validationSchema={validationSchema}
         >
-            {({ isSubmitting, setSubmitting, errors, values, touched, setFieldValue, handleBlur, handleSubmit }) => {
+            {({ isSubmitting, setSubmitting, errors, initialValues, values, touched, setFieldValue, handleBlur, handleSubmit, resetForm }) => {
+
+                // useEffect(() => {
+                //     console.log('initialValues known inside form', initialValues)
+                // }, [initialValues]);
+
                 useEffect(() => {
                     console.log('values:', values);
                     // console.log('errors:', errors);
                 }, [values])
-                
+
 
 
                 const fetchStateList = async (countryId) => {
@@ -121,11 +136,11 @@ const FormComponent = ({ formItems, countryData, stateData, cityData, handleSubm
 
 
                 const renderError = (status) => {
-        
+
                     switch (status) {
-                        case 422 : 
+                        case 422:
                             return 'Please double-check your shipping info and'
-                        default: 
+                        default:
                             return 'Something went wrong. Please check your connection and'
                     }
                 }
@@ -138,7 +153,8 @@ const FormComponent = ({ formItems, countryData, stateData, cityData, handleSubm
                             :
                             (
                                 <>
-                                    <Form className='form-component' autoComplete='off' aria-autocomplete='off'>
+                                    <Form className='form-component'>
+                                        
                                         {errorWhileSubmittingForm && <div className="form-error">{renderError(errorWhileSubmittingForm?.response?.status)} <a className="try-again" onClick={handleSubmit}>try again.</a></div>
                                         }
                                         <div className="items">
@@ -162,9 +178,9 @@ const FormComponent = ({ formItems, countryData, stateData, cityData, handleSubm
                                             ))}
                                         </div>
 
-
+                                        <div className="reset" onClick={()=>handleReset(resetForm)}><Close fontSize='small'/>Reset form</div>
                                         <button type="submit" className="btn-1 submit-btn" disabled={isSubmitting} >
-                                            Save & Continue
+                                            {submitBtnText || 'Save & Continue'}
                                         </button>
                                     </Form>
                                 </>

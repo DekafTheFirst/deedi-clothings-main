@@ -1,5 +1,6 @@
 import { createSlice, current } from '@reduxjs/toolkit';
 import { rates } from '../utils/rates';
+import { storeShippingInfoInSession } from '../utils/session';
 
 
 export const steps = [
@@ -29,10 +30,11 @@ const courierOptions = rates.data.rates
 
 
 const initialState = {
-  currentStep: steps[2],
+  currentStep: steps[0],
   completedSteps: [...steps],
   previewedStep: null,
-  shippingInfo: {
+  shippingInfo: null,
+  billingInfo: {
     firstName: '',
     lastName: '',
     email: '',
@@ -44,7 +46,6 @@ const initialState = {
     country: '',
     postalCode: '',
   },
-  billingInfo: {},
   rates: null,
   selectedCourier: courierOptions[0],
 };
@@ -55,6 +56,7 @@ const checkoutSlice = createSlice({
   reducers: {
     setShippingInfo: (state, action) => {
       state.shippingInfo = action.payload;
+      storeShippingInfoInSession(action.payload);
     },
 
     setBillingInfo: (state, action) => {
@@ -70,7 +72,10 @@ const checkoutSlice = createSlice({
     },
 
     setPreviewedStep: (state, action) => {
-      state.previewedStep = steps.find(step => step.id === action.payload);
+      const step = steps.find(step => step.id === action.payload);
+      if (step) {
+        state.previewedStep = step
+      }
     },
 
     clearPreviewedStep: (state) => {
@@ -79,12 +84,19 @@ const checkoutSlice = createSlice({
 
     nextStep: (state) => {
       if (state.previewedStep) {
-        state.currentStep = steps.find(step => step.id === state.previewedStep.id + 1);
+        const step = steps.find(step => step.id === state.previewedStep.id + 1);
+        if (step) {
+          state.currentStep = step
+        }
         state.previewedStep = null
       }
       else {
-        state.completedSteps = [...state.completedSteps, state.currentStep];
-        state.currentStep = steps.find(step => step.id === state.currentStep.id + 1);
+        const step = steps.find(step => step.id === state.currentStep.id + 1);
+
+        if (step) {
+          state.completedSteps = [...state.completedSteps, state.currentStep];
+          state.currentStep = step
+        }
       }
     },
 

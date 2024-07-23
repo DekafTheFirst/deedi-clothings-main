@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import './ShippingTab.scss'
 import FormComponent from '../../../components/Form/Form'
 import { useDispatch, useSelector } from 'react-redux';
@@ -6,28 +6,36 @@ import axios from 'axios';
 import _ from 'lodash';
 import { nextStep, setRates, setShippingInfo } from '../../../redux/checkoutReducer';
 import { makeRequest } from '../../../makeRequest';
+import { getShippingInfoFromSession } from '../../../utils/session';
 
 const ShippingTab = () => {
+    const dispatch = useDispatch()
+    const reduxStoredShippingInfo = useSelector(state => state.checkout.shippingInfo);
 
-    const shippingInfo = useSelector(state => state.checkout.shippingInfo);
-    const [retryAttempt, setRetryAttempt] = useState(0);
+
+    const sessionStoredShippingInfo = getShippingInfoFromSession();
+    console.log('fetched session storage shipping info', sessionStoredShippingInfo)
 
 
-    // console.log('shipping info', shippingInfo)
+
+    // console.log(reduxStoredShippingInfo)
+
+
+
     const formItems = [
         {
             name: 'firstName',
             label: 'First Name',
             type: 'text',
             placeholder: '',
-            initialValue: shippingInfo.firstName || '',
+            initialValue: reduxStoredShippingInfo?.firstName || sessionStoredShippingInfo?.firstName || '',
         },
         {
             name: 'lastName',
             label: 'Last Name',
             type: 'text',
             placeholder: '',
-            initialValue: shippingInfo.lastName || '',
+            initialValue: reduxStoredShippingInfo?.lastName || sessionStoredShippingInfo?.lastName || '',
 
         },
 
@@ -38,7 +46,7 @@ const ShippingTab = () => {
             as: 'custom',
             customInputName: 'addressLine',
             placeholder: '',
-            initialValue: shippingInfo.addressLine1 || '',
+            initialValue: reduxStoredShippingInfo?.addressLine1 || sessionStoredShippingInfo?.addressLine1 || '',
         },
 
 
@@ -49,7 +57,7 @@ const ShippingTab = () => {
             as: 'custom',
             customInputName: 'addressLine',
             placeholder: '',
-            initialValue: shippingInfo.addressLine2 || '',
+            initialValue: reduxStoredShippingInfo?.addressLine2 || sessionStoredShippingInfo?.addressLine2 || '',
         },
         {
             name: 'country',
@@ -57,7 +65,7 @@ const ShippingTab = () => {
             as: 'country-selector',
             type: 'text',
             placeholder: '',
-            initialValue: shippingInfo.country || '',
+            initialValue: reduxStoredShippingInfo?.country || sessionStoredShippingInfo?.country || '',
         },
 
         {
@@ -66,7 +74,7 @@ const ShippingTab = () => {
             as: 'state-selector',
             type: 'text',
             placeholder: '',
-            initialValue: shippingInfo.state || '',
+            initialValue: reduxStoredShippingInfo?.state || sessionStoredShippingInfo?.state || '',
         },
         {
             name: 'city',
@@ -74,30 +82,44 @@ const ShippingTab = () => {
             as: 'city-selector',
             type: 'text',
             placeholder: '',
-            initialValue: shippingInfo.city || '',
+            initialValue: reduxStoredShippingInfo?.city || sessionStoredShippingInfo?.city || '',
         },
         {
             name: 'postalCode',
             label: 'Postal Code',
             type: 'text',
             placeholder: '',
-            initialValue: shippingInfo.postalCode || '',
+            initialValue: reduxStoredShippingInfo?.postalCode || sessionStoredShippingInfo?.postalCode || '',
         },
         {
             name: 'phoneNumber',
             label: 'Phone Number',
             type: 'tel',
             placeholder: '',
-            initialValue: shippingInfo.phoneNumber || '',
+            initialValue: reduxStoredShippingInfo?.phoneNumber || sessionStoredShippingInfo?.phoneNumber || '',
         },
         {
             name: 'email',
             label: 'Email',
             type: 'email',
             placeholder: '',
-            initialValue: shippingInfo.email || '',
+            initialValue: reduxStoredShippingInfo?.email || sessionStoredShippingInfo?.email || '',
         },
     ];
+
+    const countryData = reduxStoredShippingInfo?.countryData || sessionStoredShippingInfo?.countryData || null;
+    const stateData = reduxStoredShippingInfo?.stateData || sessionStoredShippingInfo?.stateData || null;
+    const cityData = reduxStoredShippingInfo?.cityData || sessionStoredShippingInfo?.cityData || null;
+
+
+    // fetch from sessionStorage if available
+
+
+    const [retryAttempt, setRetryAttempt] = useState(0);
+
+
+    // console.log('shipping info', reduxStoredShippingInfo)
+
 
 
     const arraysEqual = (arr1, arr2) => _.isEqual(arr1, arr2);
@@ -106,7 +128,6 @@ const ShippingTab = () => {
     const currentStep = useSelector(state => state.cart.currentStep);
     const previewedStep = useSelector(state => state.checkout.previewedStep);
 
-    const dispatch = useDispatch()
 
 
     const requestRates = async (filledShippingInfo, setSubmitting) => {
@@ -140,10 +161,10 @@ const ShippingTab = () => {
     const handleShippingSubmit = async (filledShippingInfo, { setSubmitting }) => {
         if (previewedStep) {
             console.log('currently previewing')
-            const infoIsChanged = !arraysEqual(filledShippingInfo, shippingInfo);
+            const infoIsChanged = !arraysEqual(filledShippingInfo, reduxStoredShippingInfo);
             console.log('is info changed?', infoIsChanged)
             console.log('filledShippingInfo', filledShippingInfo)
-            console.log('initialValues ', shippingInfo)
+            console.log('initialValues ', reduxStoredShippingInfo)
 
             if (infoIsChanged) {
                 await requestRates(filledShippingInfo, setSubmitting)
@@ -159,6 +180,30 @@ const ShippingTab = () => {
 
     };
 
+    // Handle Reset
+    const handleReset = (resetForm) => {
+        if (reduxStoredShippingInfo, sessionStoredShippingInfo) {
+            dispatch(setShippingInfo(null))
+        }
+
+        resetForm({
+            values: {
+                firstName: '',
+                lastName: '',
+                email: '',
+                phoneNumber: '',
+                addressLine1: '',
+                addressLine2: '',
+                city: '',
+                cityData: null,
+                state: '',
+                stateData: null,
+                country: '',
+                countryData: null,
+                postalCode: '',
+            }
+        })
+    }
 
     // Error Handling
     const [errorWhileSubmittingForm, setErrorSubmittingForm] = useState(null);
@@ -183,11 +228,12 @@ const ShippingTab = () => {
 
                 <FormComponent
                     formItems={formItems}
-                    countryData={shippingInfo.countryData && shippingInfo.countryData}
-                    stateData={shippingInfo.stateData && shippingInfo.stateData}
-                    cityData={shippingInfo.cityData && shippingInfo.cityData}
+                    countryData={countryData}
+                    stateData={stateData}
+                    cityData={cityData}
                     handleSubmit={handleShippingSubmit}
                     errorWhileSubmittingForm={errorWhileSubmittingForm}
+                    handleReset={handleReset}
                 >
                 </FormComponent>
 
