@@ -32,7 +32,7 @@ const FormComponent = ({ formItems, countryData, stateData, cityData, handleSubm
 
 
     const initialValuesFromFormItems = { ...Object.fromEntries(formItems.map(item => [item.name, item.initialValue])), countryData, stateData, cityData}
-    console.log('initialValuesFromFormItems', initialValuesFromFormItems)
+    // console.log('initialValuesFromFormItems', initialValuesFromFormItems)
     
     const [initialValues, setInitialValues] = useState(initialValuesFromFormItems)
     
@@ -95,10 +95,10 @@ const FormComponent = ({ formItems, countryData, stateData, cityData, handleSubm
                 //     console.log('initialValues known inside form', initialValues)
                 // }, [initialValues]);
 
-                useEffect(() => {
-                    console.log('values:', values);
-                    // console.log('errors:', errors);
-                }, [values])
+                // useEffect(() => {
+                //     console.log('values:', values);
+                //     // console.log('errors:', errors);
+                // }, [values])
 
 
 

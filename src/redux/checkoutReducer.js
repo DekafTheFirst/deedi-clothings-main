@@ -1,6 +1,6 @@
 import { createSlice, current } from '@reduxjs/toolkit';
 import { rates } from '../utils/rates';
-import { storeShippingInfoInSession } from '../utils/session';
+import { storeBillingInfoInSession, storeShippingInfoInSession } from '../utils/session';
 
 
 export const steps = [
@@ -61,6 +61,7 @@ const checkoutSlice = createSlice({
 
     setBillingInfo: (state, action) => {
       state.billingInfo = action.payload;
+      storeBillingInfoInSession(action.payload);
     },
 
     setSelectedCourier: (state, action) => {

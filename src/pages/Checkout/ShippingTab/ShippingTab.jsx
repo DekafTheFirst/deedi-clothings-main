@@ -14,7 +14,7 @@ const ShippingTab = () => {
 
 
     const sessionStoredShippingInfo = getShippingInfoFromSession();
-    console.log('fetched session storage shipping info', sessionStoredShippingInfo)
+    // console.log('fetched session storage shipping info', sessionStoredShippingInfo)
 
 
 
@@ -208,9 +208,9 @@ const ShippingTab = () => {
     // Error Handling
     const [errorWhileSubmittingForm, setErrorSubmittingForm] = useState(null);
 
-    useEffect(() => {
-        console.log('Error fetching couriers', errorWhileSubmittingForm);
-    }, [errorWhileSubmittingForm])
+    // useEffect(() => {
+    //     console.log('Error fetching couriers', errorWhileSubmittingForm);
+    // }, [errorWhileSubmittingForm])
 
 
 
