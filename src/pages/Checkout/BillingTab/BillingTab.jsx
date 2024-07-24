@@ -10,18 +10,26 @@ import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked';
 import { getBilingInfoFromSession, getShippingInfoFromSession } from '../../../utils/session';
 import { CircularProgress } from '@mui/material';
+import { loadStripe } from '@stripe/stripe-js';
 
 const BillingTab = () => {
 
     const dispatch = useDispatch()
     const reduxStoredBillingInfo = useSelector(state => state.checkout.billingInfo);
     const reduxStoredShippingInfo = useSelector(state => state.checkout.shippingInfo);
+    const products = useSelector(state => state.cart.cartItems)
+    // const items = useSelector(state => state.cart.cartItems);
 
+    const currentStep = useSelector(state => state.cart.currentStep);
+    const previewedStep = useSelector(state => state.checkout.previewedStep);
 
 
     const sessionStoredBillingInfo = getBilingInfoFromSession();
     // console.log('fetched session storage shipping info', sessionStoredBillingInfo)
 
+    const [sameAsShippingAddress, setSameAsShippingAddress] = useState(true);
+    const [errorWhileSubmittingForm, setErrorSubmittingForm] = useState(null);
+    const [orderingWithShippingInfo, setOrderingWithShippingInfo] = useState(false);
 
 
     // console.log(reduxStoredBillingInfo)
@@ -117,91 +125,62 @@ const BillingTab = () => {
     const stateData = reduxStoredBillingInfo?.stateData || sessionStoredBillingInfo?.stateData || null;
     const cityData = reduxStoredBillingInfo?.cityData || sessionStoredBillingInfo?.cityData || null;
 
-
-
+    console.log()
     const arraysEqual = (arr1, arr2) => _.isEqual(arr1, arr2);
-    const items = useSelector(state => state.cart.cartItems);
     // console.log(items)
-    const currentStep = useSelector(state => state.cart.currentStep);
-    const previewedStep = useSelector(state => state.checkout.previewedStep);
+    
+
+
+    
 
 
 
-    const requestRates = async (filledBillingInfo) => {
-        try {
-            window.scrollTo(0, 0);
 
-            const itemsWithDimensions = items.map(item => ({
-                ...item,
-                length: 40, // Replace with actual value from item
-                width: 14, // Replace with actual value from item
-                height: 1, // Replace with actual value from item
-                weight: 1.5, // Replace with actual value from item
-            }));
-            const response = await makeRequest.post(`/orders/couriers`, {
-                address: filledBillingInfo,
-                items: itemsWithDimensions
-            });
-            // const couriers = response.data.rates;
-            dispatch(setBillingInfo(filledBillingInfo))
-            dispatch(setRates(response.data))
-            // dispatch(nextStep())
-            console.log('Fetched couriers:', response.data);
-        } catch (error) {
-            setErrorSubmittingForm(error)
-        }
-    }
+    // const handleOrderWithShippingInfo = async (filledBillingInfo) => {
+    //     if (previewedStep) {
+    //         // console.log('currently previewing')
+    //         const infoIsChanged = !arraysEqual(filledBillingInfo, reduxStoredBillingInfo);
+    //         // console.log('is info changed?', infoIsChanged)
+    //         // console.log('filledBillingInfo', filledBillingInfo)
+    //         // console.log('initialValues ', reduxStoredBillingInfo)
 
+    //         // if (infoIsChanged) {
+    //         setOrderingWithShippingInfo(true)
+    //         setOrderingWithShippingInfo(false)
+    //         // }
+    //         // else {
+    //         //     // dispatch(nextStep())
+    //         // }
+    //     }
+    //     else {
+    //         await requestRates(filledBillingInfo, setSubmitting)
+    //         setSubmitting(false)
+    //     }
 
+    // };
 
-    const [orderingWithShippingInfo, setOrderingWithShippingInfo] = useState(false);
+    // const handleOrderWithBillingInfo = async (filledBillingInfo, { setSubmitting }) => {
+    //     if (previewedStep) {
+    //         // console.log('currently previewing')
+    //         const infoIsChanged = !arraysEqual(filledBillingInfo, reduxStoredBillingInfo);
+    //         // console.log('is info changed?', infoIsChanged)
+    //         // console.log('filledBillingInfo', filledBillingInfo)
+    //         // console.log('initialValues ', reduxStoredBillingInfo)
 
-    const handleOrderWithShippingInfo = async (filledBillingInfo) => {
-        if (previewedStep) {
-            // console.log('currently previewing')
-            const infoIsChanged = !arraysEqual(filledBillingInfo, reduxStoredBillingInfo);
-            // console.log('is info changed?', infoIsChanged)
-            // console.log('filledBillingInfo', filledBillingInfo)
-            // console.log('initialValues ', reduxStoredBillingInfo)
+    //         if (infoIsChanged) {
+    //             await requestRates(filledBillingInfo)
+    //         }
+    //         else {
+    //             dispatch(nextStep())
+    //             setSubmitting(false);
+    //         }
+    //     }
+    //     else {
+    //         await requestRates(filledBillingInfo)
+    //         setSubmitting(false)
+    //     }
 
-            // if (infoIsChanged) {
-            setOrderingWithShippingInfo(true)
-            await requestRates(filledBillingInfo)
-            setOrderingWithShippingInfo(false)
-            // }
-            // else {
-            //     // dispatch(nextStep())
-            // }
-        }
-        else {
-            await requestRates(filledBillingInfo, setSubmitting)
-            setSubmitting(false)
-        }
-
-    };
-
-    const handleOrderWithBillingInfo = async (filledBillingInfo, { setSubmitting }) => {
-        if (previewedStep) {
-            // console.log('currently previewing')
-            const infoIsChanged = !arraysEqual(filledBillingInfo, reduxStoredBillingInfo);
-            // console.log('is info changed?', infoIsChanged)
-            // console.log('filledBillingInfo', filledBillingInfo)
-            // console.log('initialValues ', reduxStoredBillingInfo)
-
-            if (infoIsChanged) {
-                await requestRates(filledBillingInfo)
-            }
-            else {
-                dispatch(nextStep())
-                setSubmitting(false);
-            }
-        }
-        else {
-            await requestRates(filledBillingInfo)
-            setSubmitting(false)
-        }
-
-    };
+    // };
 
     const handleReset = (resetForm) => {
         if (reduxStoredBillingInfo, sessionStoredBillingInfo) {
@@ -228,7 +207,6 @@ const BillingTab = () => {
     }
 
     // Error Handling
-    const [errorWhileSubmittingForm, setErrorSubmittingForm] = useState(null);
 
     // useEffect(() => {
     //     console.log('Error fetching couriers', errorWhileSubmittingForm);
@@ -236,10 +214,40 @@ const BillingTab = () => {
 
 
 
-    const [sameAsShippingAddress, setSameAsShippingAddress] = useState(true);
     // const handleToggleSameShippingAddress = () => {
     //     console.log('changed')
     // };
+
+    const stripePromise = loadStripe('pk_test_51OzQqiP8nMwtf7KwjeDBvSrJh0QU2AMmJncITWpVrXW9Cm8XesZc1MqofLogMUrphlOB0exTEsHSQ91mJoA5V94u00JrVmVkWL');
+
+
+    const handlePlaceOrder = async () => {
+        try {
+          const stripe = await stripePromise;
+      
+          const res = await makeRequest.post('/orders', {
+            products,
+            shippingInfo:reduxStoredShippingInfo,
+            billingInfo:reduxStoredShippingInfo,
+          });
+      
+          if (res.data && res.data.stripeSession) {
+            const { error } = await stripe.redirectToCheckout({
+              sessionId: res.data.stripeSession.id,
+            });
+      
+            if (error) {
+              console.error('Stripe redirect error:', error.message);
+              alert('Payment processing error. Please try disabling your ad blocker and try again.');
+            }
+          } else {
+            throw new Error('Failed to create Stripe session');
+          }
+        } catch (err) {
+          console.error('Payment processing error:', err);
+          alert('An error occurred during the payment process. Please try again later or disable your ad blocker if it is enabled.');
+        }
+      };
 
 
 
@@ -282,7 +290,7 @@ const BillingTab = () => {
                 {
                     sameAsShippingAddress ?
                         (
-                            <button className="btn-1 submit-btn" disabled={false} onClick={() => handleOrderWithShippingInfo(reduxStoredShippingInfo)} >
+                            <button className="btn-1 submit-btn" disabled={false} onClick={handlePlaceOrder} >
                                 {orderingWithShippingInfo ? <CircularProgress size={16} color='primary' /> : 'Place Order'}
                             </button>
                         )
@@ -293,7 +301,7 @@ const BillingTab = () => {
                                 countryData={countryData}
                                 stateData={stateData}
                                 cityData={cityData}
-                                handleSubmit={handleOrderWithBillingInfo}
+                                handleSubmit={handlePlaceOrder}
                                 errorWhileSubmittingForm={errorWhileSubmittingForm}
                                 submitBtnText={'Place Order'}
                                 handleReset={handleReset}

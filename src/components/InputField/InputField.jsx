@@ -16,9 +16,8 @@ import "react-country-state-city/dist/react-country-state-city.css";
 import { compose } from 'redux';
 
 const InputField = ({ name, label, type, placeholder, as, touched, error, customInputName, values, handleBlur, setFieldValue, countryList, stateList, cityList }) => {
-    const countryRef = useRef(null);
-    const stateRef = useRef(null);
 
+    // console.log('cityList', cityList)
 
     const handleCountryChange = (e) => {
         if (e.target.value == 'placeholder') {
@@ -39,7 +38,7 @@ const InputField = ({ name, label, type, placeholder, as, touched, error, custom
             setFieldValue('stateData', null);
             setFieldValue('city', '');
             setFieldValue('cityData', null)
-            
+
         }
     };
 
@@ -55,9 +54,10 @@ const InputField = ({ name, label, type, placeholder, as, touched, error, custom
         else {
             const state = stateList[e.target.value];
             const stateIndex = stateList?.findIndex(item => item?.id === state.id);
-
             setFieldValue('state', state.name);
             setFieldValue('stateData', { ...state, stateIndex });
+            setFieldValue('city', '');
+            setFieldValue('cityData', null)
         }
     };
 
@@ -84,25 +84,23 @@ const InputField = ({ name, label, type, placeholder, as, touched, error, custom
         switch (as) {
             case 'country-selector':
                 return (
-                    <div ref={countryRef}>
-                        <select
-                            onChange={handleCountryChange}
-                            className='inputField'
-                            // value={'placeholder'}
-                            value={!values.countryData?.countryIndex && values.countryData?.countryIndex !== 0 ? 'placeholder' : values.countryData.countryIndex}
-                        >
-                            <option
-                                value="placeholder"
-                                className='placeholder'
-                            >Select your country</option>
+                    <select
+                        onChange={handleCountryChange}
+                        className='inputField'
+                        // value={'placeholder'}
+                        value={!values.countryData?.countryIndex && values.countryData?.countryIndex !== 0 ? 'placeholder' : values.countryData.countryIndex}
+                    >
+                        <option
+                            value="placeholder"
+                            className='placeholder'
+                        >Select your country</option>
 
-                            {countryList.map((item, index) => (
-                                <option key={index} value={index}>
-                                    {item.name}
-                                </option>
-                            ))}
-                        </select>
-                    </div >
+                        {countryList && countryList.map((item, index) => (
+                            <option key={index} value={index}>
+                                {item.name}
+                            </option>
+                        ))}
+                    </select>
                 );
 
             case 'state-selector': {
@@ -117,7 +115,7 @@ const InputField = ({ name, label, type, placeholder, as, touched, error, custom
                             className='placeholder'
                         >Select your state</option>
 
-                        {stateList.map((item, index) => (
+                        {stateList && stateList.map((item, index) => (
                             <option key={index} value={index}>
                                 {item.name}
                             </option>
@@ -129,16 +127,15 @@ const InputField = ({ name, label, type, placeholder, as, touched, error, custom
                 return (
                     <select
                         onChange={handleCityChange}
-                        
                         className='inputField'
                         value={!values.cityData?.cityIndex && values.cityData?.cityIndex !== 0 ? 'placeholder' : values.cityData.cityIndex}
                     >
-                        <option 
-                        value="placeholder"
-                        className='placeholder'
+                        <option
+                            value="placeholder"
+                            className='placeholder'
                         >Select your city</option>
 
-                        {cityList.map((item, index) => (
+                        {cityList && cityList.map((item, index) => (
                             <option key={index} value={index}>
                                 {item.name}
                             </option>

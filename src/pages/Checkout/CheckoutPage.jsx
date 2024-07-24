@@ -21,13 +21,17 @@ const CheckoutPage = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
-  
+
   // Products
   const products = useSelector(state => state.cart.cartItems)
   const selectedCourier = useSelector(state => state.checkout.selectedCourier);
 
   const currentStep = useSelector(state => state.checkout.currentStep);
   const previewedStep = useSelector(state => state.checkout.previewedStep);
+
+  // const billingInfo = useSelector(state => state.checkout.billingInfo);
+  // const shippingInfo = useSelector(state => state.checkout.shippingInfo);
+  
   // console.log('previewedStep', previewedStep, '\n\n' + 'currentStep', currentStep)
   // Calculate totals
   const subtotal = useMemo(() => {
@@ -54,28 +58,9 @@ const CheckoutPage = () => {
   // dispatch
 
   // Payment
-  // const stripePromise = loadStripe('pk_test_51OzQqiP8nMwtf7KwjeDBvSrJh0QU2AMmJncITWpVrXW9Cm8XesZc1MqofLogMUrphlOB0exTEsHSQ91mJoA5V94u00JrVmVkWL');
-
-  const handlePayment = async () => {
-    try {
-      const stripe = await stripePromise;
-      console.log(products)
-
-      const res = await makeRequest.post("/orders", {
-        products,
-      })
-
-      await stripe.redirectToCheckout({
-        sessionId: res.data.stripeSession.id
-      })
 
 
-
-    }
-    catch (err) {
-      console.log(err)
-    }
-  }
+  
 
   //Checkout Step
 

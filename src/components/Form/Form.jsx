@@ -31,11 +31,11 @@ const FormComponent = ({ formItems, countryData, stateData, cityData, handleSubm
 
 
 
-    const initialValuesFromFormItems = { ...Object.fromEntries(formItems.map(item => [item.name, item.initialValue])), countryData, stateData, cityData}
+    const initialValuesFromFormItems = { ...Object.fromEntries(formItems.map(item => [item.name, item.initialValue])), countryData, stateData, cityData }
     // console.log('initialValuesFromFormItems', initialValuesFromFormItems)
-    
+
     const [initialValues, setInitialValues] = useState(initialValuesFromFormItems)
-    
+
     // useEffect(()=> {
     //     setInitialValues(initialValuesFromFormItems)
     // }, [initialValuesFromFormItems]);
@@ -59,9 +59,9 @@ const FormComponent = ({ formItems, countryData, stateData, cityData, handleSubm
     //     // }
     // };
 
-    const [countryList, setCountryList] = useState([]);
-    const [stateList, setStateList] = useState([]);
-    const [cityList, setCityList] = useState([]);
+    const [countryList, setCountryList] = useState(null);
+    const [stateList, setStateList] = useState(null);
+    const [cityList, setCityList] = useState(null);
 
     const memoizedCountryList = useMemo(() => countryList, [countryList]);
     const memoizedStateList = useMemo(() => stateList, [stateList]);
@@ -95,10 +95,10 @@ const FormComponent = ({ formItems, countryData, stateData, cityData, handleSubm
                 //     console.log('initialValues known inside form', initialValues)
                 // }, [initialValues]);
 
-                // useEffect(() => {
-                //     console.log('values:', values);
-                //     // console.log('errors:', errors);
-                // }, [values])
+                useEffect(() => {
+                    console.log('values:', values);
+                    // console.log('errors:', errors);
+                }, [values])
 
 
 
@@ -115,8 +115,8 @@ const FormComponent = ({ formItems, countryData, stateData, cityData, handleSubm
                 const fetchCityList = async (countryId, stateId) => {
                     // console.log('countryId:', countryId, '\n\nstateId:', stateId);
                     try {
-                        const cityData = await GetCity(countryId, stateId);
-                        setCityList(cityData);
+                        const cityList = await GetCity(countryId, stateId);
+                        setCityList(cityList);
                     } catch (error) {
                         console.error('Error fetching city data:', error);
                     }
@@ -154,7 +154,7 @@ const FormComponent = ({ formItems, countryData, stateData, cityData, handleSubm
                             (
                                 <>
                                     <Form className='form-component'>
-                                        
+
                                         {errorWhileSubmittingForm && <div className="form-error">{renderError(errorWhileSubmittingForm?.response?.status)} <a className="try-again" onClick={handleSubmit}>try again.</a></div>
                                         }
                                         <div className="items">
@@ -171,14 +171,14 @@ const FormComponent = ({ formItems, countryData, stateData, cityData, handleSubm
                                                     setFieldValue={setFieldValue}
                                                     values={values}
                                                     handleBlur={handleBlur}
-                                                    countryList={item.as === 'country-selector' ? memoizedCountryList : undefined}
-                                                    stateList={item.as === 'state-selector' ? memoizedStateList : undefined}
-                                                    cityList={item.as === 'city-selector' ? memoizedCityList : undefined}
+                                                    countryList={item.as === 'country-selector' && memoizedCountryList}
+                                                    stateList={ item.as === 'state-selector' && memoizedStateList}
+                                                    cityList={item.as === 'city-selector' &&memoizedCityList}
                                                 />
                                             ))}
                                         </div>
 
-                                        <div className="reset" onClick={()=>handleReset(resetForm)}><Close fontSize='small'/>Reset form</div>
+                                        <div className="reset" onClick={() => handleReset(resetForm)}><Close fontSize='small' />Reset form</div>
                                         <button type="submit" className="btn-1 submit-btn" disabled={isSubmitting} >
                                             {submitBtnText || 'Save & Continue'}
                                         </button>
