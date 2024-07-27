@@ -45,12 +45,12 @@ const checkoutSlice = createSlice({
   reducers: {
     setShippingInfo: (state, action) => {
       state.shippingInfo = action.payload;
-      storeShippingInfoInSession(action.payload);
+      // storeShippingInfoInSession(action.payload);
     },
 
     setBillingInfo: (state, action) => {
       state.billingInfo = action.payload;
-      storeBillingInfoInSession(action.payload);
+      // storeBillingInfoInSession(action.payload);
     },
 
     setSelectedCourier: (state, action) => {

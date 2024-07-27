@@ -48,14 +48,14 @@ const BillingTab = ({ totalAmount }) => {
             label: 'First Name',
             type: 'text',
             placeholder: '',
-            initialValue: reduxStoredBillingInfo?.firstName || sessionStoredBillingInfo?.firstName || '',
+            initialValue: reduxStoredBillingInfo?.firstName || '',
         },
         {
             name: 'lastName',
             label: 'Last Name',
             type: 'text',
             placeholder: '',
-            initialValue: reduxStoredBillingInfo?.lastName || sessionStoredBillingInfo?.lastName || '',
+            initialValue: reduxStoredBillingInfo?.lastName || '',
 
         },
 
@@ -66,7 +66,7 @@ const BillingTab = ({ totalAmount }) => {
             as: 'custom',
             customInputName: 'addressLine',
             placeholder: '',
-            initialValue: reduxStoredBillingInfo?.addressLine1 || sessionStoredBillingInfo?.addressLine1 || '',
+            initialValue: reduxStoredBillingInfo?.addressLine1 || '',
         },
 
 
@@ -77,7 +77,7 @@ const BillingTab = ({ totalAmount }) => {
             as: 'custom',
             customInputName: 'addressLine',
             placeholder: '',
-            initialValue: reduxStoredBillingInfo?.addressLine2 || sessionStoredBillingInfo?.addressLine2 || '',
+            initialValue: reduxStoredBillingInfo?.addressLine2 || '',
         },
         {
             name: 'country',
@@ -85,7 +85,7 @@ const BillingTab = ({ totalAmount }) => {
             as: 'country-selector',
             type: 'text',
             placeholder: '',
-            initialValue: reduxStoredBillingInfo?.country || sessionStoredBillingInfo?.country || '',
+            initialValue: reduxStoredBillingInfo?.country || '',
         },
 
         {
@@ -94,7 +94,7 @@ const BillingTab = ({ totalAmount }) => {
             as: 'state-selector',
             type: 'text',
             placeholder: '',
-            initialValue: reduxStoredBillingInfo?.state || sessionStoredBillingInfo?.state || '',
+            initialValue: reduxStoredBillingInfo?.state || '',
         },
         {
             name: 'city',
@@ -102,34 +102,34 @@ const BillingTab = ({ totalAmount }) => {
             as: 'city-selector',
             type: 'text',
             placeholder: '',
-            initialValue: reduxStoredBillingInfo?.city || sessionStoredBillingInfo?.city || '',
+            initialValue: reduxStoredBillingInfo?.city || '',
         },
         {
             name: 'postalCode',
             label: 'Postal Code',
             type: 'text',
             placeholder: '',
-            initialValue: reduxStoredBillingInfo?.postalCode || sessionStoredBillingInfo?.postalCode || '',
+            initialValue: reduxStoredBillingInfo?.postalCode || '',
         },
         {
             name: 'phoneNumber',
             label: 'Phone Number',
             type: 'tel',
             placeholder: '',
-            initialValue: reduxStoredBillingInfo?.phoneNumber || sessionStoredBillingInfo?.phoneNumber || '',
+            initialValue: reduxStoredBillingInfo?.phoneNumber || '',
         },
         {
             name: 'email',
             label: 'Email',
             type: 'email',
             placeholder: '',
-            initialValue: reduxStoredBillingInfo?.email || sessionStoredBillingInfo?.email || '',
+            initialValue: reduxStoredBillingInfo?.email || '',
         },
     ];
 
-    const countryData = reduxStoredBillingInfo?.countryData || sessionStoredBillingInfo?.countryData || null;
-    const stateData = reduxStoredBillingInfo?.stateData || sessionStoredBillingInfo?.stateData || null;
-    const cityData = reduxStoredBillingInfo?.cityData || sessionStoredBillingInfo?.cityData || null;
+    const countryData = reduxStoredBillingInfo?.countryData;
+    const stateData = reduxStoredBillingInfo?.stateData;
+    const cityData = reduxStoredBillingInfo?.cityData;
 
     console.log()
     const arraysEqual = (arr1, arr2) => _.isEqual(arr1, arr2);
@@ -189,7 +189,7 @@ const BillingTab = ({ totalAmount }) => {
     // };
 
     const handleReset = (resetForm) => {
-        if (reduxStoredBillingInfo, sessionStoredBillingInfo) {
+        if (reduxStoredBillingInfo) {
             dispatch(setBillingInfo(null))
         }
 
