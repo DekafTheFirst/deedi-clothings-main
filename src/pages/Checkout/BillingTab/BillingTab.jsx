@@ -15,16 +15,22 @@ import { loadStripe } from '@stripe/stripe-js';
 const BillingTab = ({ totalAmount }) => {
 
     const dispatch = useDispatch()
-    const reduxStoredBillingInfo = useSelector(state => state.checkout.billingInfo);
     const reduxStoredShippingInfo = useSelector(state => state.checkout.shippingInfo);
-    const products = useSelector(state => state.cart.cartItems)
+    const sessionStoredShippingInfo = getShippingInfoFromSession();
+    const shippingInfo = reduxStoredShippingInfo || sessionStoredShippingInfo;
+
+
+    const reduxStoredBillingInfo = useSelector(state => state.checkout.billingInfo);
+    const sessionStoredBillingInfo = getBilingInfoFromSession();
+
+
+    const products = useSelector(state => state.cart.cartItems);
     // const items = useSelector(state => state.cart.cartItems);
 
     const currentStep = useSelector(state => state.cart.currentStep);
     const previewedStep = useSelector(state => state.checkout.previewedStep);
 
 
-    const sessionStoredBillingInfo = getBilingInfoFromSession();
     // console.log('fetched session storage shipping info', sessionStoredBillingInfo)
 
     const [sameAsShippingAddress, setSameAsShippingAddress] = useState(true);
@@ -220,30 +226,46 @@ const BillingTab = ({ totalAmount }) => {
 
     const stripePromise = loadStripe('pk_test_51OzQqiP8nMwtf7KwjeDBvSrJh0QU2AMmJncITWpVrXW9Cm8XesZc1MqofLogMUrphlOB0exTEsHSQ91mJoA5V94u00JrVmVkWL');
 
+    const [loading, setLoading] = useState(false)
 
-    const handlePlaceOrder = async () => {
+
+
+    const handlePlaceOrder = async (billingInfo) => {
         try {
+            setLoading(true)
             const stripe = await stripePromise;
 
             const res = await makeRequest.post('/orders', {
                 items: products,
-                shippingInfo: reduxStoredShippingInfo,
-                billingInfo: reduxStoredShippingInfo,
+                shippingInfo,
+                billingInfo,
+            }).catch((error) => {
+                setErrorSubmittingForm(error)
             });
 
+            dispatch(setBillingInfo(billingInfo))
+
             if (res.data && res.data.stripeSession) {
-                const { error } = await stripe.redirectToCheckout({
+                const session = await stripe.redirectToCheckout({
                     sessionId: res.data.stripeSession.id,
                 });
+
 
                 if (error) {
                     console.error('Stripe redirect error:', error.message);
                     alert('Payment processing error. Please try disabling your ad blocker and try again.');
+                    setErrorSubmittingForm(error)
                 }
-            } else {
+            }
+            else {
+                setErrorSubmittingForm(error)
                 throw new Error('Failed to create Stripe session');
             }
+            setLoading(false)
         } catch (err) {
+            setLoading(false)
+            setErrorSubmittingForm(error)
+
             console.error('Payment processing error:', err);
             alert('An error occurred during the payment process. Please try again later or disable your ad blocker if it is enabled.');
         }
@@ -290,8 +312,8 @@ const BillingTab = ({ totalAmount }) => {
                 {
                     sameAsShippingAddress ?
                         (
-                            <button className="btn-1 submit-btn" disabled={false} onClick={handlePlaceOrder} >
-                                {orderingWithShippingInfo ? <CircularProgress size={16} color='primary' /> : 'Place Order'}
+                            <button className="btn-1 submit-btn" disabled={false} onClick={() => handlePlaceOrder(shippingInfo)} >
+                                {loading ? <CircularProgress size={16} sx={{ color: 'white' }} /> : 'Place Order'}
                             </button>
                         )
                         :
