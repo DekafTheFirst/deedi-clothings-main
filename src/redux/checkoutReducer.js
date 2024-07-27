@@ -1,6 +1,6 @@
 import { createSlice, current } from '@reduxjs/toolkit';
 import { rates } from '../utils/rates';
-import { storeBillingInfoInSession,  storeCompletedStepsInSession,  storeCurrentStepInSession, storeShippingInfoInSession } from '../utils/session';
+import { storeBillingInfoInSession, storeCompletedStepsInSession, storeCurrentStepInSession, storeShippingInfoInSession } from '../utils/session';
 
 
 export const steps = [
@@ -94,7 +94,7 @@ const checkoutSlice = createSlice({
 
       // storeCurrentStepInSession(step);
       // storeCompletedStepsInSession(state.completedSteps)
-      
+
 
     },
 
@@ -109,7 +109,7 @@ const checkoutSlice = createSlice({
   },
 
   resetCheckout: (state) => {
-    return initialState;
+    return [];
   },
 });
 
