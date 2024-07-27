@@ -14,7 +14,7 @@ import calculateNoOfProducts from '../../utils/calculateNoOfProducts'
 import { current } from '@reduxjs/toolkit'
 import BillingTab from './BillingTab/BillingTab'
 import { setShippingInfo } from '../../redux/checkoutReducer'
-import { getShippingInfoFromSession } from '../../utils/session'
+import { getCurrentStepFromSession, getShippingInfoFromSession } from '../../utils/session'
 
 
 const CheckoutPage = () => {
@@ -28,6 +28,7 @@ const CheckoutPage = () => {
 
   const currentStep = useSelector(state => state.checkout.currentStep);
   const previewedStep = useSelector(state => state.checkout.previewedStep);
+  const currentStepFromSession = getCurrentStepFromSession();
 
   // const billingInfo = useSelector(state => state.checkout.billingInfo);
   // const shippingInfo = useSelector(state => state.checkout.shippingInfo);
@@ -72,7 +73,7 @@ const CheckoutPage = () => {
 
 
   const renderCurrentTab = () => {
-    switch (previewedStep?.id || currentStep.id) {
+    switch (previewedStep?.id || currentStep?.id) {
       case 1:
         return <ShippingTab subtotal={subtotal} totalAmount={totalAmount} vat={vat} quantity={products.length} />
       case 2:

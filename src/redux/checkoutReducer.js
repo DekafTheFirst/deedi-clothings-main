@@ -1,6 +1,6 @@
 import { createSlice, current } from '@reduxjs/toolkit';
 import { rates } from '../utils/rates';
-import { storeBillingInfoInSession, storeShippingInfoInSession } from '../utils/session';
+import { storeBillingInfoInSession,  storeCompletedStepsInSession,  storeCurrentStepInSession, storeShippingInfoInSession } from '../utils/session';
 
 
 export const steps = [
@@ -31,7 +31,7 @@ const courierOptions = rates.data.rates
 
 const initialState = {
   currentStep: steps[0],
-  completedSteps: [...steps],
+  completedSteps: [],
   previewedStep: null,
   shippingInfo: null,
   billingInfo: null,
@@ -59,6 +59,7 @@ const checkoutSlice = createSlice({
 
     setCurrentStep: (state, action) => {
       state.currentStep = steps.find(step => step.id === action.payload);
+      storeCurrentStepInSession(action.payload);
     },
 
     setPreviewedStep: (state, action) => {
@@ -73,21 +74,29 @@ const checkoutSlice = createSlice({
     },
 
     nextStep: (state) => {
+      let step;
       if (state.previewedStep) {
-        const step = steps.find(step => step.id === state.previewedStep.id + 1);
+        step = steps.find(step => step.id === state.previewedStep.id + 1);
         if (step) {
           state.currentStep = step
         }
         state.previewedStep = null
       }
       else {
-        const step = steps.find(step => step.id === state.currentStep.id + 1);
+        step = steps.find(step => step.id === state.currentStep.id + 1);
 
         if (step) {
           state.completedSteps = [...state.completedSteps, state.currentStep];
           state.currentStep = step
         }
+
+          
       }
+
+      storeCurrentStepInSession(step);
+      storeCompletedStepsInSession(state.completedSteps)
+      
+
     },
 
 

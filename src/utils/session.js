@@ -21,14 +21,36 @@ export const getBilingInfoFromSession = () => {
     return billingInfo ? JSON.parse(billingInfo) : null;
 };
 
-export const storeSelectedCourier = (selectedCourier) => {
+export const storeSelectedCourierInSession = (selectedCourier) => {
     sessionStorage.setItem('selectedCourier', JSON.stringify(selectedCourier));
 };
 
 // Retrieve shipping info from session storage
-export const getSelectedCourier = () => {
+export const getSelectedCourierFromSession = () => {
     const selectedCourier = sessionStorage.getItem('selectedCourier');
     return selectedCourier ? JSON.parse(selectedCourier) : null;
+};
+
+
+export const storeCurrentStepInSession = (currentStep) => {
+    sessionStorage.setItem('currentStep', JSON.stringify(currentStep));
+};
+
+// Retrieve shipping info from session storage
+export const getCurrentStepFromSession = () => {
+    const currentStep = sessionStorage.getItem('currentStep');
+    return currentStep ? JSON.parse(currentStep) : null;
+};
+
+
+export const storeCompletedStepsInSession = (completedSteps) => {
+    sessionStorage.setItem('completedSteps', JSON.stringify(completedSteps));
+};
+
+// Retrieve shipping info from session storage
+export const getCompletedStepsFromSession = () => {
+    const completedSteps = sessionStorage.getItem('completedSteps');
+    return completedSteps ? JSON.parse(completedSteps) : null;
 };
 
 
