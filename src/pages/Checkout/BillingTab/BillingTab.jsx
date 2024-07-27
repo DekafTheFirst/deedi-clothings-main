@@ -12,7 +12,7 @@ import { getBilingInfoFromSession, getShippingInfoFromSession } from '../../../u
 import { CircularProgress } from '@mui/material';
 import { loadStripe } from '@stripe/stripe-js';
 
-const BillingTab = () => {
+const BillingTab = ({ totalAmount }) => {
 
     const dispatch = useDispatch()
     const reduxStoredBillingInfo = useSelector(state => state.checkout.billingInfo);
@@ -128,10 +128,10 @@ const BillingTab = () => {
     console.log()
     const arraysEqual = (arr1, arr2) => _.isEqual(arr1, arr2);
     // console.log(items)
-    
 
 
-    
+
+
 
 
 
@@ -223,31 +223,31 @@ const BillingTab = () => {
 
     const handlePlaceOrder = async () => {
         try {
-          const stripe = await stripePromise;
-      
-          const res = await makeRequest.post('/orders', {
-            products,
-            shippingInfo:reduxStoredShippingInfo,
-            billingInfo:reduxStoredShippingInfo,
-          });
-      
-          if (res.data && res.data.stripeSession) {
-            const { error } = await stripe.redirectToCheckout({
-              sessionId: res.data.stripeSession.id,
+            const stripe = await stripePromise;
+
+            const res = await makeRequest.post('/orders', {
+                items: products,
+                shippingInfo: reduxStoredShippingInfo,
+                billingInfo: reduxStoredShippingInfo,
             });
-      
-            if (error) {
-              console.error('Stripe redirect error:', error.message);
-              alert('Payment processing error. Please try disabling your ad blocker and try again.');
+
+            if (res.data && res.data.stripeSession) {
+                const { error } = await stripe.redirectToCheckout({
+                    sessionId: res.data.stripeSession.id,
+                });
+
+                if (error) {
+                    console.error('Stripe redirect error:', error.message);
+                    alert('Payment processing error. Please try disabling your ad blocker and try again.');
+                }
+            } else {
+                throw new Error('Failed to create Stripe session');
             }
-          } else {
-            throw new Error('Failed to create Stripe session');
-          }
         } catch (err) {
-          console.error('Payment processing error:', err);
-          alert('An error occurred during the payment process. Please try again later or disable your ad blocker if it is enabled.');
+            console.error('Payment processing error:', err);
+            alert('An error occurred during the payment process. Please try again later or disable your ad blocker if it is enabled.');
         }
-      };
+    };
 
 
 

@@ -78,7 +78,7 @@ const CheckoutPage = () => {
       case 2:
         return <CourierOptions />
       case 3:
-        return <BillingTab />
+        return <BillingTab totalAmount={totalAmount}/>
     }
   }
 
