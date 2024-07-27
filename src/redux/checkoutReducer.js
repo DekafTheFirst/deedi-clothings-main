@@ -59,7 +59,7 @@ const checkoutSlice = createSlice({
 
     setCurrentStep: (state, action) => {
       state.currentStep = steps.find(step => step.id === action.payload);
-      storeCurrentStepInSession(action.payload);
+      // storeCurrentStepInSession(action.payload);
     },
 
     setPreviewedStep: (state, action) => {
@@ -93,8 +93,8 @@ const checkoutSlice = createSlice({
           
       }
 
-      storeCurrentStepInSession(step);
-      storeCompletedStepsInSession(state.completedSteps)
+      // storeCurrentStepInSession(step);
+      // storeCompletedStepsInSession(state.completedSteps)
       
 
     },

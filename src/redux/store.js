@@ -13,19 +13,29 @@ import {
 } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 import checkoutReducer from "./checkoutReducer"
+import sessionStorage from 'redux-persist/lib/storage/session'; // session storage
 
-const persistConfig = {
-  key: 'root',
+const cartPersistConfig = {
+  key: 'cart',
   version: 1,
   storage,
-}
+};
 
-const persistedReducer = persistReducer(persistConfig, cartReducer)
+// Persist configuration for checkout reducer using session storage
+const checkoutPersistConfig = {
+  key: 'checkout',
+  version: 1,
+  storage: sessionStorage,
+};
+
+const persistedCartReducer = persistReducer(cartPersistConfig, cartReducer);
+const persistedCheckoutReducer = persistReducer(checkoutPersistConfig, checkoutReducer);
+
 
 export const store = configureStore({
   reducer: {
-    cart: persistedReducer,
-    checkout: checkoutReducer,
+    cart: persistedCartReducer,
+    checkout: persistedCheckoutReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
