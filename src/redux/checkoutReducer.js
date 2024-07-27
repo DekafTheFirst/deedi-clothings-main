@@ -90,7 +90,6 @@ const checkoutSlice = createSlice({
           state.currentStep = step
         }
 
-          
       }
 
       // storeCurrentStepInSession(step);
@@ -108,6 +107,10 @@ const checkoutSlice = createSlice({
       state.selectedCourier = courierOptions.find(courier => courier.courier_id === action.payload);
     }
   },
+
+  resetCheckout: (state) => {
+    return initialState;
+  },
 });
 
 export const {
@@ -118,7 +121,8 @@ export const {
   setPreviewedStep,
   nextStep,
   clearPreviewedStep,
-  setRates
+  setRates,
+  resetCheckout,
 } = checkoutSlice.actions;
 
 export default checkoutSlice.reducer;

@@ -10,9 +10,6 @@ const StepWizardItem = ({ stepItem }) => {
     const previewedStep = useSelector(state => state.checkout.previewedStep);
     const completedSteps = useSelector(state => state.checkout.completedSteps);
     // console.log('currentStep', currentStep, '\n\n', 'previewed step', previewedStep?.id);
-
-    const completedStepsFromSession = getCompletedStepsFromSession();
-    const currentStepFromSession = getCurrentStepFromSession();
     
 
     const stepHasBeenCompleted = completedSteps.some((item) => item.id === stepItem.id);

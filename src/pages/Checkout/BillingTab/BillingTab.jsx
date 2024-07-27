@@ -246,9 +246,11 @@ const BillingTab = ({ totalAmount }) => {
             dispatch(setBillingInfo(billingInfo))
 
             if (res.data && res.data.stripeSession) {
-                const session = await stripe.redirectToCheckout({
+                const result = await stripe.redirectToCheckout({
                     sessionId: res.data.stripeSession.id,
                 });
+
+                console.log(result)
 
 
                 if (error) {

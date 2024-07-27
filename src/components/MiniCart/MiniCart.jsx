@@ -13,12 +13,14 @@ const Cart = ({ showCart, setShowCart }) => {
 
   const navigate = useNavigate();
 
-  const products = useSelector(state => state.cart.cartItems)
+  const products = useSelector(state => state.cart.cartItems);
+
+  const noOfProducts = calculateNoOfProducts(products);
 
   const subtotal = useSelector(state => state.cart.subtotal)
 
 
-  
+
 
   const dispatch = useDispatch()
 
@@ -34,7 +36,7 @@ const Cart = ({ showCart, setShowCart }) => {
   return (
     <div className="mini-cart">
       <div className="total">
-        <span>{`SUBTOTAL(${calculateNoOfProducts(products)})`}</span>
+        <span>{`SUBTOTAL(${noOfProducts})`}</span>
         <span>${subtotal}</span>
       </div>
 
@@ -79,7 +81,11 @@ const Cart = ({ showCart, setShowCart }) => {
       </div>
 
       <div className="actions">
-        <button onClick={handleCheckoutClicked} className='btn-1'>PROCEED TO CHECKOUT</button>
+        {noOfProducts > 0 ?
+          <button onClick={handleCheckoutClicked} className='btn-1'>PROCEED TO CHECKOUT</button>
+          :
+          <button onClick={() => navigate('/products/women')} className='btn-1'>GO SHOPPING</button>
+        }
         {/* <span className="reset" onClick={() => dispatch(resetCart())}>Reset Cart</span> */}
         <Link to="/cart-page" className='view-cart' onClick={() => setShowCart(false)}> View Shopping Bag </Link>
       </div>

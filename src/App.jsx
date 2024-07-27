@@ -16,6 +16,7 @@ import CartPage from './pages/CartPage/CartPage';
 import ShippingPage from './pages/Checkout/CheckoutPage';
 import ScrollToTop from './components/ScrollToTop';
 import CheckoutPage from './pages/Checkout/CheckoutPage';
+import CheckoutSuccess from './pages/Checkout/CheckoutSuccess/CheckoutSuccess';
 
 
 const Layout = () => {
@@ -73,7 +74,10 @@ const router = createBrowserRouter([
         path: "/checkout-page",
         element: <CheckoutPage />
       },
-
+      {
+        path: "/checkout-success",
+        element: <CheckoutSuccess />
+      },
       {
         path: '/products/:slug',
         element: <Products />
@@ -82,6 +86,7 @@ const router = createBrowserRouter([
         path: '/product/:id',
         element: <Product />
       },
+      
 
     ]
   }
