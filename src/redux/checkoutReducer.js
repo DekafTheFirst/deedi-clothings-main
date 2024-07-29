@@ -105,12 +105,14 @@ const checkoutSlice = createSlice({
 
     setSelectedCourier: (state, action) => {
       state.selectedCourier = courierOptions.find(courier => courier.courier_id === action.payload);
-    }
+    },
+
+    resetCheckout: () => {
+      return initialState;
+    },
   },
 
-  resetCheckout: (state) => {
-    return [];
-  },
+ 
 });
 
 export const {

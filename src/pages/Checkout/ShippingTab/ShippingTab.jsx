@@ -159,23 +159,28 @@ const ShippingTab = () => {
     }
 
     const handleShippingSubmit = async (filledShippingInfo, { setSubmitting }) => {
-        if (previewedStep) {
-            console.log('currently previewing')
-            const infoIsChanged = !arraysEqual(filledShippingInfo, reduxStoredShippingInfo);
-            console.log('is info changed?', infoIsChanged)
-            console.log('filledShippingInfo', filledShippingInfo)
-            console.log('initialValues ', reduxStoredShippingInfo)
+        if (items.length > 0) {
+            if (previewedStep) {
+                console.log('currently previewing')
+                const infoIsChanged = !arraysEqual(filledShippingInfo, reduxStoredShippingInfo);
+                console.log('is info changed?', infoIsChanged)
+                console.log('filledShippingInfo', filledShippingInfo)
+                console.log('initialValues ', reduxStoredShippingInfo)
 
-            if (infoIsChanged) {
-                await requestRates(filledShippingInfo, setSubmitting)
+                if (infoIsChanged) {
+                    await requestRates(filledShippingInfo, setSubmitting)
+                }
+                else {
+                    dispatch(nextStep())
+                    setSubmitting(false);
+                }
             }
             else {
-                dispatch(nextStep())
-                setSubmitting(false);
+                await requestRates(filledShippingInfo, setSubmitting)
             }
         }
         else {
-            await requestRates(filledShippingInfo, setSubmitting)
+            setErrorSubmittingForm({ response: { status: 'no-items' } });
         }
 
     };
@@ -207,7 +212,7 @@ const ShippingTab = () => {
 
     // Error Handling
     const [errorWhileSubmittingForm, setErrorSubmittingForm] = useState(null);
-
+    console.log(errorWhileSubmittingForm)
     // useEffect(() => {
     //     console.log('Error fetching couriers', errorWhileSubmittingForm);
     // }, [errorWhileSubmittingForm])

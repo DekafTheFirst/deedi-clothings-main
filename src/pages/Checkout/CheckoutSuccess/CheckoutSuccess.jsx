@@ -23,7 +23,7 @@ const CheckoutSuccess = () => {
     }, [location, dispatch]);
 
     return (
-        <div>
+        <div className='container-fluid'>
             <h1>Thank you for your purchase!</h1>
             <p>Your payment was successful. Your order will be processed shortly.</p>
         </div>

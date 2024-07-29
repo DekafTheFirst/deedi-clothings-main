@@ -231,46 +231,52 @@ const BillingTab = ({ totalAmount }) => {
 
 
     const handlePlaceOrder = async (billingInfo) => {
-        try {
-            setLoading(true)
-            const stripe = await stripePromise;
+        if (products.length > 0) {
+            try {
+                setLoading(true)
+                const stripe = await stripePromise;
 
-            const res = await makeRequest.post('/orders', {
-                items: products,
-                shippingInfo,
-                billingInfo,
-            }).catch((error) => {
-                setErrorSubmittingForm(error)
-            });
-
-            dispatch(setBillingInfo(billingInfo))
-
-            if (res.data && res.data.stripeSession) {
-                const result = await stripe.redirectToCheckout({
-                    sessionId: res.data.stripeSession.id,
+                const res = await makeRequest.post('/orders', {
+                    items: products,
+                    shippingInfo,
+                    billingInfo,
+                }).catch((error) => {
+                    setErrorSubmittingForm(error)
                 });
 
-                console.log(result)
+                dispatch(setBillingInfo(billingInfo))
+
+                if (res.data && res.data.stripeSession) {
+                    const result = await stripe.redirectToCheckout({
+                        sessionId: res.data.stripeSession.id,
+                    });
+
+                    console.log(result)
 
 
-                if (error) {
-                    console.error('Stripe redirect error:', error.message);
-                    alert('Payment processing error. Please try disabling your ad blocker and try again.');
-                    setErrorSubmittingForm(error)
+                    if (error) {
+                        console.error('Stripe redirect error:', error.message);
+                        alert('Payment processing error. Please try disabling your ad blocker and try again.');
+                        setErrorSubmittingForm(error)
+                    }
                 }
-            }
-            else {
-                setErrorSubmittingForm(error)
-                throw new Error('Failed to create Stripe session');
-            }
-            setLoading(false)
-        } catch (err) {
-            setLoading(false)
-            setErrorSubmittingForm(error)
+                else {
+                    setErrorSubmittingForm(error)
+                    throw new Error('Failed to create Stripe session');
+                }
+                setLoading(false)
+            } catch (err) {
+                setLoading(false)
+                setErrorSubmittingForm({ response: { status: 'no-items' } });
 
-            console.error('Payment processing error:', err);
-            alert('An error occurred during the payment process. Please try again later or disable your ad blocker if it is enabled.');
+                console.error('Payment processing error:', err);
+                alert('An error occurred during the payment process. Please try again later or disable your ad blocker if it is enabled.');
+            }
         }
+        else {
+            setErrorSubmittingForm()
+        }
+
     };
 
 

@@ -140,6 +140,8 @@ const FormComponent = ({ formItems, countryData, stateData, cityData, handleSubm
                     switch (status) {
                         case 422:
                             return 'Please double-check your shipping info and'
+                        case 'no-items': 
+                            return 'Please add items to your cart before trying to checkout'
                         default:
                             return 'Something went wrong. Please check your connection and'
                     }
@@ -172,8 +174,8 @@ const FormComponent = ({ formItems, countryData, stateData, cityData, handleSubm
                                                     values={values}
                                                     handleBlur={handleBlur}
                                                     countryList={item.as === 'country-selector' && memoizedCountryList}
-                                                    stateList={ item.as === 'state-selector' && memoizedStateList}
-                                                    cityList={item.as === 'city-selector' &&memoizedCityList}
+                                                    stateList={item.as === 'state-selector' && memoizedStateList}
+                                                    cityList={item.as === 'city-selector' && memoizedCityList}
                                                 />
                                             ))}
                                         </div>

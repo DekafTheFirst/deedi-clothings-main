@@ -17,6 +17,7 @@ import ShippingPage from './pages/Checkout/CheckoutPage';
 import ScrollToTop from './components/ScrollToTop';
 import CheckoutPage from './pages/Checkout/CheckoutPage';
 import CheckoutSuccess from './pages/Checkout/CheckoutSuccess/CheckoutSuccess';
+import checkCartItemsLoader from './components/checkCartItemsLoader/checkCartItemsLoader';
 
 
 const Layout = () => {
@@ -72,7 +73,8 @@ const router = createBrowserRouter([
       },
       {
         path: "/checkout-page",
-        element: <CheckoutPage />
+        element: <CheckoutPage />,
+        loader: checkCartItemsLoader,
       },
       {
         path: "/checkout-success",
