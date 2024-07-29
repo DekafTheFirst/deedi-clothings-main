@@ -14,11 +14,13 @@ const CheckoutSuccess = () => {
 
         if (sessionId) {
             // Here you can fetch the session to verify payment if necessary
+            
             // Clear cart and checkout data
-            dispatch(resetCart());
-            dispatch(resetCheckout());
+            // dispatch(resetCart());
+            // dispatch(resetCheckout());
+
             // Clear session storage if needed
-            sessionStorage.removeItem('checkout');
+            // sessionStorage.removeItem('checkout');
         }
     }, [location, dispatch]);
 

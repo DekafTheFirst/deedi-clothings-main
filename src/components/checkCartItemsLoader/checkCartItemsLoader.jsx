@@ -7,7 +7,7 @@ const checkCartItemsLoader = () => {
     const cartItems = state.cart.cartItems;
 
     if (cartItems.length === 0) {
-        return redirect('/cart-page'); // Redirect to cart page or change to "/" for home page
+        return redirect('/cart'); // Redirect to cart page or change to "/" for home page
     }
 
     return null; // No redirection needed

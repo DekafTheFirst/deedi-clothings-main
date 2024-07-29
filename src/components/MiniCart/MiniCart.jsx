@@ -29,7 +29,7 @@ const Cart = ({ showCart, setShowCart }) => {
 
 
   const handleCheckoutClicked = () => {
-    navigate('/checkout-page');
+    navigate('/checkout');
     setShowCart(false);
   }
 
@@ -87,7 +87,7 @@ const Cart = ({ showCart, setShowCart }) => {
           <button onClick={() => navigate('/products/women')} className='btn-1'>GO SHOPPING</button>
         }
         {/* <span className="reset" onClick={() => dispatch(resetCart())}>Reset Cart</span> */}
-        <Link to="/cart-page" className='view-cart' onClick={() => setShowCart(false)}> View Shopping Bag </Link>
+        <Link to="/cart" className='view-cart' onClick={() => setShowCart(false)}> View Shopping Bag </Link>
       </div>
 
     </div>

@@ -112,7 +112,7 @@ const Navbar = ({ setShowCart, showCart }) => {
               <KeyboardArrowDownIcon className='icon down-arrow' fontSize="small" />
             </div>
 
-            {pathname !== '/checkout-page' && <div className="cartIcon" onClick={() => setShowCart((prev) => !prev)}>
+            {pathname !== '/checkout' && <div className="cartIcon" onClick={() => setShowCart((prev) => !prev)}>
               <ShoppingCartOutlinedIcon className='icon' />
               <span>{noOfProducts}</span>
             </div>}

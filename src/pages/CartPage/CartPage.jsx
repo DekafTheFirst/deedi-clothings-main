@@ -92,9 +92,9 @@ const CartPage = ({ showCart, setShowCart }) => {
                     <div className="summary-item">No. of Items: <span className="value">{products.length}</span></div>
                   </div>
                 </div>
-                <button onClick={ () => navigate('/checkout-page')} className='btn-1'>PROCEED TO CHECKOUT</button>
+                <button onClick={ () => navigate('/checkout')} className='btn-1'>PROCEED TO CHECKOUT</button>
                 {/* <span className="reset" onClick={() => dispatch(resetCart())}>Reset Cart</span> */}
-                <Link to="/cart-page" className='secondary-action'> Continue Shopping </Link>
+                <Link to="/cart" className='secondary-action'> Continue Shopping </Link>
               </div>
               <div className="info">
                 <h5 className="heading"> Accepted Payment Methods</h5>
