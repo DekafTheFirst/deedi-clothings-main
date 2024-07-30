@@ -1,9 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import './CourierOptions.scss'
 import { useDispatch, useSelector } from 'react-redux'
-import { rates } from '../../utils/rates'
 import CourierOptionItem from './CourierOption/CourierOptionItem'
-import { nextStep, setSelectedCourier } from '../../redux/checkoutReducer'
+import { nextStep, setSelectedCourierId } from '../../redux/checkoutReducer'
 
 
 
@@ -26,14 +25,19 @@ const CourierOptions = () => {
   //   },
   // ]
 
-  const courierOptions = rates.data.rates
+  const courierOptions = useSelector(state => state.checkout.rates)
 
 
-  const selectedCourierOption = useSelector(state => state.checkout.selectedCourier);
+  const selectedCourierId = useSelector(state => state.checkout.selectedCourierId);
+  const selectedCourierOption  = courierOptions.find(option => option.courier_id === selectedCourierId ) || courierOptions[0];
+
+  // console.log(selectedCourierOption);
+
   const dispatch = useDispatch()
 
   const handleChangeSelectedCourierOption = useCallback((courier_id) => {
-    dispatch(setSelectedCourier(courier_id));
+    console.log(courier_id)
+    dispatch(setSelectedCourierId(courier_id));
   }, []);
 
   useEffect(() => {

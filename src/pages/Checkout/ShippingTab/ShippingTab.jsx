@@ -13,7 +13,6 @@ const ShippingTab = () => {
     const reduxStoredShippingInfo = useSelector(state => state.checkout.shippingInfo);
 
 
-    const sessionStoredShippingInfo = getShippingInfoFromSession();
     // console.log('fetched session storage shipping info', sessionStoredShippingInfo)
 
 
@@ -28,14 +27,14 @@ const ShippingTab = () => {
             label: 'First Name',
             type: 'text',
             placeholder: '',
-            initialValue: reduxStoredShippingInfo?.firstName || sessionStoredShippingInfo?.firstName || '',
+            initialValue: reduxStoredShippingInfo?.firstName || '',
         },
         {
             name: 'lastName',
             label: 'Last Name',
             type: 'text',
             placeholder: '',
-            initialValue: reduxStoredShippingInfo?.lastName || sessionStoredShippingInfo?.lastName || '',
+            initialValue: reduxStoredShippingInfo?.lastName || '',
 
         },
 
@@ -46,7 +45,7 @@ const ShippingTab = () => {
             as: 'custom',
             customInputName: 'addressLine',
             placeholder: '',
-            initialValue: reduxStoredShippingInfo?.addressLine1 || sessionStoredShippingInfo?.addressLine1 || '',
+            initialValue: reduxStoredShippingInfo?.addressLine1 || '',
         },
 
 
@@ -57,7 +56,7 @@ const ShippingTab = () => {
             as: 'custom',
             customInputName: 'addressLine',
             placeholder: '',
-            initialValue: reduxStoredShippingInfo?.addressLine2 || sessionStoredShippingInfo?.addressLine2 || '',
+            initialValue: reduxStoredShippingInfo?.addressLine2 || '',
         },
         {
             name: 'country',
@@ -65,7 +64,7 @@ const ShippingTab = () => {
             as: 'country-selector',
             type: 'text',
             placeholder: '',
-            initialValue: reduxStoredShippingInfo?.country || sessionStoredShippingInfo?.country || '',
+            initialValue: reduxStoredShippingInfo?.country || '',
         },
 
         {
@@ -74,7 +73,7 @@ const ShippingTab = () => {
             as: 'state-selector',
             type: 'text',
             placeholder: '',
-            initialValue: reduxStoredShippingInfo?.state || sessionStoredShippingInfo?.state || '',
+            initialValue: reduxStoredShippingInfo?.state || '',
         },
         {
             name: 'city',
@@ -82,34 +81,34 @@ const ShippingTab = () => {
             as: 'city-selector',
             type: 'text',
             placeholder: '',
-            initialValue: reduxStoredShippingInfo?.city || sessionStoredShippingInfo?.city || '',
+            initialValue: reduxStoredShippingInfo?.city || '',
         },
         {
             name: 'postalCode',
             label: 'Postal Code',
             type: 'text',
             placeholder: '',
-            initialValue: reduxStoredShippingInfo?.postalCode || sessionStoredShippingInfo?.postalCode || '',
+            initialValue: reduxStoredShippingInfo?.postalCode || '',
         },
         {
             name: 'phoneNumber',
             label: 'Phone Number',
             type: 'tel',
             placeholder: '',
-            initialValue: reduxStoredShippingInfo?.phoneNumber || sessionStoredShippingInfo?.phoneNumber || '',
+            initialValue: reduxStoredShippingInfo?.phoneNumber || '',
         },
         {
             name: 'email',
             label: 'Email',
             type: 'email',
             placeholder: '',
-            initialValue: reduxStoredShippingInfo?.email || sessionStoredShippingInfo?.email || '',
+            initialValue: reduxStoredShippingInfo?.email || '',
         },
     ];
 
-    const countryData = reduxStoredShippingInfo?.countryData || sessionStoredShippingInfo?.countryData || null;
-    const stateData = reduxStoredShippingInfo?.stateData || sessionStoredShippingInfo?.stateData || null;
-    const cityData = reduxStoredShippingInfo?.cityData || sessionStoredShippingInfo?.cityData || null;
+    const countryData = reduxStoredShippingInfo?.countryData || null;
+    const stateData = reduxStoredShippingInfo?.stateData || null;
+    const cityData = reduxStoredShippingInfo?.cityData || null;
 
 
     // fetch from sessionStorage if available
@@ -148,7 +147,7 @@ const ShippingTab = () => {
             });
             // const couriers = response.data.rates;
             dispatch(setShippingInfo(filledShippingInfo))
-            dispatch(setRates(response.data))
+            dispatch(setRates(response.data.data.rates))
             dispatch(nextStep())
             console.log('Fetched couriers:', response.data);
         } catch (error) {
@@ -187,7 +186,7 @@ const ShippingTab = () => {
 
     // Handle Reset
     const handleReset = (resetForm) => {
-        if (reduxStoredShippingInfo, sessionStoredShippingInfo) {
+        if (reduxStoredShippingInfo) {
             dispatch(setShippingInfo(null))
         }
 

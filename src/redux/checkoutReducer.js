@@ -1,6 +1,4 @@
-import { createSlice, current } from '@reduxjs/toolkit';
-import { rates } from '../utils/rates';
-import { storeBillingInfoInSession, storeCompletedStepsInSession, storeCurrentStepInSession, storeShippingInfoInSession } from '../utils/session';
+import { createSlice  } from '@reduxjs/toolkit';
 
 
 export const steps = [
@@ -25,7 +23,6 @@ export const steps = [
 ];
 
 // Courier Options
-const courierOptions = rates.data.rates
 
 
 
@@ -36,7 +33,7 @@ const initialState = {
   shippingInfo: null,
   billingInfo: null,
   rates: null,
-  selectedCourier: courierOptions[0],
+  selectedCourierId: null,
 };
 
 const checkoutSlice = createSlice({
@@ -53,8 +50,8 @@ const checkoutSlice = createSlice({
       // storeBillingInfoInSession(action.payload);
     },
 
-    setSelectedCourier: (state, action) => {
-      state.selectedCourier = action.payload;
+    setSelectedCourierId: (state, action) => {
+      state.selectedCourierId = action.payload;
     },
 
     setCurrentStep: (state, action) => {
@@ -103,9 +100,7 @@ const checkoutSlice = createSlice({
       state.rates = action.payload
     },
 
-    setSelectedCourier: (state, action) => {
-      state.selectedCourier = courierOptions.find(courier => courier.courier_id === action.payload);
-    },
+    
 
     resetCheckout: () => {
       return initialState;
@@ -116,7 +111,7 @@ const checkoutSlice = createSlice({
 });
 
 export const {
-  setSelectedCourier,
+  setSelectedCourierId,
   setShippingInfo,
   setBillingInfo,
   setCurrentStep,

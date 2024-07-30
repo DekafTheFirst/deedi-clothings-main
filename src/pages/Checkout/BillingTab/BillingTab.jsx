@@ -228,6 +228,7 @@ const BillingTab = ({ totalAmount }) => {
 
     const [loading, setLoading] = useState(false)
 
+    const selectedCourierId = useSelector(state => state.checkout.selectedCourierId)
 
 
     const handlePlaceOrder = async (billingInfo) => {
@@ -240,6 +241,8 @@ const BillingTab = ({ totalAmount }) => {
                     items: products,
                     shippingInfo,
                     billingInfo,
+                    selectedCourierId,
+                    totalAmount,
                 }).catch((error) => {
                     setErrorSubmittingForm(error)
                 });
@@ -266,6 +269,7 @@ const BillingTab = ({ totalAmount }) => {
                 }
                 setLoading(false)
             } catch (err) {
+                
                 setLoading(false)
                 setErrorSubmittingForm({ response: { status: 'no-items' } });
 

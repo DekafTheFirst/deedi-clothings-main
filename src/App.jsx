@@ -74,7 +74,7 @@ const router = createBrowserRouter([
       {
         path: "/checkout",
         element: <CheckoutPage />,
-        loader: checkCartItemsLoader,
+        // loader: checkCartItemsLoader,
       },
       {
         path: "/checkout-success",
