@@ -73,11 +73,11 @@
 
 
         .card {
-            flex-grow: 1;
+            // flex-grow: 1;
             /* Allow items to grow */
             flex-shrink: 0;
             /* Prevent items from shrinking */
-            flex-basis: 150px;
+            flex-basis: 200px;
         }
     }
 }

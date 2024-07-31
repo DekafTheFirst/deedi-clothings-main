@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import './Login.scss'
 
 import { useDispatch, useSelector } from 'react-redux';
-import { loginUser } from '../../../redux/authReducer';
+import { loginUser, logoutUser } from '../../../redux/authReducer';
 
 
 const Login = () => {
@@ -23,13 +23,18 @@ const Login = () => {
         <div>
             {loading && <p>Loading...</p>}
             {error && <p>{error}</p>}
-            {user ? <p>Welcome, {user.displayName}</p> : (
+            {user ? <div className="">
+                <p>Welcome, {user.displayName}</p>
+                <button onClick={() => dispatch(logoutUser())}>Logout</button>
+
+            </div> : (
                 <div>
                     <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
                     <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
                     <button onClick={handleLogin}>Login</button>
                 </div>
             )}
+
         </div>
     );
 };

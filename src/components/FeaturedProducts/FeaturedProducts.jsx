@@ -3,6 +3,7 @@ import "./FeaturedProducts.scss"
 import Card from '../Card/Card'
 import axios from 'axios'
 import useFetch from '../../hooks/useFetch'
+import { CircularProgress } from '@mui/material'
 const FeaturedProducts = ({ type }) => {
   // const data = [
   //   {
@@ -68,7 +69,7 @@ const FeaturedProducts = ({ type }) => {
       <div className="products">
         {
           error ? "Something went wrong!" : (loading ?
-            "loading"
+            <CircularProgress />
             : data?.map(item => (<Card key={item.id} item={item} />)))
         }
       </div>
