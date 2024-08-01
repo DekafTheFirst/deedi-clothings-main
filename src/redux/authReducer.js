@@ -1,7 +1,8 @@
 // authSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { signInWithEmailAndPassword, signOut, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { signInWithEmailAndPassword, signOut, createUserWithEmailAndPassword, updateProfile, getIdToken } from 'firebase/auth';
 import { auth } from '../firebase/config';
+import { makeRequest } from '../makeRequest';
 
 
 // Async thunks
@@ -11,13 +12,18 @@ export const registerUser = createAsyncThunk(
         try {
             const userCredential = await createUserWithEmailAndPassword(auth, email, password, displayName);
             const user = userCredential.user;
-            
+
             await updateProfile(auth.currentUser, {
                 displayName, photoURL: "https://example.com/jane-q-user/profile.jpg"
             })
 
             console.log(user);
-            
+
+            const idToken = await getIdToken(user);
+
+            // Send token to Strapi
+            await makeRequest.post('/auth/firebase', { idToken });
+
             return {
                 uid: user.uid,
                 email: user.email,
@@ -38,6 +44,12 @@ export const loginUser = createAsyncThunk(
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
             console.log(user)
+            
+            const idToken = await getIdToken(user);
+            // console.log(idToken)
+            // Send token to Strapi
+            await makeRequest.post('/auth/firebase', { idToken });
+
             return {
                 uid: user.uid,
                 email: user.email,
