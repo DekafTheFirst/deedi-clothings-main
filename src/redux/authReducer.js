@@ -10,19 +10,24 @@ export const registerUser = createAsyncThunk(
     'auth/registerUser',
     async ({ email, password, displayName }, thunkAPI) => {
         try {
-            const userCredential = await createUserWithEmailAndPassword(auth, email, password, displayName);
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
 
+
             await updateProfile(auth.currentUser, {
-                displayName, photoURL: "https://example.com/jane-q-user/profile.jpg"
+                displayName, photoURL: "https://upload.wikimedia.org/wikipedia/en/2/21/Penn_Badgley_as_Joe_Goldberg_1.png"
             })
+            console.log('profile updated')
+
 
             console.log(user);
 
             const idToken = await getIdToken(user);
 
+
             // Send token to Strapi
-            await makeRequest.post('/auth/firebase', { idToken });
+            await makeRequest.post('/auth/firebase', { idToken })
+            console.log('token sent')
 
             return {
                 uid: user.uid,
@@ -44,12 +49,40 @@ export const loginUser = createAsyncThunk(
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
             console.log(user)
-            
+
             const idToken = await getIdToken(user);
             // console.log(idToken)
             // Send token to Strapi
-            await makeRequest.post('/auth/firebase', { idToken });
 
+            // Send token to Strapi
+            await makeRequest.post('/auth/firebase', { idToken })
+            return {
+                uid: user.uid,
+                email: user.email,
+                displayName: user.displayName,
+                emailVerified: user.emailVerified,
+                // Add other necessary fields
+            };
+        } catch (error) {
+            return thunkAPI.rejectWithValue(error.message);
+        }
+    }
+);
+
+export const updateUser = createAsyncThunk(
+    'auth/loginUser',
+    async ({ email, password }, thunkAPI) => {
+        try {
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            const user = userCredential.user;
+            console.log(user)
+
+            const idToken = await getIdToken(user);
+            // console.log(idToken)
+            // Send token to Strapi
+
+            // Send token to Strapi
+            await makeRequest.post('/auth/firebase', { idToken })
             return {
                 uid: user.uid,
                 email: user.email,
