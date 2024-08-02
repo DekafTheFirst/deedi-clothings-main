@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { registerUser } from '../../../redux/authReducer';
+import { registerUser, updateUser } from '../../../redux/authReducer';
 
 const Register = () => {
   const [email, setEmail] = useState('');
@@ -10,7 +10,25 @@ const Register = () => {
 
   const handleRegister = () => {
     dispatch(registerUser({ email, password, displayName }));
+    dispatch(updateUser({ displayName, photoURL: "https://upload.wikimedia.org/wikipedia/en/2/21/Penn_Badgley_as_Joe_Goldberg_1.png" }))
   };
+
+  // const handleRegister = async (email, password, displayName, photoURL) => {
+
+  //   try {
+  //     // Register user
+  //     const resultAction = dispatch(registerUser({ email, password, displayName, photoURL }));
+  //     if (registerUser.fulfilled.match(resultAction)) {
+  //       // Profile update is optional and should be done after registration
+  //       dispatch(updateProfileThunk({ displayName, photoURL }));
+  //     } else {
+  //       // Handle registration error
+  //       console.error('Registration failed:', resultAction.payload);
+  //     }
+  //   } catch (error) {
+  //     console.error('Error handling registration:', error);
+  //   }
+  // };
 
   return (
     <div>
