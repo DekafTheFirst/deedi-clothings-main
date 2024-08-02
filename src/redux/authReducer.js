@@ -1,6 +1,6 @@
 // authSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { signInWithEmailAndPassword, signOut, createUserWithEmailAndPassword, updateProfile, getIdToken } from 'firebase/auth';
+import { signInWithEmailAndPassword, signOut, createUserWithEmailAndPassword, updateProfile, getIdToken, getAuth } from 'firebase/auth';
 import { auth } from '../firebase/config';
 import { makeRequest } from '../makeRequest';
 
@@ -13,7 +13,6 @@ export const registerUser = createAsyncThunk(
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
 
-            console.log(user);
 
             const idToken = await getIdToken(user);
 
@@ -42,7 +41,7 @@ export const loginUser = createAsyncThunk(
         try {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
-            console.log(user)
+            // console.log(user)
 
             const idToken = await getIdToken(user);
             // console.log(idToken)
@@ -51,6 +50,7 @@ export const loginUser = createAsyncThunk(
             // Send token to Strapi
             const response = await makeRequest.post('/auth/firebase', { idToken });
             const strapiUser = response.data.user;
+            console.log(strapiUser);
 
             return {
                 uid: user.uid,
@@ -72,12 +72,13 @@ export const updateUser = createAsyncThunk(
 
         try {
             // Update profile in Firebase
-            const updatedUser = await updateProfile(auth.currentUser, {
+            await updateProfile(auth.currentUser, {
                 displayName,
                 photoURL,
 
             });
 
+            const updatedUser = getAuth().currentUser;
             console.log("updatedUser", updatedUser)
 
             // Get ID token for authenticated user
