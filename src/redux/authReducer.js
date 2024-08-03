@@ -8,29 +8,24 @@ import { makeRequest } from '../makeRequest';
 // Async thunks
 export const registerUser = createAsyncThunk(
     'auth/registerUser',
-    async ({ email, password }, thunkAPI) => {
+    async ({ email, password, displayName, photoURL }, thunkAPI) => {
         try {
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
 
-
-            const idToken = await getIdToken(user);
-
-
             // Send token to Strapi
-            const response = await makeRequest.post('/auth/firebase', { idToken });
+            const response = await makeRequest('/auth/firebase', 'POST');
             const strapiUser = response.data.user;
 
+            console.log('done registering')
             return {
                 uid: user.uid,
-                email: user.email,
-                displayName: user.displayName,
-                photoURL: user.photoURL,
-                strapiUser: strapiUser, // Store Strapi user in Redux
+                email: user.email,   
+                strapiUserId: strapiUser.id,
             };
         } catch (error) {
             console.error(error)
-            return thunkAPI.rejectWithValue(error.payload.code);
+            return thunkAPI.rejectWithValue(error.message);
         }
     }
 );
@@ -43,7 +38,6 @@ export const loginUser = createAsyncThunk(
             const user = userCredential.user;
             // console.log(user)
 
-            const idToken = await getIdToken(user);
             // console.log(idToken)
             // Send token to Strapi
 
@@ -61,7 +55,7 @@ export const loginUser = createAsyncThunk(
                 email: user.email,
                 displayName: user.displayName,
                 photoURL: user.photoURL,
-                strapiUser: strapiUser, // Store Strapi user in Redux
+                strapiUserId: strapiUser.id,
             };
         } catch (error) {
             // console.error(error.message)
@@ -79,29 +73,31 @@ export const updateUser = createAsyncThunk(
             await updateProfile(auth.currentUser, {
                 displayName,
                 photoURL,
-
             });
 
             const updatedUser = getAuth().currentUser;
-            console.log("updatedUser", updatedUser)
-
+            console.log(updatedUser)
             // Get ID token for authenticated user
-            const idToken = await auth.currentUser.getIdToken(true);
+            // const idToken = await auth.currentUser.getIdToken(true);
 
             // Send profile update to Strapi
-            await makeRequest.post('/auth/firebase', {
-                idToken,
-                displayName,
-                photoURL,
-            });
-
-            console.log('profile updated')
+            const response = await makeRequest('/auth/firebase', 'POST', { displayName, photoURL, id:31 });
+            const updatedStrapiUser = response.data.user;
 
 
-            return { displayName, photoURL };
+            console.log('profile updated', updatedStrapiUser)
+
+
+            return {
+                uid: updateUser.uid,
+                email: updatedUser.email,
+                displayName: updatedUser.displayName,
+                photoURL: updatedUser.photoURL,
+                strapiUserId: updatedStrapiUser.id,
+            };
         } catch (error) {
-            console.error('Update profile error:', error.payload.code);
-            return thunkAPI.rejectWithValue(error.payload.code);
+            console.error('Update profile error:', error);
+            return thunkAPI.rejectWithValue(error.message);
         }
     }
 );
@@ -136,6 +132,19 @@ const authSlice = createSlice({
 
             })
             .addCase(loginUser.rejected, (state, action) => {
+                state.error = action.error.message;
+                state.loading = false;
+            })
+            .addCase(updateUser.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(updateUser.fulfilled, (state, action) => {
+                state.user = action.payload;
+                state.loading = false;
+                state.error = null;
+
+            })
+            .addCase(updateUser.rejected, (state, action) => {
                 state.error = action.error.message;
                 state.loading = false;
             })

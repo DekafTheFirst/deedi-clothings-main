@@ -13,7 +13,7 @@ export const makeRequest = async (endpoint, method, data) => {
     if (!user) throw new Error('User not authenticated');
 
     const idToken = await user.getIdToken(); // Get Firebase ID token
-    console.log('idToken', idToken)
+    // console.log('idToken', idToken)
     return axios({
         method,
         url: `${import.meta.env.VITE_API_URL}${endpoint}`,

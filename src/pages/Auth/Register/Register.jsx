@@ -8,11 +8,16 @@ const Register = () => {
   const [displayName, setDisplayName] = useState('');
   const dispatch = useDispatch();
 
-  const handleRegister = () => {
-    dispatch(registerUser({ email, password, displayName }));
-    dispatch(updateUser({ displayName, photoURL: "https://upload.wikimedia.org/wikipedia/en/2/21/Penn_Badgley_as_Joe_Goldberg_1.png" }))
-  };
+  const handleRegister = async () => {
+    const result = await dispatch(registerUser({ email, password }));
 
+    if (registerUser.fulfilled.match(result)) {
+      const { displayName, photoURL } = result.payload;
+      await dispatch(updateUser({ displayName, photoURL }));
+    } else {
+      console.error('Register user failed:', result.payload);
+    }
+  };
   // const handleRegister = async (email, password, displayName, photoURL) => {
 
   //   try {
