@@ -48,9 +48,13 @@ export const loginUser = createAsyncThunk(
             // Send token to Strapi
 
             // Send token to Strapi
-            const response = await makeRequest.post('/auth/firebase', { idToken });
+            // const response = await makeRequest.post('/auth/firebase', { idToken });
+            const response = await makeRequest('/auth/firebase', 'POST');
             const strapiUser = response.data.user;
             console.log(strapiUser);
+
+            const cart = await makeRequest('/cart', 'POST', { userId: strapiUser.id });
+            console.log(cart)
 
             return {
                 uid: user.uid,

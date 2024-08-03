@@ -3,26 +3,23 @@ import axios from 'axios';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { auth } from './firebase/config';
 
-export const makeRequest = axios.create({
-    baseURL: import.meta.env.VITE_API_URL,
-});
+// export const makeRequest = axios.create({
+//     baseURL: import.meta.env.VITE_API_URL,
+// });
 
-// export const authenticatedRequest = async (endpoint, method = 'GET', data = null) => {
-//     // Ensure user is authenticated
-//     const user = auth.currentUser; // Get the current user from Firebase Auth
+export const makeRequest = async (endpoint, method, data) => {
+    const auth = getAuth();
+    const user = auth.currentUser;
+    if (!user) throw new Error('User not authenticated');
 
-//     if (!user) throw new Error('User not authenticated');
-
-//     // Get Firebase ID token
-//     const idToken = await user.getIdToken();
-
-    
-//     return makeRequest({
-//         method,
-//         url: endpoint,
-//         headers: {
-//             // Authorization: `Bearer ${import.meta.env.VITE_API_TOKEN}`, // Set Firebase ID token in Authorization header
-//         },
-//         data,
-//     });
-// };
+    const idToken = await user.getIdToken(); // Get Firebase ID token
+    console.log('idToken', idToken)
+    return axios({
+        method,
+        url: `${import.meta.env.VITE_API_URL}${endpoint}`,
+        headers: {
+            Authorization: `Bearer ${idToken}`, // Set Firebase ID token in Authorization header
+        },
+        data,
+    });
+};
