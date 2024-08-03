@@ -8,23 +8,35 @@ import { makeRequest } from '../makeRequest';
 // Async thunks
 export const registerUser = createAsyncThunk(
     'auth/registerUser',
-    async ({ email, password, displayName, photoURL }, thunkAPI) => {
+    async ({ email, password, username, photoUrl }, thunkAPI) => {
+
         try {
-            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-            const user = userCredential.user;
+            const response = await makeRequest.post('/auth/local/register', {
+                username,
+                email,
+                password,
+                photoUrl: 'https://static01.nyt.com/images/2022/08/22/multimedia/22billboard/22billboard-jumbo.jpg?quality=75&auto=webp'
+            });
 
-            // Send token to Strapi
-            const response = await makeRequest('/auth/firebase', 'POST');
+
+
             const strapiUser = response.data.user;
+            console.log(strapiUser)
 
-            console.log('done registering')
+            // CreateCartForUser
+            await makeRequest.post('/cart', { userId: strapiUser.id });
+
+
             return {
-                uid: user.uid,
-                email: user.email,   
-                strapiUserId: strapiUser.id,
+                email: strapiUser.email,
+                id: strapiUser.id,
+                username: strapiUser.username,
+                photoUrl: strapiUser.photoUrl
             };
+
         } catch (error) {
-            console.error(error)
+            console.log(error)
+
             return thunkAPI.rejectWithValue(error.message);
         }
     }
@@ -34,31 +46,24 @@ export const loginUser = createAsyncThunk(
     'auth/loginUser',
     async ({ email, password }, thunkAPI) => {
         try {
-            const userCredential = await signInWithEmailAndPassword(auth, email, password);
-            const user = userCredential.user;
-            // console.log(user)
-
-            // console.log(idToken)
-            // Send token to Strapi
-
-            // Send token to Strapi
-            // const response = await makeRequest.post('/auth/firebase', { idToken });
-            const response = await makeRequest('/auth/firebase', 'POST');
+            const response = await makeRequest.post('/auth/local', {
+                identifier: email,
+                password
+            });
             const strapiUser = response.data.user;
-            console.log(strapiUser);
 
-            const cart = await makeRequest('/cart', 'POST', { userId: strapiUser.id });
-            console.log(cart)
+            // Create cart after login
+            await makeRequest.post('/cart', { userId: strapiUser.id });
 
             return {
-                uid: user.uid,
-                email: user.email,
-                displayName: user.displayName,
-                photoURL: user.photoURL,
-                strapiUserId: strapiUser.id,
+                email: strapiUser.email,
+                id: strapiUser.id,
+                username: strapiUser.username,
+                photoUrl: strapiUser.photoUrl
             };
         } catch (error) {
-            // console.error(error.message)
+            console.log(error)
+
             return thunkAPI.rejectWithValue(error.message);
         }
     }
@@ -66,37 +71,21 @@ export const loginUser = createAsyncThunk(
 
 export const updateUser = createAsyncThunk(
     'auth/updateProfile',
-    async ({ displayName, photoURL }, thunkAPI) => {
-
+    async ({ id, username, photoUrl }, thunkAPI) => {
         try {
-            // Update profile in Firebase
-            await updateProfile(auth.currentUser, {
-                displayName,
-                photoURL,
+            const response = await makeRequest.put(`/users/${id}`, {
+                username: username,
+                photoUrl: photoUrl
             });
 
-            const updatedUser = getAuth().currentUser;
-            console.log(updatedUser)
-            // Get ID token for authenticated user
-            // const idToken = await auth.currentUser.getIdToken(true);
-
-            // Send profile update to Strapi
-            const response = await makeRequest('/auth/firebase', 'POST', { displayName, photoURL, id:31 });
-            const updatedStrapiUser = response.data.user;
-
-
-            console.log('profile updated', updatedStrapiUser)
-
-
             return {
-                uid: updateUser.uid,
-                email: updatedUser.email,
-                displayName: updatedUser.displayName,
-                photoURL: updatedUser.photoURL,
-                strapiUserId: updatedStrapiUser.id,
+                ...response.data,
+                username,
+                photoUrl
             };
         } catch (error) {
-            console.error('Update profile error:', error);
+            console.log(error)
+
             return thunkAPI.rejectWithValue(error.message);
         }
     }
@@ -106,10 +95,12 @@ export const logoutUser = createAsyncThunk(
     'auth/logoutUser',
     async (_, thunkAPI) => {
         try {
-            await signOut(auth);
-
+            // Clear user session on Strapi if necessary
+            // Note: You may need to handle session clearing differently
             return {};
         } catch (error) {
+            console.log(error)
+
             return thunkAPI.rejectWithValue(error.message);
         }
     }

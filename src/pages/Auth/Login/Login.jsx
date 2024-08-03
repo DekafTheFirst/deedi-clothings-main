@@ -10,7 +10,7 @@ import { loginUser, logoutUser, updateUser } from '../../../redux/authReducer';
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [displayName, setDisplayName] = useState('')
+    const [username, setUsername] = useState('')
     const dispatch = useDispatch();
     const user = useSelector((state) => state.auth.user);
     const loading = useSelector((state) => state.auth.loading);
@@ -21,7 +21,7 @@ const Login = () => {
     };
 
     const handleUpdate = () => {
-        dispatch(updateUser({ displayName }));
+        dispatch(updateUser({ id: user.id, username }));
     };
 
     return (
@@ -29,14 +29,14 @@ const Login = () => {
             {loading && <p>Loading...</p>}
             {error && <p>{error}</p>}
             {user ? <div className="">
-                <p>Welcome, {user.displayName}</p>
+                <p>Welcome, {user.username}</p>
                 <button onClick={() => dispatch(logoutUser())}>Logout</button>
                 <br>
                 </br>
                 <br>
                 </br>
                 <p>Update Display Name</p>
-                <input type="text" value={displayName} onChange={(e) => setDisplayName(e.target.value)} />
+                <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
                 <button onClick={handleUpdate}>Update</button>
             </div> : (
                 <div>
