@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
+import { makeRequest } from '../makeRequest';
 
 const initialState = {
   cartItems: [],
@@ -23,6 +24,19 @@ const updateTotals = (state) => {
   state.vat = totals.vat;
   state.totalAmount = totals.totalAmount;
 };
+
+
+export const fetchCartItems = createAsyncThunk('cart/fetchCartItems', async (_, { getState }) => {
+  const response = await makeRequest.get('/cart');
+  return response.data;
+});
+
+// Async thunk to synchronize the cart with the backend
+export const syncCart = createAsyncThunk('cart/syncCart', async (_, { getState }) => {
+  const cartItems = getState().cart.items;
+  const response = await makeRequest.get('/cart/sync', 'POST', { items: cartItems });
+  return response.data;
+});
 
 
 export const cartSlice = createSlice({
@@ -58,6 +72,23 @@ export const cartSlice = createSlice({
       state.vat = 0;
       state.totalAmount = 0;
     },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchCartItems.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(fetchCartItems.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        state.items = mergeCartItems(state.items, action.payload.items);
+      })
+      .addCase(fetchCartItems.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message;
+      })
+      .addCase(syncCart.fulfilled, (state, action) => {
+        state.items = action.payload.items;
+      });
   },
 })
 
