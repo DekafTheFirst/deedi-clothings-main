@@ -43,7 +43,7 @@ export const registerUser = createAsyncThunk(
                         }
                     }
                 }
-            }) 
+            })
 
             const cartData = cartResponse.data?.data?.[0]
 
@@ -187,7 +187,7 @@ export const updateOrders = createAsyncThunk(
 
 export const logoutUser = createAsyncThunk(
     'auth/logoutUser',
-    async (_, {dispatch, thunkAPI}) => {
+    async (_, { dispatch, thunkAPI }) => {
         try {
             // Clear user session on Strapi if necessary
             // Note: You may need to handle session clearing differently
@@ -205,7 +205,7 @@ export const logoutUser = createAsyncThunk(
 // Auth slice
 const authSlice = createSlice({
     name: 'auth',
-    initialState: { user: null, cart: null, orders: null, loading: false, error: null },
+    initialState: { user: null, loading: false, error: null },
     reducers: {},
     extraReducers: (builder) => {
         builder
@@ -214,8 +214,8 @@ const authSlice = createSlice({
             })
             .addCase(loginUser.fulfilled, (state, action) => {
                 state.user = action.payload.user;
-                state.cart = action.payload.cart;
-                state.orders = action.payload.orders;
+                // state.cart = action.payload.cart;
+                // state.orders = action.payload.orders;
                 state.loading = false;
                 state.error = null;
             })
@@ -240,7 +240,7 @@ const authSlice = createSlice({
             })
             .addCase(registerUser.fulfilled, (state, action) => {
                 state.user = action.payload.user;
-                state.cart = action.payload.cart;
+                // state.cart = action.payload.cart;
                 state.loading = false;
                 state.error = null;
             })
@@ -250,8 +250,8 @@ const authSlice = createSlice({
             })
             .addCase(logoutUser.fulfilled, (state) => {
                 state.user = null;
-                state.cart = null;
-                state.orders = null;
+                // state.cart = null;
+                // state.orders = null;
                 state.error = null;
             });
     },
