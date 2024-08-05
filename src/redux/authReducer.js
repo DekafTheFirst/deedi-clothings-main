@@ -23,7 +23,27 @@ export const registerUser = createAsyncThunk(
             await makeRequest.post('/carts', { userId: strapiUser.id });
 
             // Fetch cart for the new user
-            const cartResponse = await makeRequest.get(`/carts?populate=*&[filters][user][id]=${strapiUser.id}`);
+            const cartResponse = makeRequest.get(`/carts`, {
+                params: {
+                    populate: {
+                        items: {
+                            populate: {
+                                product: {
+                                    populate: ['img'],
+                                    fields: ['title', 'price', 'img']
+                                }
+                            }
+                        }
+                    },
+                    filters: {
+                        user: {
+                            id: strapiUser.id
+                        }
+                    }
+                }
+            }) 
+
+            const cartData = cartResponse.data?.data?.[0]
 
             return {
                 user: {
@@ -32,7 +52,10 @@ export const registerUser = createAsyncThunk(
                     username: strapiUser.username,
                     photoUrl: strapiUser.photoUrl
                 },
-                cart: cartResponse.data
+                cart: {
+                    id: cartData?.id,
+                    items: cartData?.attributes?.items?.data
+                },
             };
         } catch (error) {
             console.log(error);
@@ -46,19 +69,42 @@ export const loginUser = createAsyncThunk(
     'auth/loginUser',
     async ({ email, password }, thunkAPI) => {
         try {
+
             const response = await makeRequest.post('/auth/local', {
                 identifier: email,
                 password
             });
+
             const strapiUser = response.data.user;
 
             // Fetch cart and orders
             const [cartResponse, ordersResponse] = await Promise.all([
-                makeRequest.get(`/carts?populate=*&[filters][user][id]=${strapiUser.id}`),
+                // makeRequest.get(`/carts?populate[items][populate][product][fields]=title,price,img&[filters][user][id]=${strapiUser.id}`),
+                makeRequest.get(`/carts`, {
+                    params: {
+                        populate: {
+                            items: {
+                                populate: {
+                                    product: {
+                                        populate: ['img'],
+                                        fields: ['title', 'price', 'img']
+                                    }
+                                }
+                            }
+                        },
+                        filters: {
+                            user: {
+                                id: strapiUser.id
+                            }
+                        }
+                    }
+                }),
+
                 makeRequest.get(`/orders?populate=*&[filters][user][id]=${strapiUser.id}`)
             ]);
 
-
+            const cartData = cartResponse.data?.data?.[0]
+            console.log(cartData)
 
             return {
                 user: {
@@ -67,8 +113,13 @@ export const loginUser = createAsyncThunk(
                     username: strapiUser.username,
                     photoUrl: strapiUser.photoUrl
                 },
-                cart: cartResponse.data,
-                orders: ordersResponse.data
+
+                cart: {
+                    id: cartData?.id,
+                    items: cartData?.attributes?.items?.data
+                },
+
+                orders: ordersResponse.data?.data
             };
         } catch (error) {
             console.log(error);
