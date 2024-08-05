@@ -5,6 +5,7 @@ import './Login.scss'
 
 import { useDispatch, useSelector } from 'react-redux';
 import { loginUser, logoutUser, updateUser } from '../../../redux/authReducer';
+import { resetCart, setCart } from '../../../redux/cartReducer';
 
 
 const Login = () => {
@@ -16,8 +17,10 @@ const Login = () => {
     const loading = useSelector((state) => state.auth.loading);
     const error = useSelector((state) => state.auth.error);
 
-    const handleLogin = () => {
-        dispatch(loginUser({ email, password }));
+    const handleLogin = async () => {
+        const userData = await dispatch(loginUser({ email, password })).unwrap();
+        console.log(userData.cart.items)
+        dispatch(setCart(userData.cart.items))
     };
 
     const handleUpdate = () => {

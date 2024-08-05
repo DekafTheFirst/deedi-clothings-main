@@ -3,6 +3,8 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { signInWithEmailAndPassword, signOut, createUserWithEmailAndPassword, updateProfile, getIdToken, getAuth } from 'firebase/auth';
 import { auth } from '../firebase/config';
 import { makeRequest } from '../makeRequest';
+import { transformCartItems } from '../utils/transformCartItems';
+import { resetCart } from './cartReducer';
 
 
 // Async thunks
@@ -104,7 +106,8 @@ export const loginUser = createAsyncThunk(
             ]);
 
             const cartData = cartResponse.data?.data?.[0]
-            console.log(cartData)
+            const transformedCartItems = transformCartItems(cartData?.attributes?.items?.data || []);
+            // console.log(transformedCartItems)
 
             return {
                 user: {
@@ -116,7 +119,7 @@ export const loginUser = createAsyncThunk(
 
                 cart: {
                     id: cartData?.id,
-                    items: cartData?.attributes?.items?.data
+                    items: transformedCartItems,
                 },
 
                 orders: ordersResponse.data?.data
@@ -184,10 +187,12 @@ export const updateOrders = createAsyncThunk(
 
 export const logoutUser = createAsyncThunk(
     'auth/logoutUser',
-    async (_, thunkAPI) => {
+    async (_, {dispatch, thunkAPI}) => {
         try {
             // Clear user session on Strapi if necessary
             // Note: You may need to handle session clearing differently
+            dispatch(resetCart());
+
             return {};
         } catch (error) {
             console.log(error)

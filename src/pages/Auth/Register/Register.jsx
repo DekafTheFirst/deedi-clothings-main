@@ -9,7 +9,8 @@ const Register = () => {
   const dispatch = useDispatch();
 
   const handleRegister = async () => {
-    dispatch(registerUser({ email, password, username }));
+    const userData = await dispatch(registerUser({ email, password, username})).unwrap();
+    // dispatch(setCart(userData.cart));
   };
   // const handleRegister = async (email, password, username, photoURL) => {
 
