@@ -13,6 +13,7 @@ const Cart = ({ showCart, setShowCart }) => {
 
   const navigate = useNavigate();
 
+
   const products = useSelector(state => state.cart.cartItems);
 
   const noOfProducts = calculateNoOfProducts(products);

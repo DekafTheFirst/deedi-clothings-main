@@ -16,6 +16,8 @@ const Navbar = ({ setShowCart, showCart }) => {
   const [scrolled, setScrolled] = useState(false);
   const [noOfProducts, setNoOfProducts] = useState(0)
   const products = useSelector(state => state.cart.cartItems)
+  const user = useSelector(state => state.auth.user);
+
   const { pathname, state } = useLocation()
 
   useEffect(() => {
@@ -107,8 +109,9 @@ const Navbar = ({ setShowCart, showCart }) => {
               <SearchIcon fontSize='small' className='icon search-icon' />
             </div>
             <div className="user">
-              <PersonOutlineIcon className='icon' fontSize='small' />
-              <span>My Account</span>
+              {user?.photoUrl && <img src={user.photoUrl} className='user-image' />
+              }
+              <span>{user?.username}</span>
               <KeyboardArrowDownIcon className='icon down-arrow' fontSize="small" />
             </div>
 
