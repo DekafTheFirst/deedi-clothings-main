@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { makeRequest } from '../makeRequest';
 import { transformCartItems } from '../utils/transformCartItems';
+import { mergeCartItems } from '../utils/mergeCartItems';
 
 const initialState = {
   items: [],
@@ -29,20 +30,8 @@ const updateTotals = (state) => {
   state.totalAmount = totals.totalAmount;
 };
 
-const mergeCartItems = (localItems, fetchedItems) => {
-  const mergedItems = [...localItems];
 
-  fetchedItems.forEach(fetchedItem => {
-    const existingItem = mergedItems.find(item => item.productId === fetchedItem.productId && item.size === fetchedItem.size);
-    if (existingItem) {
-      existingItem.quantity += fetchedItem.quantity;
-    } else {
-      mergedItems.push(fetchedItem);
-    }
-  });
 
-  return mergedItems;
-};
 
 export const fetchCartItems = createAsyncThunk('cart/fetchCartItems', async (userId, { getState }) => {
   // const userId = getState().auth.user.id; // Assuming the user ID is stored in auth state
@@ -71,7 +60,7 @@ export const fetchCartItems = createAsyncThunk('cart/fetchCartItems', async (use
   const transformedCartItems = transformCartItems(cartItems)
 
   const cartId = response?.data?.data?.[0]?.id
-  return {cartId, items: transformedCartItems};
+  return { cartId, items: transformedCartItems };
 });
 
 // Async thunk to synchronize the cart with the backend

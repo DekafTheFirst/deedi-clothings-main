@@ -5,7 +5,7 @@ import './Login.scss'
 
 import { useDispatch, useSelector } from 'react-redux';
 import { loginUser, logoutUser, updateUser } from '../../../redux/authReducer';
-import { fetchCartItems, mergeCartOnLogin, } from '../../../redux/cartReducer';
+import { mergeCartItems } from '../../../utils/mergeCartItems';
 
 
 const Login = () => {
@@ -19,10 +19,10 @@ const Login = () => {
 
     const handleLogin = async () => {
         const userData = await dispatch(loginUser({ email, password })).unwrap();
-        // console.log(userData)
-        // dispatch(fetchCartItems())
+ 
     };
 
+    
     const handleUpdate = () => {
         dispatch(updateUser({ id: user.id, username }));
     };
