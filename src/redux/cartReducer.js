@@ -65,8 +65,8 @@ export const fetchCartItems = createAsyncThunk('cart/fetchCartItems', async (use
 
 // Async thunk to synchronize the cart with the backend
 export const syncCart = createAsyncThunk('cart/syncCart', async (_, { getState }) => {
-  const items = getState().cart.items;
-  const response = await makeRequest.get('/cart/sync', 'POST', { items: items });
+  const { cart } = getState();
+  const response = await makeRequest.put(`/carts/${cart.id}/update`, { items: cart.items });
   return response.data;
 });
 
@@ -143,3 +143,31 @@ export const cartSlice = createSlice({
 export const { mergeCartOnLogin, addToCart, removeItem, resetCart, updateCartItem } = cartSlice.actions
 
 export default cartSlice.reducer
+
+export const synchronizeCartPeriodically = () => async (dispatch, getState) => {
+  try {
+    const state = getState();
+    const { items } = state.cart;
+
+    // Synchronize cart every 5 minutes
+    setInterval(() => {
+      dispatch(syncCart(items));
+    }, 300000); // 5 minutes in milliseconds
+  } catch (error) {
+    console.error('Failed to synchronize cart periodically:', error);
+  }
+};
+
+export const syncCartOnPageRefresh = () => async (dispatch, getState) => {
+  try {
+    const state = getState();
+    const { items } = state.cart;
+
+    // Sync cart data on page load
+    if (items.length > 0) {
+      dispatch(syncCart(items));
+    }
+  } catch (error) {
+    console.error('Failed to synchronize cart on page refresh:', error);
+  }
+};
