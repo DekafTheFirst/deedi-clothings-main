@@ -22,8 +22,8 @@ const CartPage = ({ showCart, setShowCart }) => {
 
 
 
-  const handleRemoveFromCart = (cartItemId) => {
-    dispatch(removeItemFromCart(cartItemId))
+  const handleRemoveFromCart = (locallocalCartItemId) => {
+    dispatch(removeItemFromCart(localCartItemId))
       .unwrap()
       .then(() => {
         console.log('Item removed from cart successfully');
@@ -78,7 +78,7 @@ const CartPage = ({ showCart, setShowCart }) => {
                             </div>
                           </div>
                         </Link>
-                        <Close className='delete' onClick={() => handleRemoveFromCart(item.cartItemId)} />
+                        <Close className='delete' onClick={() => handleRemoveFromCart(item.localCartItemId)} />
                       </div>
                     ))
                   }

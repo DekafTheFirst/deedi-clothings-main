@@ -27,9 +27,9 @@ const Cart = ({ showCart, setShowCart }) => {
 
 
 
-  const handleRemoveFromCart = (cartItemId) => {
-    console.log(cartItemId)
-    dispatch(removeItemFromCart(cartItemId))
+  const handleRemoveFromCart = (localCartItemId) => {
+    console.log(localCartItemId)
+    dispatch(removeItemFromCart(localCartItemId))
       .unwrap()
       .then(() => {
         console.log('Item removed from cart successfully');
@@ -61,7 +61,7 @@ const Cart = ({ showCart, setShowCart }) => {
               products.map(item => (
                 <div
                   className="item"
-                  key={item.cartItemId}
+                  key={item.localCartItemId}
                 >
                   <Link
                     to={`/product/${item.productId}`}

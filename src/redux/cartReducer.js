@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { makeRequest } from '../makeRequest';
 import { transformCartItems } from '../utils/transformCartItems';
 import { mergeCartItems } from '../utils/mergeCartItems';
+import { v4 as uuidv4 } from 'uuid';
 
 const initialState = {
   items: [],
@@ -20,50 +21,60 @@ export const addItemToCart = createAsyncThunk(
     const { auth, cart } = getState();
     const { items, cartId } = cart;
 
-    // console.log(item)
     // Check if the item already exists in the cart
     const existingItem = items.find(
       (i) => i.productId === item.productId && i.size === item.size
     );
+    console.log(existingItem)
 
-    let updatedItems;
 
-    if (existingItem) {
-      // Update the existing item
-      updatedItems = items.map((i) =>
-        i.productId === item.productId && i.size === item.size
-          ? { ...i, quantity: i.quantity + item.quantity }
-          : i
-      );
-    } else {
-      // Add the new item
-      updatedItems = [...items, item];
+
+    console.log(item)
+    try {
+      let response;
+      let localCartItemId;
+      let strapiCartItemId;
+
+      if (auth.user) {
+        if (existingItem) {
+          // Update existing item in backend
+          await makeRequest.put(`/carts/${cartId}/items/${existingItem.id}`, {
+            quantity: existingItem.quantity + item.quantity,
+          });
+        } else {
+          // Add new item to backend
+          localCartItemId = `cartItem_${uuidv4()}`;
+          response = await makeRequest.post(`/carts/${cartId}/items`, {
+            ...item,
+            localCartItemId
+            // cart: cartId, // Attach the cart ID to the item
+          });
+          strapiCartItemId = response?.data?.data?.id
+          console.log();
+        }
+      }
+      else {
+        localCartItemId = `cartItem_${uuidv4()}`;
+        strapiCartItemId = null
+      }
+
+
+
+      // Always return the updated items
+      const updatedItems = existingItem
+        ? items.map((i) =>
+          i.productId === item.productId && i.size === item.size
+            ? { ...i, quantity: i.quantity + item.quantity }
+            : i
+        )
+        : [...items, { ...item, localCartItemId, strapiCartItemId}];
+
+
+      return updatedItems;
+    } catch (error) {
+      console.log(error)
+      return rejectWithValue(error.response?.data?.message || 'Failed to update cart');
     }
-
-
-
-
-    // If authenticated, update the backend
-    // if (auth.user) {
-    //   try {
-    //     if (existingItem) {
-    //       // Update existing item in backend
-    //       await makeRequest.put(`/carts/${cartId}/items/${existingItem.cartItemId}`, {
-    //         ...existingItem,
-    //         quantity: existingItem.quantity + item.quantity,
-    //       });
-    //     } else {
-    //       // Add new item to backend
-    //       await makeRequest.post(`/carts/${cartId}/items`, item);
-    //     }
-    //   } catch (error) {
-    //     return rejectWithValue(error.response?.data?.message || 'Failed to update cart');
-    //   }
-    // }
-
-    // Return the updated items (to calculate totals on the frontend)
-    console.log(updatedItems)
-    return updatedItems;
   }
 );
 
@@ -73,25 +84,28 @@ export const removeItemFromCart = createAsyncThunk(
   async (itemId, { getState, rejectWithValue }) => {
 
     console.log(itemId)
-    
+
     const { auth, cart } = getState();
     const { items, cartId } = cart;
 
     console.log(items)
-   
 
-    
+
+
     // Update the items list after removing the item
-    const updatedItems = items.filter((i) => i.cartItemId !== itemId);
+    const updatedItems = items.filter((i) => i.localCartItemId !== itemId);
 
     // If authenticated, remove the item from the backend
-    if (auth.user) {
-      try {
-        await makeRequest.delete(`/carts/${cartId}/items/${itemId}`);
-      } catch (error) {
-        return rejectWithValue(error.response?.data?.message || 'Failed to remove item from cart');
-      }
-    }
+    // if (auth.user) {
+    //   try {
+    //     const updatedCart = await makeRequest.delete(`/carts/${cartId}/items/${itemId}`);
+    //     console.log(updatedCart)
+    //   } catch (error) {
+    //     return rejectWithValue(error.response?.data?.message || 'Failed to remove item from cart');
+    //   }
+    // }
+
+
 
     // Return the updated items list
     console.log(updatedItems)
@@ -163,7 +177,9 @@ export const cartSlice = createSlice({
   initialState,
   status: 'idle',
   reducers: {
-    
+    resetCart: (state) => {
+      state.items = []
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -172,6 +188,7 @@ export const cartSlice = createSlice({
       })
       .addCase(fetchCartItems.fulfilled, (state, action) => {
         state.status = 'succeeded';
+        state.cartId = action.payload.cartId;
         state.items = mergeCartItems(state.items, action.payload.items);
         state.error = null
         updateTotals(state);
@@ -197,7 +214,7 @@ export const cartSlice = createSlice({
       .addCase(removeItemFromCart.pending, (state, action) => {
         state.status = 'syncing';
         state.previousItems = [...state.items];
-        state.items = state.items.filter(item => item.cartItemId !== action.meta.arg);
+        state.items = state.items.filter(item => item.localCartItemId !== action.meta.arg);
         updateTotals(state);
       })
       .addCase(removeItemFromCart.fulfilled, (state, action) => {

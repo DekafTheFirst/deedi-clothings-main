@@ -12,7 +12,6 @@ import { addItemToCart } from "../../redux/cartReducer";
 import OptimizedImage from "../../components/OptimizedImage/OptimizedImage";
 import Accordion from "./Accordion/Accordion";
 
-import { v4 as uuidv4 } from 'uuid';
 
 
 const Product = () => {
@@ -50,13 +49,10 @@ const Product = () => {
 
   const handleAddToCart = () => {
     if (selectedSize) {
-      const prefix = 'cartItem_'; // Example prefix
-      const cartItemId = `${prefix}${uuidv4()}`;
-
+      
       // Dispatch add item action
       dispatch(addItemToCart({
         productId: product.id,
-        cartItemId,
         title: product.attributes.title,
         desc: 'description',
         quantity: 1,

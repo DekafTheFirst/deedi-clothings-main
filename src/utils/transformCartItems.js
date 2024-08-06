@@ -1,7 +1,8 @@
 export const transformCartItems = (items) => {
     return items.map(item => ({
         productId: item.attributes.product.data.id,
-        cartItemId: `cartItem_${item.id}`, // or any other unique identifier
+        localCartItemId: item.attributes.localCartItemId,
+        strapiCartItemId: item.id, // or any other unique identifier
         title: item.attributes.product.data.attributes.title,
         desc: "description", // Update this with actual description if available
         quantity: item.attributes.quantity,
