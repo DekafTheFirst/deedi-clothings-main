@@ -8,7 +8,7 @@ import StarBorderIcon from '@mui/icons-material/StarBorder';
 import { useParams } from "react-router-dom";
 import useFetch from "../../hooks/useFetch";
 import { useDispatch, useSelector } from "react-redux";
-import { addToCart, updateCartItem } from "../../redux/cartReducer";
+import { addItemToCart } from "../../redux/cartReducer";
 import OptimizedImage from "../../components/OptimizedImage/OptimizedImage";
 import Accordion from "./Accordion/Accordion";
 
@@ -22,7 +22,7 @@ const Product = () => {
 
   const dispatch = useDispatch()
   const { data: product, loading, error } = useFetch(`/products/${id}?populate=*`)
-  console.log(product)
+  // console.log(product)
   const sortedSizes = product?.attributes?.availableSizes?.data?.sort((a, b) => a.id - b.id);
 
   const products = useSelector(state => state.cart.items)
@@ -46,6 +46,35 @@ const Product = () => {
 
   const handleThumbnailClicked = (index) => {
     setSelectedImg(index)
+  }
+
+  const handleAddToCart = () => {
+    if (selectedSize) {
+      const prefix = 'cartItem_'; // Example prefix
+      const cartItemId = `${prefix}${uuidv4()}`;
+
+      // Dispatch add item action
+      dispatch(addItemToCart({
+        productId: product.id,
+        cartItemId,
+        title: product.attributes.title,
+        desc: 'description',
+        quantity: 1,
+        img: product.attributes.img.data[0].attributes.url,
+        size: selectedSize,
+        price: product.attributes.price
+      })).then((result) => {
+        if (result.error) {
+          // Handle error (e.g., show a message to the user)
+          console.error('Failed to add item to cart:', result.error.message);
+        } else {
+          // Optionally, show a success message or update UI
+          console.log('Item added to cart successfully');
+        }
+      });
+    } else {
+      setSelectedSizeError(true);
+    }
   }
 
   return (
@@ -141,40 +170,9 @@ const Product = () => {
                 </div>
                 <button
                   className="add btn-1"
-                  onClick={() => {
-                    if (selectedSize) {
-                      
-                      const item = products.find(item => item.productId === product.id && item.size === selectedSize);
-
-                      if (item) {
-                        dispatch(updateCartItem({
-                          cartItemId: item.cartItemId,
-                        }))
-                      }
-
-                      else {
-                        const prefix = 'cartItem_'; // Example prefix
-                        const cartItemId = `${prefix}${uuidv4()}`;
-
-                        dispatch(addToCart({
-                          productId: product.id,
-                          cartItemId,
-                          title: product.attributes.title,
-                          desc: 'description',
-                          quantity: 1,
-                          img: product.attributes.img.data[0].attributes.url,
-                          size: selectedSize,
-                          price: product.attributes.price
-                        }))
-                      }
-                    }
-                    else {
-                      setSelectedSizeError(true)
-                    }
-                  }
-                  }
+                  onClick={handleAddToCart}
                 >
-                  <AddShoppingCartIcon /> ADD TO CART
+                  Add to Cart
                 </button>
                 <button className="add-to-wishlist btn-2">
                   <StarBorderIcon /> <span>ADD TO WISH LIST</span>

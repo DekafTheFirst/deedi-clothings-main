@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import "./MiniCart.scss"
 import { Close, DeleteOutlineOutlined } from '@mui/icons-material'
 import { useDispatch, useSelector } from 'react-redux'
-import { removeItem, resetCart } from '../../redux/cartReducer'
+import { removeItemFromCart, resetCart } from '../../redux/cartReducer'
 import { makeRequest } from '../../makeRequest'
 import OptimizedImage from '../OptimizedImage/OptimizedImage'
 import { Link, useNavigate } from 'react-router-dom'
@@ -27,12 +27,25 @@ const Cart = ({ showCart, setShowCart }) => {
 
 
 
+  const handleRemoveFromCart = (cartItemId) => {
+    console.log(cartItemId)
+    dispatch(removeItemFromCart(cartItemId))
+      .unwrap()
+      .then(() => {
+        console.log('Item removed from cart successfully');
+      })
+      .catch((error) => {
+        console.error('Failed to remove item from cart:', error);
+      });
+  };
 
 
   const handleCheckoutClicked = () => {
     navigate('/checkout');
     setShowCart(false);
   }
+
+  // console.log(products)
 
   return (
     <div className="mini-cart">
@@ -72,7 +85,7 @@ const Cart = ({ showCart, setShowCart }) => {
                       </div>
                     </div>
                   </Link>
-                  <Close className='delete' onClick={() => dispatch(removeItem(item.cartItemId))} />
+                  <Close className='delete' onClick={()=>handleRemoveFromCart(item.cartItemId)} />
                 </div>
               ))
             }

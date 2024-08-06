@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import "./CartPage.scss"
 import { Close, DeleteOutlineOutlined, ShoppingBag, ShoppingBagOutlined } from '@mui/icons-material'
 import { useDispatch, useSelector } from 'react-redux'
-import {  removeItem, resetCart } from '../../redux/cartReducer'
+import {   removeItemFromCart, resetCart } from '../../redux/cartReducer'
 import { Link, useNavigate } from 'react-router-dom'
 import OptimizedImage from '../../components/OptimizedImage/OptimizedImage'
 
@@ -22,7 +22,16 @@ const CartPage = ({ showCart, setShowCart }) => {
 
 
 
-
+  const handleRemoveFromCart = (cartItemId) => {
+    dispatch(removeItemFromCart(cartItemId))
+      .unwrap()
+      .then(() => {
+        console.log('Item removed from cart successfully');
+      })
+      .catch((error) => {
+        console.error('Failed to remove item from cart:', error);
+      });
+  };
   
 
   return (
@@ -69,7 +78,7 @@ const CartPage = ({ showCart, setShowCart }) => {
                             </div>
                           </div>
                         </Link>
-                        <Close className='delete' onClick={() => dispatch(removeItem(item.cartItemId))} />
+                        <Close className='delete' onClick={() => handleRemoveFromCart(item.cartItemId)} />
                       </div>
                     ))
                   }

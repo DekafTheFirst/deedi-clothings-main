@@ -13,6 +13,93 @@ const initialState = {
   error: null
 }
 
+// Thunk for adding or updating a single cart item
+export const addItemToCart = createAsyncThunk(
+  'cart/addItemToCart',
+  async (item, { getState, rejectWithValue }) => {
+    const { auth, cart } = getState();
+    const { items, cartId } = cart;
+
+    // console.log(item)
+    // Check if the item already exists in the cart
+    const existingItem = items.find(
+      (i) => i.productId === item.productId && i.size === item.size
+    );
+
+    let updatedItems;
+
+    if (existingItem) {
+      // Update the existing item
+      updatedItems = items.map((i) =>
+        i.productId === item.productId && i.size === item.size
+          ? { ...i, quantity: i.quantity + item.quantity }
+          : i
+      );
+    } else {
+      // Add the new item
+      updatedItems = [...items, item];
+    }
+
+
+
+
+    // If authenticated, update the backend
+    // if (auth.user) {
+    //   try {
+    //     if (existingItem) {
+    //       // Update existing item in backend
+    //       await makeRequest.put(`/carts/${cartId}/items/${existingItem.cartItemId}`, {
+    //         ...existingItem,
+    //         quantity: existingItem.quantity + item.quantity,
+    //       });
+    //     } else {
+    //       // Add new item to backend
+    //       await makeRequest.post(`/carts/${cartId}/items`, item);
+    //     }
+    //   } catch (error) {
+    //     return rejectWithValue(error.response?.data?.message || 'Failed to update cart');
+    //   }
+    // }
+
+    // Return the updated items (to calculate totals on the frontend)
+    console.log(updatedItems)
+    return updatedItems;
+  }
+);
+
+
+export const removeItemFromCart = createAsyncThunk(
+  'cart/removeItemFromCart',
+  async (itemId, { getState, rejectWithValue }) => {
+
+    console.log(itemId)
+    
+    const { auth, cart } = getState();
+    const { items, cartId } = cart;
+
+    console.log(items)
+   
+
+    
+    // Update the items list after removing the item
+    const updatedItems = items.filter((i) => i.cartItemId !== itemId);
+
+    // If authenticated, remove the item from the backend
+    if (auth.user) {
+      try {
+        await makeRequest.delete(`/carts/${cartId}/items/${itemId}`);
+      } catch (error) {
+        return rejectWithValue(error.response?.data?.message || 'Failed to remove item from cart');
+      }
+    }
+
+    // Return the updated items list
+    console.log(updatedItems)
+    return updatedItems;
+  }
+);
+
+
 
 const calculateTotals = (items) => {
   // const noOfProdcts = items.reduce
@@ -76,34 +163,7 @@ export const cartSlice = createSlice({
   initialState,
   status: 'idle',
   reducers: {
-    addToCart: (state, action) => {
-      const existingItem = state.items.find(item => item.productId === action.payload.productId && item.size === action.payload.size);
-      if (existingItem) {
-        existingItem.quantity += action.payload.quantity;
-      } else {
-        state.items.push(action.payload);
-      }
-      updateTotals(state);
-    },
-
-    updateCartItem: (state, action) => {
-      const item = state.items.find(item => item.cartItemId === action.payload.cartItemId);
-      item.quantity += 1;
-      updateTotals(state);
-    },
-
-    removeItem: (state, action) => {
-      state.items = state.items.filter(item => item.cartItemId !== action.payload);
-      updateTotals(state);
-
-    },
-
-    resetCart: (state) => {
-      state.items = [];
-      state.subtotal = 0;
-      state.vat = 0;
-      state.totalAmount = 0;
-    },
+    
   },
   extraReducers: (builder) => {
     builder
@@ -120,20 +180,38 @@ export const cartSlice = createSlice({
         state.status = 'failed';
         state.error = action.error.message;
       })
-      .addCase(syncCart.pending, (state) => {
-        state.previousItems = state.items
+      .addCase(addItemToCart.pending, (state) => {
         state.status = 'syncing';
       })
-      .addCase(syncCart.fulfilled, (state, action) => {
-        state.previousItems = []
+      .addCase(addItemToCart.fulfilled, (state, action) => {
+        state.items = action.payload;
+        // Calculate totals after successful addition
+        updateTotals(state);
         state.status = 'succeeded';
-        state.error = null
+        state.error = null;
       })
-      .addCase(syncCart.rejected, (state, action) => {
+      .addCase(addItemToCart.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.payload;
-        state.items = state.previousItems;
-        state.previousItems = [];
+      })
+      .addCase(removeItemFromCart.pending, (state, action) => {
+        state.status = 'syncing';
+        state.previousItems = [...state.items];
+        state.items = state.items.filter(item => item.cartItemId !== action.meta.arg);
+        updateTotals(state);
+      })
+      .addCase(removeItemFromCart.fulfilled, (state, action) => {
+        state.items = action.payload; // Ensure this reflects the updated cart items
+        updateTotals(state);
+        // Calculate totals after successful removal
+        state.status = 'succeeded';
+        state.error = null;
+      })
+      .addCase(removeItemFromCart.rejected, (state, action) => {
+        state.status = 'failed';
+        state.items = [...state.previousItems]; // Rollback to previous state
+        state.previousItems = []
+        state.error = action.payload;
         updateTotals(state);
       });
   },

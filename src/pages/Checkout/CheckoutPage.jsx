@@ -1,19 +1,14 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useMemo } from 'react'
 import "./CheckoutPage.scss"
-import { Close, DeleteOutlineOutlined, ShoppingBag, ShoppingBagOutlined } from '@mui/icons-material'
 import { useDispatch, useSelector } from 'react-redux'
-import { removeItem, resetCart } from '../../redux/cartReducer'
-import { loadStripe } from "@stripe/stripe-js";
-import { makeRequest } from '../../makeRequest'
+
 import { Link, useNavigate } from 'react-router-dom'
 import OptimizedImage from '../../components/OptimizedImage/OptimizedImage'
 import CourierOptions from '../../components/CourierOptions/CourierOptions'
 import StepWizard from './StepWizard/StepWizard'
 import ShippingTab from './ShippingTab/ShippingTab'
 import calculateNoOfProducts from '../../utils/calculateNoOfProducts'
-import { current } from '@reduxjs/toolkit'
 import BillingTab from './BillingTab/BillingTab'
-import { setShippingInfo } from '../../redux/checkoutReducer'
 import { getCurrentStepFromSession, getShippingInfoFromSession } from '../../utils/session'
 
 
@@ -146,7 +141,6 @@ const CheckoutPage = () => {
                               </div>
                             </Link>
                             <span className='quantity'>QTY : {item.quantity}</span>
-                            {/* <Close className='delete' onClick={() => dispatch(removeItem(item.cartItemId))} /> */}
                           </div>
                         ))
                       }
