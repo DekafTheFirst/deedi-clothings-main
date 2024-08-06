@@ -4,9 +4,9 @@ import { store } from '../../redux/store';
 
 const checkCartItemsLoader = () => {
     const state = store.getState();
-    const cartItems = state.cart.cartItems;
+    const items = state.cart.items;
 
-    if (cartItems.length === 0) {
+    if (items.length === 0) {
         return redirect('/cart'); // Redirect to cart page or change to "/" for home page
     }
 

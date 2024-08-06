@@ -4,13 +4,13 @@ import { signInWithEmailAndPassword, signOut, createUserWithEmailAndPassword, up
 import { auth } from '../firebase/config';
 import { makeRequest } from '../makeRequest';
 import { transformCartItems } from '../utils/transformCartItems';
-import { resetCart } from './cartReducer';
+import { fetchCartItems, resetCart } from './cartReducer';
 
 
 // Async thunks
 export const registerUser = createAsyncThunk(
     'auth/registerUser',
-    async ({ email, password, username, photoUrl }, thunkAPI) => {
+    async ({ email, password, username, photoUrl }, {dispatch, thunkAPI}) => {
         try {
             const response = await makeRequest.post('/auth/local/register?populate=*', {
                 username,
@@ -23,30 +23,9 @@ export const registerUser = createAsyncThunk(
 
             // Create cart for the new user
             await makeRequest.post('/carts', { userId: strapiUser.id });
+            dispatch(fetchCartItems(strapiUser.id))
 
-            // Fetch cart for the new user
-            const cartResponse = makeRequest.get(`/carts`, {
-                params: {
-                    populate: {
-                        items: {
-                            populate: {
-                                product: {
-                                    populate: ['img'],
-                                    fields: ['title', 'price', 'img']
-                                }
-                            }
-                        }
-                    },
-                    filters: {
-                        user: {
-                            id: strapiUser.id
-                        }
-                    }
-                }
-            })
-
-            const cartData = cartResponse.data?.data?.[0]
-
+            
             return {
                 user: {
                     email: strapiUser.email,
@@ -54,10 +33,7 @@ export const registerUser = createAsyncThunk(
                     username: strapiUser.username,
                     photoUrl: strapiUser.photoUrl
                 },
-                cart: {
-                    id: cartData?.id,
-                    items: cartData?.attributes?.items?.data
-                },
+                
             };
         } catch (error) {
             console.log(error);
@@ -69,7 +45,7 @@ export const registerUser = createAsyncThunk(
 
 export const loginUser = createAsyncThunk(
     'auth/loginUser',
-    async ({ email, password }, thunkAPI) => {
+    async ({ email, password }, {dispatch, thunkAPI}) => {
         try {
 
             const response = await makeRequest.post('/auth/local', {
@@ -78,37 +54,11 @@ export const loginUser = createAsyncThunk(
             });
 
             const strapiUser = response.data.user;
+           
 
-            // Fetch cart and orders
-            const [cartResponse, ordersResponse] = await Promise.all([
-                // makeRequest.get(`/carts?populate[items][populate][product][fields]=title,price,img&[filters][user][id]=${strapiUser.id}`),
-                makeRequest.get(`/carts`, {
-                    params: {
-                        populate: {
-                            items: {
-                                populate: {
-                                    product: {
-                                        populate: ['img'],
-                                        fields: ['title', 'price', 'img']
-                                    }
-                                }
-                            }
-                        },
-                        filters: {
-                            user: {
-                                id: strapiUser.id
-                            }
-                        }
-                    }
-                }),
+            dispatch(fetchCartItems(strapiUser.id))
 
-                makeRequest.get(`/orders?populate=*&[filters][user][id]=${strapiUser.id}`)
-            ]);
-
-            const cartData = cartResponse.data?.data?.[0]
-            const transformedCartItems = transformCartItems(cartData?.attributes?.items?.data || []);
-            // console.log(transformedCartItems)
-
+            
             return {
                 user: {
                     email: strapiUser.email,
@@ -116,13 +66,6 @@ export const loginUser = createAsyncThunk(
                     username: strapiUser.username,
                     photoUrl: strapiUser.photoUrl
                 },
-
-                cart: {
-                    id: cartData?.id,
-                    items: transformedCartItems,
-                },
-
-                orders: ordersResponse.data?.data
             };
         } catch (error) {
             console.log(error);
@@ -160,7 +103,7 @@ export const updateCart = createAsyncThunk(
         try {
             const { auth } = getState();
             await makeRequest.put(`/carts/${newCart.id}`, newCart);
-            dispatch(setCart(newCart));
+            // dispatch(setCart(newCart));
             localStorage.setItem('cart', JSON.stringify(newCart));
         } catch (error) {
             console.log(error);
@@ -206,7 +149,15 @@ export const logoutUser = createAsyncThunk(
 const authSlice = createSlice({
     name: 'auth',
     initialState: { user: null, loading: false, error: null },
-    reducers: {},
+    reducers: {
+        setUser: (state, action) => {
+            state.user = action.payload;
+        },
+        logout: (state) => {
+            state.user = null;
+            state.status = 'idle';
+        },
+    },
     extraReducers: (builder) => {
         builder
             .addCase(loginUser.pending, (state) => {
@@ -214,8 +165,6 @@ const authSlice = createSlice({
             })
             .addCase(loginUser.fulfilled, (state, action) => {
                 state.user = action.payload.user;
-                // state.cart = action.payload.cart;
-                // state.orders = action.payload.orders;
                 state.loading = false;
                 state.error = null;
             })

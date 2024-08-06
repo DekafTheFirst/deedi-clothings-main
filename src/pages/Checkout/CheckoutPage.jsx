@@ -23,7 +23,7 @@ const CheckoutPage = () => {
 
 
   // Products
-  const products = useSelector(state => state.cart.cartItems)
+  const products = useSelector(state => state.cart.items)
   const selectedCourier = useSelector(state => state.checkout.selectedCourier);
 
   const currentStep = useSelector(state => state.checkout.currentStep);

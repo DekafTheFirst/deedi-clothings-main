@@ -25,7 +25,7 @@ const Product = () => {
   console.log(product)
   const sortedSizes = product?.attributes?.availableSizes?.data?.sort((a, b) => a.id - b.id);
 
-  const products = useSelector(state => state.cart.cartItems)
+  const products = useSelector(state => state.cart.items)
 
 
   const [selectedSize, setSelectedSize] = useState(null);

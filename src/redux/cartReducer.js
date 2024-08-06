@@ -1,17 +1,21 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { makeRequest } from '../makeRequest';
+import { transformCartItems } from '../utils/transformCartItems';
 
 const initialState = {
-  cartItems: [],
+  items: [],
+  previousItems: [],
   subtotal: 0,
   vat: 0,
   totalAmount: 0,
+  status: 'idle',
+  error: null
 }
 
 
-const calculateTotals = (cartItems) => {
-  // const noOfProdcts = cartItems.reduce
-  const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0).toFixed(2);
+const calculateTotals = (items) => {
+  // const noOfProdcts = items.reduce
+  const subtotal = items.reduce((acc, item) => acc + item.price * item.quantity, 0).toFixed(2);
   const vat = (subtotal * 0.2).toFixed(2);
   const totalAmount = (parseFloat(subtotal) + parseFloat(vat)).toFixed(2);
 
@@ -19,22 +23,61 @@ const calculateTotals = (cartItems) => {
 };
 
 const updateTotals = (state) => {
-  const totals = calculateTotals(state.cartItems);
+  const totals = calculateTotals(state.items);
   state.subtotal = totals.subtotal;
   state.vat = totals.vat;
   state.totalAmount = totals.totalAmount;
 };
 
+const mergeCartItems = (localItems, fetchedItems) => {
+  const mergedItems = [...localItems];
 
-export const fetchCartItems = createAsyncThunk('cart/fetchCartItems', async (_, { getState }) => {
-  const response = await makeRequest.get('/cart');
-  return response.data;
+  fetchedItems.forEach(fetchedItem => {
+    const existingItem = mergedItems.find(item => item.productId === fetchedItem.productId && item.size === fetchedItem.size);
+    if (existingItem) {
+      existingItem.quantity += fetchedItem.quantity;
+    } else {
+      mergedItems.push(fetchedItem);
+    }
+  });
+
+  return mergedItems;
+};
+
+export const fetchCartItems = createAsyncThunk('cart/fetchCartItems', async (userId, { getState }) => {
+  // const userId = getState().auth.user.id; // Assuming the user ID is stored in auth state
+  // console.log(userId)
+  const response = await makeRequest.get(`/carts`, {
+    params: {
+      populate: {
+        items: {
+          populate: {
+            product: {
+              populate: ['img'],
+              fields: ['title', 'price', 'img']
+            }
+          }
+        }
+      },
+      filters: {
+        user: {
+          id: userId
+        }
+      }
+    }
+  })
+
+  const cartItems = response?.data?.data?.[0]?.attributes.items.data
+  const transformedCartItems = transformCartItems(cartItems)
+
+  const cartId = response?.data?.data?.[0]?.id
+  return {cartId, items: transformedCartItems};
 });
 
 // Async thunk to synchronize the cart with the backend
 export const syncCart = createAsyncThunk('cart/syncCart', async (_, { getState }) => {
-  const cartItems = getState().cart.items;
-  const response = await makeRequest.get('/cart/sync', 'POST', { items: cartItems });
+  const items = getState().cart.items;
+  const response = await makeRequest.get('/cart/sync', 'POST', { items: items });
   return response.data;
 });
 
@@ -42,32 +85,32 @@ export const syncCart = createAsyncThunk('cart/syncCart', async (_, { getState }
 export const cartSlice = createSlice({
   name: 'cart',
   initialState,
+  status: 'idle',
   reducers: {
-    mergeCartOnLogin: (state, action) => {
-      state.cartItems = [...state.cartItems, ...action.payload];
-      updateTotals(state);
-    },
-
     addToCart: (state, action) => {
-      state.cartItems.push(action.payload)
+      const existingItem = state.items.find(item => item.productId === action.payload.productId && item.size === action.payload.size);
+      if (existingItem) {
+        existingItem.quantity += action.payload.quantity;
+      } else {
+        state.items.push(action.payload);
+      }
       updateTotals(state);
     },
 
     updateCartItem: (state, action) => {
-      const item = state.cartItems.find(item=>item.cartItemId === action.payload.cartItemId);
+      const item = state.items.find(item => item.cartItemId === action.payload.cartItemId);
       item.quantity += 1;
       updateTotals(state);
-
-
     },
+
     removeItem: (state, action) => {
-      state.cartItems = state.cartItems.filter(item => item.cartItemId !== action.payload);
+      state.items = state.items.filter(item => item.cartItemId !== action.payload);
       updateTotals(state);
 
     },
 
     resetCart: (state) => {
-      state.cartItems = [];
+      state.items = [];
       state.subtotal = 0;
       state.vat = 0;
       state.totalAmount = 0;
@@ -81,13 +124,28 @@ export const cartSlice = createSlice({
       .addCase(fetchCartItems.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.items = mergeCartItems(state.items, action.payload.items);
+        state.error = null
+        updateTotals(state);
       })
       .addCase(fetchCartItems.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.error.message;
       })
+      .addCase(syncCart.pending, (state) => {
+        state.previousItems = state.items
+        state.status = 'syncing';
+      })
       .addCase(syncCart.fulfilled, (state, action) => {
-        state.items = action.payload.items;
+        state.previousItems = []
+        state.status = 'succeeded';
+        state.error = null
+      })
+      .addCase(syncCart.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.payload;
+        state.items = state.previousItems;
+        state.previousItems = [];
+        updateTotals(state);
       });
   },
 })

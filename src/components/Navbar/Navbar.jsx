@@ -15,7 +15,7 @@ const Navbar = ({ setShowCart, showCart }) => {
   const [toggle, setToggle] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [noOfProducts, setNoOfProducts] = useState(0)
-  const products = useSelector(state => state.cart.cartItems)
+  const products = useSelector(state => state.cart.items)
   const user = useSelector(state => state.auth.user);
 
   const { pathname, state } = useLocation()

@@ -24,8 +24,8 @@ const BillingTab = ({ totalAmount }) => {
     const sessionStoredBillingInfo = getBilingInfoFromSession();
 
 
-    const products = useSelector(state => state.cart.cartItems);
-    // const items = useSelector(state => state.cart.cartItems);
+    const products = useSelector(state => state.cart.items);
+    // const items = useSelector(state => state.cart.items);
 
     const currentStep = useSelector(state => state.cart.currentStep);
     const previewedStep = useSelector(state => state.checkout.previewedStep);

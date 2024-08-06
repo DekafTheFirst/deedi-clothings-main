@@ -122,7 +122,7 @@ const ShippingTab = () => {
 
 
     const arraysEqual = (arr1, arr2) => _.isEqual(arr1, arr2);
-    const items = useSelector(state => state.cart.cartItems);
+    const items = useSelector(state => state.cart.items);
     // console.log(items)
     const currentStep = useSelector(state => state.cart.currentStep);
     const previewedStep = useSelector(state => state.checkout.previewedStep);
