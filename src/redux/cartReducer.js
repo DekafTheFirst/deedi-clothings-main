@@ -25,11 +25,11 @@ export const addItemToCart = createAsyncThunk(
     const existingItem = items.find(
       (i) => i.productId === item.productId && i.size === item.size
     );
-    console.log(existingItem)
+    // console.log(existingItem)
 
 
 
-    console.log(item)
+    // console.log(item)
     try {
       let response;
       let localCartItemId;
@@ -38,9 +38,11 @@ export const addItemToCart = createAsyncThunk(
       if (auth.user) {
         if (existingItem) {
           // Update existing item in backend
-          await makeRequest.put(`/carts/${cartId}/items/${existingItem.id}`, {
+          response = await makeRequest.put(`/carts/${cartId}/items/${existingItem.strapiCartItemId}`, {
             quantity: existingItem.quantity + item.quantity,
           });
+
+          console.log(response.data)
         } else {
           // Add new item to backend
           localCartItemId = `cartItem_${uuidv4()}`;
@@ -50,7 +52,7 @@ export const addItemToCart = createAsyncThunk(
             // cart: cartId, // Attach the cart ID to the item
           });
           strapiCartItemId = response?.data?.data?.id
-          console.log();
+          console.log(response.data);
         }
       }
       else {
