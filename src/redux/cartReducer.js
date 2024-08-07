@@ -83,9 +83,9 @@ export const addItemToCart = createAsyncThunk(
 
 export const removeItemFromCart = createAsyncThunk(
   'cart/removeItemFromCart',
-  async (itemId, { getState, rejectWithValue }) => {
+  async ({strapiCartItemId, localCartItemId}, { getState, rejectWithValue }) => {
 
-    console.log(itemId)
+    console.log(localCartItemId)
 
     const { auth, cart } = getState();
     const { items, cartId } = cart;
@@ -95,17 +95,17 @@ export const removeItemFromCart = createAsyncThunk(
 
 
     // Update the items list after removing the item
-    const updatedItems = items.filter((i) => i.localCartItemId !== itemId);
+    const updatedItems = items.filter((i) => i.localCartItemId !== localCartItemId);
 
     // If authenticated, remove the item from the backend
-    // if (auth.user) {
-    //   try {
-    //     const updatedCart = await makeRequest.delete(`/carts/${cartId}/items/${itemId}`);
-    //     console.log(updatedCart)
-    //   } catch (error) {
-    //     return rejectWithValue(error.response?.data?.message || 'Failed to remove item from cart');
-    //   }
-    // }
+    if (auth.user) {
+      try {
+        const updatedCart = await makeRequest.delete(`/carts/${cartId}/items/${strapiCartItemId}`);
+        console.log(updatedCart)
+      } catch (error) {
+        return rejectWithValue(error.response?.data?.message || 'Failed to remove item from cart');
+      }
+    }
 
 
 

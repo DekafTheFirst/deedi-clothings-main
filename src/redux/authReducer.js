@@ -132,7 +132,7 @@ export const logoutUser = createAsyncThunk(
             // Clear user session on Strapi if necessary
             // Note: You may need to handle session clearing differently
             dispatch(resetCart());
-
+            
             return {};
         } catch (error) {
             console.log(error)

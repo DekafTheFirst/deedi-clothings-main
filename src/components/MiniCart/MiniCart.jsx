@@ -28,7 +28,7 @@ const Cart = ({ showCart, setShowCart }) => {
 
 
   const handleRemoveFromCart = ({localCartItemId, strapiCartItemId}) => {
-    console.log(localCartItemId)
+    // console.log(localCartItemId)
     dispatch(removeItemFromCart({localCartItemId, strapiCartItemId}))
       .unwrap()
       .then(() => {
