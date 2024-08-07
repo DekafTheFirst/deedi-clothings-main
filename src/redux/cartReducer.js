@@ -69,7 +69,7 @@ export const addItemToCart = createAsyncThunk(
             ? { ...i, quantity: i.quantity + item.quantity }
             : i
         )
-        : [...items, { ...item, localCartItemId, strapiCartItemId}];
+        : [...items, { ...item, localCartItemId, strapiCartItemId }];
 
 
       return updatedItems;
@@ -134,37 +134,59 @@ const updateTotals = (state) => {
 };
 
 
+export const fetchCartItems = createAsyncThunk(
+  'cart/fetchCartItems',
+  async (userId, { getState, rejectWithValue }) => {
+    try {
+      const { cart } = getState();
+      const localItems = cart.items;
 
-
-export const fetchCartItems = createAsyncThunk('cart/fetchCartItems', async (userId, { getState }) => {
-  // const userId = getState().auth.user.id; // Assuming the user ID is stored in auth state
-  // console.log(userId)
-  const response = await makeRequest.get(`/carts`, {
-    params: {
-      populate: {
-        items: {
+      // Fetch the cart from the backend
+      const response = await makeRequest.get(`/carts`, {
+        params: {
           populate: {
-            product: {
-              populate: ['img'],
-              fields: ['title', 'price', 'img']
+            items: {
+              populate: {
+                product: {
+                  populate: ['img'],
+                  fields: ['title', 'price', 'img']
+                }
+              }
+            }
+          },
+          filters: {
+            user: {
+              id: userId
             }
           }
         }
-      },
-      filters: {
-        user: {
-          id: userId
-        }
-      }
+      });
+
+      console.log('response', response);
+      let cartData = response?.data?.data?.[0];
+
+    
+      const cartId = cartData?.id;
+
+
+
+
+      // Merge local items with the Strapi cart items and get the updated cart
+      const updatedresponse = await makeRequest.put(`/carts/${cartId}`, { items: localItems });
+      console.log('updatedresponse', updatedresponse)
+
+      const updatedCartItems = updatedresponse.data.data.items;
+      console.log('updatedCartItems', updatedCartItems);
+      
+      const transformedUpdatedCartItems = transformCartItems(updatedCartItems);
+      console.log('transformedUpdatedCartItems', transformedUpdatedCartItems)
+      return { cartId, items: transformedUpdatedCartItems };
+    } catch (error) {
+      console.error(error)
+      return rejectWithValue(error.response?.data?.message || 'Failed to fetch cart items');
     }
-  })
-
-  const cartItems = response?.data?.data?.[0]?.attributes.items.data
-  const transformedCartItems = transformCartItems(cartItems)
-
-  const cartId = response?.data?.data?.[0]?.id
-  return { cartId, items: transformedCartItems };
-});
+  }
+);
 
 // Async thunk to synchronize the cart with the backend
 export const syncCart = createAsyncThunk('cart/syncCart', async (_, { getState }) => {

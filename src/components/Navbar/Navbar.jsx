@@ -103,6 +103,12 @@ const Navbar = ({ setShowCart, showCart }) => {
           {/* <div className="item">
             <Link className="link" to="/products/3">Stores</Link> 
           </div> */}
+          <div className="item">
+            <Link className="link" to="/login">Login</Link>
+          </div>
+          <div className="item">
+            <Link className="link" to="/register">Register</Link>
+          </div>
           <div className="icons">
             <div className="searchbar">
               <input type="text" name="" id="" />

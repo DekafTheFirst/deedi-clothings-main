@@ -1,9 +1,6 @@
 // authSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { signInWithEmailAndPassword, signOut, createUserWithEmailAndPassword, updateProfile, getIdToken, getAuth } from 'firebase/auth';
-import { auth } from '../firebase/config';
 import { makeRequest } from '../makeRequest';
-import { transformCartItems } from '../utils/transformCartItems';
 import { fetchCartItems, resetCart } from './cartReducer';
 
 
@@ -22,7 +19,7 @@ export const registerUser = createAsyncThunk(
             const strapiUser = response.data.user;
 
             // Create cart for the new user
-            await makeRequest.post('/carts', { userId: strapiUser.id });
+            await makeRequest.post('/carts', { userId: strapiUser.id });            
             dispatch(fetchCartItems(strapiUser.id))
 
             
