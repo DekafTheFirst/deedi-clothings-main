@@ -144,16 +144,16 @@ export const fetchCartItems = createAsyncThunk(
       // Fetch the cart from the backend
       const response = await makeRequest.get(`/carts`, {
         params: {
-          populate: {
-            items: {
-              populate: {
-                product: {
-                  populate: ['img'],
-                  fields: ['title', 'price', 'img']
-                }
-              }
-            }
-          },
+          // populate: {
+          //   items: {
+          //     populate: {
+          //       product: {
+          //         populate: ['img'],
+          //         fields: ['title', 'price', 'img']
+          //       }
+          //     }
+          //   }
+          // },
           filters: {
             user: {
               id: userId
