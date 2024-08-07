@@ -165,19 +165,35 @@ export const fetchCartItems = createAsyncThunk(
       console.log('response', response);
       let cartData = response?.data?.data?.[0];
 
-    
+
       const cartId = cartData?.id;
 
 
 
 
       // Merge local items with the Strapi cart items and get the updated cart
-      const updatedresponse = await makeRequest.put(`/carts/${cartId}`, { items: localItems });
+      const updatedresponse = await makeRequest.put(`/carts/${cartId}`,
+        { items: localItems },
+        {
+          params: {
+            populate: {
+              items: {
+                populate: {
+                  product: {
+                    populate: ['img'],
+                    fields: ['title', 'price', 'img'],
+                  },
+                },
+              },
+            },
+          },
+        }
+      );
       console.log('updatedresponse', updatedresponse)
 
       const updatedCartItems = updatedresponse.data.data.items;
       console.log('updatedCartItems', updatedCartItems);
-      
+
       const transformedUpdatedCartItems = transformCartItems(updatedCartItems);
       console.log('transformedUpdatedCartItems', transformedUpdatedCartItems)
       return { cartId, items: transformedUpdatedCartItems };
@@ -213,7 +229,7 @@ export const cartSlice = createSlice({
       .addCase(fetchCartItems.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.cartId = action.payload.cartId;
-        state.items = mergeCartItems(state.items, action.payload.items);
+        state.items = action.payload.items;
         state.error = null
         updateTotals(state);
       })
