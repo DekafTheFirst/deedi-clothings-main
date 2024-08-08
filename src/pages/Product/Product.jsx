@@ -12,6 +12,9 @@ import { addItemToCart } from "../../redux/cartReducer";
 import OptimizedImage from "../../components/OptimizedImage/OptimizedImage";
 import Accordion from "./Accordion/Accordion";
 
+import { v4 as uuidv4 } from 'uuid';
+
+
 const transformStocks = (stocks) => {
   return stocks?.map((size) => {
     return {
@@ -29,15 +32,15 @@ const Product = () => {
 
   const dispatch = useDispatch()
   const { data: product, loading, error } = useFetch(`/products/${id}?populate[img]=*&populate[categories]=*&populate[sub_categories]=*&populate[stocks][populate][size]=*&populate[stocks][populate]=*`)
-  console.log('product', product)
+  // console.log('product', product)
 
   const stocks = product?.attributes?.stocks.data;
-  console.log('stocks', stocks)
+  // console.log('stocks', stocks)
 
 
 
   const mappedStocks = transformStocks(stocks)
-  console.log('mappedStocks', mappedStocks);
+  // console.log('mappedStocks', mappedStocks);
 
   const isOutOfStock = false
 
@@ -63,6 +66,7 @@ const Product = () => {
 
   const handleAddToCart = () => {
     if (selectedStock) {
+      const localCartItemId = `cartItem_${uuidv4()}`
 
       // Dispatch add item action
       dispatch(addItemToCart({
@@ -70,6 +74,7 @@ const Product = () => {
         title: product.attributes.title,
         desc: 'description',
         quantity: 1,
+        localCartItemId,
         img: product.attributes.img.data[0].attributes.url,
         size: selectedStock.size,
         price: product.attributes.price

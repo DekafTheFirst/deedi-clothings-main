@@ -2,7 +2,6 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { makeRequest } from '../makeRequest';
 import { transformCartItems } from '../utils/transformCartItems';
 import { mergeCartItems } from '../utils/mergeCartItems';
-import { v4 as uuidv4 } from 'uuid';
 
 const initialState = {
   items: [],
@@ -17,42 +16,23 @@ const initialState = {
 // Thunk for adding or updating a single cart item
 export const addItemToCart = createAsyncThunk(
   'cart/addItemToCart',
-  async (item, { getState, rejectWithValue }) => {
+  async (newCartItem, { getState, rejectWithValue }) => {
     const { auth, cart } = getState();
     const { items, cartId } = cart;
 
-    // Check if the item already exists in the cart
-    const existingItem = items.find(
-      (i) => i.productId === item.productId && i.size === item.size
-    );
-    console.log(existingItem)
+    // Check if the newCartItem already exists in the cart
 
-    const localCartItemId = `cartItem_${uuidv4()}`
-    // UpdateItems
 
-    const updatedItems = existingItem
-      ? items.map((i) => {
-        console.log(i)
-        return (i.productId === item.productId && i.size === item.size
-          ? { ...i, quantity: i.quantity + item.quantity }
-          : i)
-      }
-      )
-      : [...items, { ...item, localCartItemId, strapiCartItemId }];
-
-    console.log('updatedItems', updatedItems)
-
-    // console.log(item)
+    // console.log(newCartItem)
     let strapiCartItemId;
 
     if (auth.user) {
       try {
         let response;
-        // Add new item to backend
+        // Add new newCartItem to backend
         response = await makeRequest.post(`/carts/${cartId}/items`, {
-          ...item,
-          localCartItemId
-          // cart: cartId, // Attach the cart ID to the item
+          ...newCartItem,
+          // cart: cartId, // Attach the cart ID to the newCartItem
         });
         strapiCartItemId = response?.data?.data?.id
         console.log(response.data);
@@ -70,7 +50,9 @@ export const addItemToCart = createAsyncThunk(
 
 
 
-    return updatedItems;
+    return {
+      strapiCartItemId: strapiCartItemId,
+    };
 
   }
 );
@@ -233,19 +215,63 @@ export const cartSlice = createSlice({
         state.status = 'failed';
         state.error = action.error.message;
       })
-      .addCase(addItemToCart.pending, (state) => {
+      .addCase(addItemToCart.pending, (state, action) => {
+        const newCartItem = action.meta.arg;
+
+        console.log(action.meta.arg);
+
+        const items = state.items;
+        const existingItem = items.find(
+          (i) => i.productId === newCartItem.productId && i.size === newCartItem.size
+        );
+        // UpdateItems
+
+        const updatedItems = existingItem
+          ? items.map((i) => {
+            return (i.localCartItemId === existingItem.localCartItemId
+              ? { ...i, quantity: i.quantity + newCartItem.quantity }
+              : i)
+          }
+          )
+          : [...items, newCartItem];
+
+        state.previousItems = state.items;
+        state.items = updatedItems;
+
+        updateTotals(state);
+
         state.status = 'syncing';
       })
       .addCase(addItemToCart.fulfilled, (state, action) => {
-        state.items = action.payload;
+        // state.items = action.payload;
         // Calculate totals after successful addition
-        updateTotals(state);
-        state.status = 'succeeded';
+        const localCartItemId = action.meta.arg.localCartItemId;
+        console.log('localCartItemId', localCartItemId)
+        const strapiCartItemId = action.payload.strapiCartItemId;
+        console.log('strapiCartItemId', strapiCartItemId)
+
+
+        const addedItem = state.items.find(
+          (i) => i.localCartItemId === localCartItemId
+        );
+
+        if (addedItem && !addedItem?.strapiCartItemId ) {
+          addedItem.strapiCartItemId = strapiCartItemId
+        }
+
+
+
         state.error = null;
+        state.previousItems = [];
+        state.status = 'succeeded';
       })
       .addCase(addItemToCart.rejected, (state, action) => {
-        state.status = 'failed';
+        state.items = state.previousItems;
+        state.previousItems = [];
+
+        updateTotals(state);
         state.error = action.payload;
+        state.status = 'failed';
       })
       .addCase(removeItemFromCart.pending, (state, action) => {
         state.status = 'syncing';
