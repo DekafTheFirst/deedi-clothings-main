@@ -12,7 +12,15 @@ import { addItemToCart } from "../../redux/cartReducer";
 import OptimizedImage from "../../components/OptimizedImage/OptimizedImage";
 import Accordion from "./Accordion/Accordion";
 
-
+const transformStocks = (stocks) => {
+  return stocks?.map((size) => {
+    return {
+      id: size.id,
+      size: size.attributes.size.data.attributes.size,
+      stock: size.attributes.stock,
+    }
+  })
+}
 
 const Product = () => {
   const id = useParams().id
@@ -20,20 +28,26 @@ const Product = () => {
   const [quantity, setQuantity] = useState(1)
 
   const dispatch = useDispatch()
-  const { data: product, loading, error } = useFetch(`/products/${id}?populate=*`)
-  // console.log(product)
-  const sortedSizes = product?.attributes?.availableSizes?.data?.sort((a, b) => a.id - b.id);
+  const { data: product, loading, error } = useFetch(`/products/${id}?populate[img]=*&populate[categories]=*&populate[sub_categories]=*&populate[stocks][populate][size]=*&populate[stocks][populate]=*`)
+  console.log('product', product)
 
-  const products = useSelector(state => state.cart.items)
+  const stocks = product?.attributes?.stocks.data;
+  console.log('stocks', stocks)
 
 
-  const [selectedSize, setSelectedSize] = useState(null);
-  const [selectedSizeError, setSelectedSizeError] = useState(null)
+
+  const mappedStocks = transformStocks(stocks)
+  console.log('mappedStocks', mappedStocks);
+
+  const isOutOfStock = false
+
+  const [selectedStock, setSelectedStock] = useState(null);
+  const [selectedSizeError, setSelectedStockError] = useState(null)
 
   useEffect(() => {
-    setSelectedSize(selectedSize)
-    // console.log(selectedSize);
-  }, [selectedSize])
+    setSelectedStock(selectedStock)
+    // console.log(selectedStock);
+  }, [selectedStock])
 
 
   // const images = [
@@ -48,8 +62,8 @@ const Product = () => {
   }
 
   const handleAddToCart = () => {
-    if (selectedSize) {
-      
+    if (selectedStock) {
+
       // Dispatch add item action
       dispatch(addItemToCart({
         productId: product.id,
@@ -57,7 +71,7 @@ const Product = () => {
         desc: 'description',
         quantity: 1,
         img: product.attributes.img.data[0].attributes.url,
-        size: selectedSize,
+        size: selectedStock.size,
         price: product.attributes.price
       })).then((result) => {
         if (result.error) {
@@ -69,7 +83,7 @@ const Product = () => {
         }
       });
     } else {
-      setSelectedSizeError(true);
+      setSelectedStockError(true);
     }
   }
 
@@ -120,26 +134,23 @@ const Product = () => {
                 <div className="filter-item sizes">
                   <span className="title">Available Sizes</span>
                   <div className="options">
-                    {sortedSizes?.map((sizeObject, index) => {
-                      const size = sizeObject.attributes.size
+                    {mappedStocks?.map((stock, index) => {
+
                       return (
                         <span
-                          className={`option ${size == selectedSize ? 'active' : ''}`}
-                          key={sizeObject.id}
+                          className={`option ${stock.id == selectedStock?.id ? 'active' : ''}`}
+                          key={stock.id}
                           onClick={() => {
-                            setSelectedSize(size);
-                            setSelectedSizeError(null)
+                            setSelectedStock(stock);
+                            setSelectedStockError(null)
                           }}
                         >
-                          {size}
+                          {stock.size}
                         </span>
                       )
                     }
                     )}
-                    {/* <span className="option">M</span>
-                    <span className="option">L</span>
-                    <span className="option">XL</span>
-                    <span className="option">XXL</span> */}
+
                   </div>
                   <span className={`error ${selectedSizeError ? 'showError' : ''}`}>Please select a size</span>
                 </div>
@@ -165,10 +176,11 @@ const Product = () => {
                   <button onMouseDown={() => setQuantity((prev) => prev + 1)}><span>+</span></button>
                 </div>
                 <button
-                  className="add btn-1"
+                  className={`add btn-1 ${isOutOfStock ? 'out-of-stock' : ''}`}
+                  // disabled={isOutOfStock}
                   onClick={handleAddToCart}
                 >
-                  Add to Cart
+                  {!isOutOfStock ? 'Add to Cart' : 'Out of Stock'}
                 </button>
                 <button className="add-to-wishlist btn-2">
                   <StarBorderIcon /> <span>ADD TO WISH LIST</span>

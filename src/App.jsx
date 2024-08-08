@@ -18,10 +18,11 @@ import ScrollToTop from './components/ScrollToTop';
 import CheckoutPage from './pages/Checkout/CheckoutPage';
 import CheckoutSuccess from './pages/Checkout/CheckoutSuccess/CheckoutSuccess';
 import checkCartItemsLoader from './components/checkCartItemsLoader/checkCartItemsLoader';
-import { Provider } from 'react-redux';
+import { Provider, useDispatch } from 'react-redux';
 import { store } from './redux/store';
 import Login from './pages/Auth/Login/Login';
 import Register from './pages/Auth/Register/Register';
+import { syncCartOnPageRefresh } from './redux/cartReducer';
 
 
 const Layout = () => {
@@ -44,6 +45,13 @@ const Layout = () => {
     };
 
   }, []);
+
+  const dispatch = useDispatch();
+
+
+  useEffect(() => {
+    dispatch(syncCartOnPageRefresh());
+  }, [dispatch]);
 
 
 

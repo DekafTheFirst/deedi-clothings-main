@@ -212,6 +212,19 @@ export const syncCart = createAsyncThunk('cart/syncCart', async (_, { getState }
 });
 
 
+export const syncCartOnPageRefresh = createAsyncThunk(
+  'cart/syncCartOnPageRefresh',
+  async (_, { getState, dispatch }) => {
+    const state = getState();
+    const { cartId } = state.cart;
+
+    if (cartId) {
+      // Dispatch the syncCart action if items exist
+      await dispatch(fetchCartItems(cartId));
+    }
+  }
+);
+
 export const cartSlice = createSlice({
   name: 'cart',
   initialState,
@@ -254,7 +267,7 @@ export const cartSlice = createSlice({
       .addCase(removeItemFromCart.pending, (state, action) => {
         state.status = 'syncing';
         state.previousItems = [...state.items];
-        state.items = state.items.filter(item => item.localCartItemId !== action.meta.arg);
+        state.items = state.items.filter(item => item.localCartItemId !== action.meta.arg.localCartItemId);
         updateTotals(state);
       })
       .addCase(removeItemFromCart.fulfilled, (state, action) => {
@@ -270,6 +283,16 @@ export const cartSlice = createSlice({
         state.previousItems = []
         state.error = action.payload;
         updateTotals(state);
+      })
+      .addCase(syncCartOnPageRefresh.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(syncCartOnPageRefresh.fulfilled, (state) => {
+        state.status = 'succeeded';
+      })
+      .addCase(syncCartOnPageRefresh.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message;
       });
   },
 })
@@ -293,16 +316,3 @@ export const synchronizeCartPeriodically = () => async (dispatch, getState) => {
   }
 };
 
-export const syncCartOnPageRefresh = () => async (dispatch, getState) => {
-  try {
-    const state = getState();
-    const { items } = state.cart;
-
-    // Sync cart data on page load
-    if (items.length > 0) {
-      dispatch(syncCart(items));
-    }
-  } catch (error) {
-    console.error('Failed to synchronize cart on page refresh:', error);
-  }
-};
