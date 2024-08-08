@@ -237,10 +237,8 @@ export const cartSlice = createSlice({
 
         state.previousItems = state.items;
         state.items = updatedItems;
-
-        updateTotals(state);
-
         state.status = 'syncing';
+        updateTotals(state);
       })
       .addCase(addItemToCart.fulfilled, (state, action) => {
         // state.items = action.payload;
