@@ -46,12 +46,12 @@ const Layout = () => {
 
   }, []);
 
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
 
-  useEffect(() => {
-    dispatch(syncCartOnPageRefresh());
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatch(syncCartOnPageRefresh());
+  // }, [dispatch]);
 
 
 

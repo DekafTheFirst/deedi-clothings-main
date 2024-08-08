@@ -25,65 +25,60 @@ export const addItemToCart = createAsyncThunk(
     const existingItem = items.find(
       (i) => i.productId === item.productId && i.size === item.size
     );
-    // console.log(existingItem)
+    console.log(existingItem)
+
+    const localCartItemId = `cartItem_${uuidv4()}`
+    // UpdateItems
 
 
 
     // console.log(item)
-    try {
-      let response;
-      let localCartItemId;
-      let strapiCartItemId;
+    let strapiCartItemId;
 
-      if (auth.user) {
-        if (existingItem) {
-          // Update existing item in backend
-          response = await makeRequest.put(`/carts/${cartId}/items/${existingItem.strapiCartItemId}`, {
-            quantity: existingItem.quantity + item.quantity,
-          });
+    if (auth.user) {
+      try {
+        let response;
+        // Add new item to backend
+        response = await makeRequest.post(`/carts/${cartId}/items`, {
+          ...item,
+          localCartItemId
+          // cart: cartId, // Attach the cart ID to the item
+        });
+        strapiCartItemId = response?.data?.data?.id
+        console.log(response.data);
 
-          console.log(response.data)
-        } else {
-          // Add new item to backend
-          localCartItemId = `cartItem_${uuidv4()}`;
-          response = await makeRequest.post(`/carts/${cartId}/items`, {
-            ...item,
-            localCartItemId
-            // cart: cartId, // Attach the cart ID to the item
-          });
-          strapiCartItemId = response?.data?.data?.id
-          console.log(response.data);
-        }
+      } catch (error) {
+        console.error(error)
+        return rejectWithValue(error.response?.data?.message || 'Failed to update cart');
       }
-      else {
-        localCartItemId = `cartItem_${uuidv4()}`;
-        strapiCartItemId = null
-      }
-
-
-
-      // Always return the updated items
-      const updatedItems = existingItem
-        ? items.map((i) =>
-          i.productId === item.productId && i.size === item.size
-            ? { ...i, quantity: i.quantity + item.quantity }
-            : i
-        )
-        : [...items, { ...item, localCartItemId, strapiCartItemId }];
-
-
-      return updatedItems;
-    } catch (error) {
-      console.log(error)
-      return rejectWithValue(error.response?.data?.message || 'Failed to update cart');
     }
+
+    const updatedItems = existingItem
+      ? items.map((i) => {
+        console.log(i)
+        return (i.productId === item.productId && i.size === item.size
+          ? { ...i, quantity: i.quantity + item.quantity }
+          : i)
+      }
+      )
+      : [...items, { ...item, localCartItemId, strapiCartItemId }];
+
+    console.log('updatedItems', updatedItems)
+
+
+    // Always return the updated items
+
+
+
+    return updatedItems;
+
   }
 );
 
 
 export const removeItemFromCart = createAsyncThunk(
   'cart/removeItemFromCart',
-  async ({strapiCartItemId, localCartItemId}, { getState, rejectWithValue }) => {
+  async ({ strapiCartItemId, localCartItemId }, { getState, rejectWithValue }) => {
 
     console.log(localCartItemId)
 
@@ -98,14 +93,14 @@ export const removeItemFromCart = createAsyncThunk(
     const updatedItems = items.filter((i) => i.localCartItemId !== localCartItemId);
 
     // If authenticated, remove the item from the backend
-    if (auth.user) {
-      try {
-        const updatedCart = await makeRequest.delete(`/carts/${cartId}/items/${strapiCartItemId}`);
-        console.log(updatedCart)
-      } catch (error) {
-        return rejectWithValue(error.response?.data?.message || 'Failed to remove item from cart');
-      }
-    }
+    // if (auth.user) {
+    //   try {
+    //     const updatedCart = await makeRequest.delete(`/carts/${cartId}/items/${strapiCartItemId}`);
+    //     console.log(updatedCart)
+    //   } catch (error) {
+    //     return rejectWithValue(error.response?.data?.message || 'Failed to remove item from cart');
+    //   }
+    // }
 
 
 
@@ -267,6 +262,7 @@ export const cartSlice = createSlice({
       .addCase(removeItemFromCart.pending, (state, action) => {
         state.status = 'syncing';
         state.previousItems = [...state.items];
+        // state.items = action.payload
         state.items = state.items.filter(item => item.localCartItemId !== action.meta.arg.localCartItemId);
         updateTotals(state);
       })
