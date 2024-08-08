@@ -30,7 +30,17 @@ export const addItemToCart = createAsyncThunk(
     const localCartItemId = `cartItem_${uuidv4()}`
     // UpdateItems
 
+    const updatedItems = existingItem
+      ? items.map((i) => {
+        console.log(i)
+        return (i.productId === item.productId && i.size === item.size
+          ? { ...i, quantity: i.quantity + item.quantity }
+          : i)
+      }
+      )
+      : [...items, { ...item, localCartItemId, strapiCartItemId }];
 
+    console.log('updatedItems', updatedItems)
 
     // console.log(item)
     let strapiCartItemId;
@@ -53,17 +63,7 @@ export const addItemToCart = createAsyncThunk(
       }
     }
 
-    const updatedItems = existingItem
-      ? items.map((i) => {
-        console.log(i)
-        return (i.productId === item.productId && i.size === item.size
-          ? { ...i, quantity: i.quantity + item.quantity }
-          : i)
-      }
-      )
-      : [...items, { ...item, localCartItemId, strapiCartItemId }];
 
-    console.log('updatedItems', updatedItems)
 
 
     // Always return the updated items
@@ -83,30 +83,18 @@ export const removeItemFromCart = createAsyncThunk(
     console.log(localCartItemId)
 
     const { auth, cart } = getState();
-    const { items, cartId } = cart;
+    const { cartId } = cart;
 
-    console.log(items)
-
-
-
-    // Update the items list after removing the item
-    const updatedItems = items.filter((i) => i.localCartItemId !== localCartItemId);
 
     // If authenticated, remove the item from the backend
-    // if (auth.user) {
-    //   try {
-    //     const updatedCart = await makeRequest.delete(`/carts/${cartId}/items/${strapiCartItemId}`);
-    //     console.log(updatedCart)
-    //   } catch (error) {
-    //     return rejectWithValue(error.response?.data?.message || 'Failed to remove item from cart');
-    //   }
-    // }
-
-
-
-    // Return the updated items list
-    console.log(updatedItems)
-    return updatedItems;
+    if (auth.user) {
+      try {
+        const updatedCart = await makeRequest.delete(`/carts/${cartId}/items/${strapiCartItemId}`);
+        console.log(updatedCart)
+      } catch (error) {
+        return rejectWithValue(error.response?.data?.message || 'Failed to remove item from cart');
+      }
+    }
   }
 );
 
@@ -266,12 +254,9 @@ export const cartSlice = createSlice({
         state.items = state.items.filter(item => item.localCartItemId !== action.meta.arg.localCartItemId);
         updateTotals(state);
       })
-      .addCase(removeItemFromCart.fulfilled, (state, action) => {
-        state.items = action.payload; // Ensure this reflects the updated cart items
-        updateTotals(state);
+      .addCase(removeItemFromCart.fulfilled, (state) => {
         // Calculate totals after successful removal
         state.status = 'succeeded';
-        state.error = null;
       })
       .addCase(removeItemFromCart.rejected, (state, action) => {
         state.status = 'failed';
