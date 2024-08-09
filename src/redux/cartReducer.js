@@ -1,7 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { makeRequest } from '../makeRequest';
-import { transformCartItems } from '../utils/transformCartItems';
-import { mergeCartItems } from '../utils/mergeCartItems';
+import { transformCartItems, transformCartItemsOnLogin } from '../utils/transformCartItems';
 
 const initialState = {
   items: [],
@@ -13,12 +12,28 @@ const initialState = {
   error: null
 }
 
+const calculateTotals = (items) => {
+  // const noOfProdcts = items.reduce
+  const subtotal = items.reduce((acc, item) => acc + item.price * item.quantity, 0).toFixed(2);
+  const vat = (subtotal * 0.2).toFixed(2);
+  const totalAmount = (parseFloat(subtotal) + parseFloat(vat)).toFixed(2);
+
+  return { subtotal, vat, totalAmount };
+};
+
+const updateTotals = (state) => {
+  const totals = calculateTotals(state.items);
+  state.subtotal = totals.subtotal;
+  state.vat = totals.vat;
+  state.totalAmount = totals.totalAmount;
+};
+
 // Thunk for adding or updating a single cart item
 export const addItemToCart = createAsyncThunk(
   'cart/addItemToCart',
   async (newCartItem, { getState, rejectWithValue }) => {
     const { auth, cart } = getState();
-    const { items, cartId } = cart;
+    const {  cartId } = cart;
 
     // Check if the newCartItem already exists in the cart
 
@@ -81,24 +96,6 @@ export const removeItemFromCart = createAsyncThunk(
 );
 
 
-
-const calculateTotals = (items) => {
-  // const noOfProdcts = items.reduce
-  const subtotal = items.reduce((acc, item) => acc + item.price * item.quantity, 0).toFixed(2);
-  const vat = (subtotal * 0.2).toFixed(2);
-  const totalAmount = (parseFloat(subtotal) + parseFloat(vat)).toFixed(2);
-
-  return { subtotal, vat, totalAmount };
-};
-
-const updateTotals = (state) => {
-  const totals = calculateTotals(state.items);
-  state.subtotal = totals.subtotal;
-  state.vat = totals.vat;
-  state.totalAmount = totals.totalAmount;
-};
-
-
 export const fetchCartItems = createAsyncThunk(
   'cart/fetchCartItems',
   async (userId, { getState, rejectWithValue }) => {
@@ -106,6 +103,7 @@ export const fetchCartItems = createAsyncThunk(
       const { cart } = getState();
       const localItems = cart.items;
 
+      console.log(localItems)
       // Fetch the cart from the backend
       const response = await makeRequest.get(`/carts`, {
         params: {
@@ -156,12 +154,12 @@ export const fetchCartItems = createAsyncThunk(
       );
       console.log('updatedresponse', updatedresponse)
 
-      const updatedCartItems = updatedresponse.data.data.items;
-      console.log('updatedCartItems', updatedCartItems);
 
-      const transformedUpdatedCartItems = transformCartItems(updatedCartItems);
-      console.log('transformedUpdatedCartItems', transformedUpdatedCartItems)
-      return { cartId, items: transformedUpdatedCartItems };
+      const successes = transformCartItemsOnLogin(updatedresponse.data.successes);
+      const failures = transformCartItems(updatedresponse.data.failures);
+
+      console.log('successes', successes);
+      return { cartId, items: successes };
     } catch (error) {
       console.error(error)
       return rejectWithValue(error.response?.data?.message || 'Failed to fetch cart items');
