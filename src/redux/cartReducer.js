@@ -152,14 +152,15 @@ export const fetchCartItems = createAsyncThunk(
           },
         }
       );
+
       console.log('updatedresponse', updatedresponse)
 
 
-      const successes = transformCartItemsOnLogin(updatedresponse.data.successes);
-      const failures = transformCartItems(updatedresponse.data.failures);
+      const mergedCart = transformCartItemsOnLogin(updatedresponse.data.mergedCart);
+      // const failures = transformCartItemsOnLogin(updatedresponse.data.failures);
 
-      console.log('successes', successes);
-      return { cartId, items: successes };
+      console.log('mergedCart', mergedCart);
+      return { cartId, items: mergedCart };
     } catch (error) {
       console.error(error)
       return rejectWithValue(error.response?.data?.message || 'Failed to fetch cart items');
