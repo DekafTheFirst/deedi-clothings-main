@@ -165,7 +165,7 @@ export const fetchCartItems = createAsyncThunk(
       console.log('failures', failures);
 
       failures.forEach((fail) => {
-        toast.error(`${fail.productTitle} (${fail.size}) is out of stock!!!`);
+        toast.error(`Failed to add ${fail.productTitle}(${fail.size}): ${fail.reason}`);
       });
 
       partialFailures.forEach((partial) => {
