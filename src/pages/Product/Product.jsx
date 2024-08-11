@@ -36,31 +36,21 @@ const Product = () => {
   // console.log('product', product)
   const cartItems = useSelector(state => state.cart.items);
 
-  const transformedStocks = useMemo(() => {
+  const mappedStocks = useMemo(() => {
     return transformStocks(product?.attributes?.stocks?.data);
   }, [product?.attributes?.stocks?.data]);
 
 
-  const [mappedStocks, setMappedStocks] = useState(transformedStocks);
 
 
   const [selectedStock, setSelectedStock] = useState(null);
-  const [displayedStock, setDisplayedStock] = useState(null);
   const [maxStockReached, setMaxStockReached] = useState(false);
   const [email, setEmail] = useState('');
   const [selectedSizeError, setSelectedStockError] = useState(null);
 
 
-
-  useEffect(() => {
-    if (transformedStocks) {
-      setMappedStocks(transformedStocks);
-    }
-  }, [transformedStocks]);
-
   useEffect(() => {
     if (selectedStock) {
-      setDisplayedStock(mappedStocks?.find(stock => stock.id === selectedStock?.id)?.stock);
       setMaxStockReached(false);
       console.log('selectedStock', selectedStock)
     }
@@ -85,7 +75,7 @@ const Product = () => {
       const thisItemInCart = cartItems.find((item) => item.productId === product.id && item.size == selectedStock.size);
       console.log('thisItemInCart', thisItemInCart)
       console.log('selectedStock', selectedStock);
-      console.log('transformedStocks', transformedStocks);
+      // console.log('transformedStocks', transformedStocks);
 
       if (thisItemInCart?.quantity + quantity > selectedStock.stock) {
         setMaxStockReached(true)
@@ -117,7 +107,6 @@ const Product = () => {
               return stock;
             });
             // setMaxStockReached(false)
-            setMappedStocks(updatedStocks)
             toast.success('Added to cart')
             console.log('Item added to cart successfully');
           }
@@ -244,26 +233,13 @@ const Product = () => {
                             </div>
                           );
 
-                        case displayedStock > 0 && displayedStock <= 5 && !maxStockReached:
+                        case selectedStock?.stock <= 5 && !maxStockReached:
                           return (
                             <span className={`message ${selectedStock?.stock < 3 ? 'urgent' : ''}`}>
-                              {`*Only ${displayedStock} left in stock - order soon.`}
+                              {`*Only ${selectedStock.stock} left in stock - order soon.`}
                             </span>
                           );
 
-                        case displayedStock == 0:
-                          return (
-                            <div className="out-of-stock">
-                              <span className={`message`}>
-                                {`${displayedStock} left in stock.`}
-                              </span>
-                              <input
-                                type="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                placeholder="Enter email to find out when more are available" />
-                            </div>
-                          )
 
                         case maxStockReached:
                           return (
