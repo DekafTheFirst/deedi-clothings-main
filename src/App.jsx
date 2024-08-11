@@ -23,6 +23,8 @@ import { store } from './redux/store';
 import Login from './pages/Auth/Login/Login';
 import Register from './pages/Auth/Register/Register';
 import { syncCartOnPageRefresh } from './redux/cartReducer';
+import { ToastContainer } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
 
 
 const Layout = () => {
@@ -62,6 +64,7 @@ const Layout = () => {
       <Navbar setShowCart={setShowCart} showCart={showCart} />
       <div id="content">
         <div className={`darkOverlay ${showCart ? 'show' : ''}`}></div>
+        <ToastContainer />
         <Outlet />
       </div>
       {/* <Footer /> */}

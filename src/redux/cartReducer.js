@@ -1,6 +1,8 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { makeRequest } from '../makeRequest';
 import { transformCartItems, transformCartItemsOnLogin } from '../utils/transformCartItems';
+import { toast } from 'react-toastify';
+
 
 const initialState = {
   items: [],
@@ -33,7 +35,7 @@ export const addItemToCart = createAsyncThunk(
   'cart/addItemToCart',
   async (newCartItem, { getState, rejectWithValue }) => {
     const { auth, cart } = getState();
-    const {  cartId } = cart;
+    const { cartId } = cart;
 
     // Check if the newCartItem already exists in the cart
 
@@ -135,7 +137,7 @@ export const fetchCartItems = createAsyncThunk(
 
 
       // Merge local items with the Strapi cart items and get the updated cart
-      const updatedresponse = await makeRequest.put(`/carts/${cartId}`,
+      const updatedresponse = await makeRequest.put(`/carts/fetchAndMergeCart/${userId}`,
         { items: localItems },
         {
           params: {
@@ -157,10 +159,21 @@ export const fetchCartItems = createAsyncThunk(
 
 
       const mergedCart = transformCartItemsOnLogin(updatedresponse.data.mergedCart);
-      // const failures = transformCartItemsOnLogin(updatedresponse.data.failures);
+      const failures = updatedresponse?.data?.failures;
+      const partialFailures = updatedresponse?.data?.partials;
+
+      console.log('failures', failures);
+
+      failures.forEach((fail) => {
+        toast.error(`${fail.productTitle} (${fail.size}) is out of stock!!!`);
+      });
+
+      partialFailures.forEach((partial) => {
+        toast.warning(`Only ${partial.added} of ${partial.productTitle} (${partial.size}) ${partial.added > 1 ? 'were' : 'was'} added: ${partial.reason}`);
+      });
 
       console.log('mergedCart', mergedCart);
-      return { cartId, items: mergedCart };
+      return { cartId, items: mergedCart, failures, partialFailures };
     } catch (error) {
       console.error(error)
       return rejectWithValue(error.response?.data?.message || 'Failed to fetch cart items');
@@ -252,7 +265,7 @@ export const cartSlice = createSlice({
           (i) => i.localCartItemId === localCartItemId
         );
 
-        if (addedItem && !addedItem?.strapiCartItemId ) {
+        if (addedItem && !addedItem?.strapiCartItemId) {
           addedItem.strapiCartItemId = strapiCartItemId
         }
 

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import "./Home.scss"
 import FeaturedProducts from '../../components/FeaturedProducts/FeaturedProducts'
 import Categories from '../../components/Categories/Categories'
@@ -9,6 +9,7 @@ import OptimizedImage from '../../components/OptimizedImage/OptimizedImage'
 
 
 const Home = () => {
+  
   return (
     <div className="home">
       {/* <Slider /> */}
