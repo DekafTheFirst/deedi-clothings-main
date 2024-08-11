@@ -40,34 +40,22 @@ const Product = () => {
 
 
 
-  const [mappedStocks, setMappedStocks] = useState(transformStocks(stocks));
-  console.log('mappedStocks', mappedStocks);
+  
 
 
   const [selectedStock, setSelectedStock] = useState(null);
-  const [displayedStock, setDisplayedStock] = useState(null)
+  // const [selectedStock?.stock, setselectedStock?.stock] = useState(null)
   const [email, setEmail] = useState('')
   const [selectedSizeError, setSelectedStockError] = useState(null)
 
+  const mappedStocks = transformStocks(stocks);
 
 
 
-  useEffect(() => {
-    if (stocks) {
-      setMappedStocks(transformStocks(stocks));
-    }
-  }, [stocks]);
+ 
 
-  useEffect(() => {
-    setDisplayedStock(mappedStocks?.find(stock => stock?.id === selectedStock?.id)?.stock);
-    console.log('displayed stock: ', mappedStocks?.find(stock => stock.id === selectedStock?.id))
-    if (mappedStocks) console.log('mapped stocks', mappedStocks);
-  }, [mappedStocks]);
 
-  useEffect(() => {
-    setDisplayedStock(mappedStocks?.find(stock => stock.id === selectedStock.id)?.stock);
-    console.log('selectedStock', selectedStock)
-  }, [selectedStock])
+
 
   // const images = [
   //   "/img/products/1.1.jpg",
@@ -100,16 +88,6 @@ const Product = () => {
           console.error('Failed to add item to cart:', result.error.message);
         } else {
           // Optionally, show a success message or update UI
-          const updatedStocks = mappedStocks.map((stock) => {
-            if (stock.id === selectedStock.id) {
-              return {
-                ...stock,
-                stock: stock.stock - quantity
-              }
-            }
-            return stock;
-          });
-          setMappedStocks(updatedStocks)
           toast.success('Added to cart')
           console.log('Item added to cart successfully');
         }
@@ -212,10 +190,10 @@ const Product = () => {
                   <span className="no-of-items">{quantity}</span>
                   <button onMouseDown={() => setQuantity((prev) => prev + 1)}><span>+</span></button>
                 </div>
-                {displayedStock != null && displayedStock <= 5 &&
+                {selectedStock?.stock != null && selectedStock?.stock <= 5 &&
                   <div className="stock-warning">
-                    {displayedStock > 0 ?
-                      <span className={`message ${selectedStock.stock < 3 ? 'urgent' : ''}`}>{`Only ${displayedStock} left in stock - order soon.`}</span>
+                    {selectedStock?.stock > 0 ?
+                      <span className={`message ${selectedStock?.stock < 3 ? 'urgent' : ''}`}>{`Only ${selectedStock?.stock} left in stock - order soon.`}</span>
                       :
                       <div className="out-of-stock">
                         <span>*This product is out of stock</span>
@@ -228,7 +206,7 @@ const Product = () => {
                     }
                   </div>
                 }
-                {displayedStock === 0 ?
+                {selectedStock?.stock === 0 ?
                   <button
                     className={`add btn-1`}
                     onClick={handleNotifyWhenAvailable}
@@ -238,7 +216,7 @@ const Product = () => {
                   :
                   <button
                     className={`add btn-1`}
-                    disabled={displayedStock === 0}
+                    disabled={selectedStock?.stock === 0}
                     onClick={handleAddToCart}
                   >
                     {'Add to Cart'}
