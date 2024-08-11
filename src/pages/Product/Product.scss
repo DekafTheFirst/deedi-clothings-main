@@ -388,6 +388,11 @@
                                 padding: 5px;
                             }
                         }
+                        .message {
+                            &.urgent {
+                                color: $brightRed;
+                            }
+                        }
                     }
 
                     .add {

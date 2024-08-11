@@ -230,7 +230,7 @@ export const cartSlice = createSlice({
       .addCase(addItemToCart.pending, (state, action) => {
         const newCartItem = action.meta.arg;
 
-        console.log(action.meta.arg);
+        // console.log(action.meta.arg);
 
         const items = state.items;
         const existingItem = items.find(
@@ -256,9 +256,9 @@ export const cartSlice = createSlice({
         // state.items = action.payload;
         // Calculate totals after successful addition
         const localCartItemId = action.meta.arg.localCartItemId;
-        console.log('localCartItemId', localCartItemId)
+        // console.log('localCartItemId', localCartItemId)
         const strapiCartItemId = action.payload.strapiCartItemId;
-        console.log('strapiCartItemId', strapiCartItemId)
+        // console.log('strapiCartItemId', strapiCartItemId)
 
 
         const addedItem = state.items.find(

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useState } from "react";
 import "./Product.scss";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
@@ -34,28 +34,37 @@ const Product = () => {
   const dispatch = useDispatch()
   const { data: product, loading, error } = useFetch(`/products/${id}?populate[img]=*&populate[categories]=*&populate[sub_categories]=*&populate[stocks][populate][size]=*&populate[stocks][populate]=*`)
   // console.log('product', product)
+  const cartItems = useSelector(state => state.cart.items);
 
-  const stocks = product?.attributes?.stocks.data;
-  // console.log('stocks', stocks)
+  const transformedStocks = useMemo(() => {
+    return transformStocks(product?.attributes?.stocks?.data);
+  }, [product?.attributes?.stocks?.data]);
 
 
-
-  
+  const [mappedStocks, setMappedStocks] = useState(transformedStocks);
 
 
   const [selectedStock, setSelectedStock] = useState(null);
-  // const [selectedStock?.stock, setselectedStock?.stock] = useState(null)
-  const [email, setEmail] = useState('')
-  const [selectedSizeError, setSelectedStockError] = useState(null)
-
-  const mappedStocks = transformStocks(stocks);
-
-
-
- 
+  const [displayedStock, setDisplayedStock] = useState(null);
+  const [maxStockReached, setMaxStockReached] = useState(false);
+  const [email, setEmail] = useState('');
+  const [selectedSizeError, setSelectedStockError] = useState(null);
 
 
 
+  useEffect(() => {
+    if (transformedStocks) {
+      setMappedStocks(transformedStocks);
+    }
+  }, [transformedStocks]);
+
+  useEffect(() => {
+    if (selectedStock) {
+      setDisplayedStock(mappedStocks?.find(stock => stock.id === selectedStock?.id)?.stock);
+      setMaxStockReached(false);
+      console.log('selectedStock', selectedStock)
+    }
+  }, [mappedStocks, selectedStock]);
 
   // const images = [
   //   "/img/products/1.1.jpg",
@@ -72,26 +81,50 @@ const Product = () => {
     if (selectedStock) {
       const localCartItemId = `cartItem_${uuidv4()}`
 
+
+      const thisItemInCart = cartItems.find((item) => item.productId === product.id && item.size == selectedStock.size);
+      console.log('thisItemInCart', thisItemInCart)
+      console.log('selectedStock', selectedStock);
+      console.log('transformedStocks', transformedStocks);
+
+      if (thisItemInCart?.quantity + quantity > selectedStock.stock) {
+        setMaxStockReached(true)
+      }
+
+      else {
+        dispatch(addItemToCart({
+          productId: product.id,
+          title: product.attributes.title,
+          desc: 'description',
+          quantity,
+          localCartItemId,
+          img: product.attributes.img.data[0].attributes.url,
+          size: selectedStock.size,
+          price: product.attributes.price
+        })).then((result) => {
+          if (result.error) {
+            // Handle error (e.g., show a message to the user)
+            console.error('Failed to add item to cart:', result.error.message);
+          } else {
+            // Optionally, show a success message or update UI
+            const updatedStocks = mappedStocks.map((stock) => {
+              if (stock.id === selectedStock?.id) {
+                return {
+                  ...stock,
+                  stock: stock?.stock - quantity
+                }
+              }
+              return stock;
+            });
+            // setMaxStockReached(false)
+            setMappedStocks(updatedStocks)
+            toast.success('Added to cart')
+            console.log('Item added to cart successfully');
+          }
+        });
+      }
       // Dispatch add item action
-      dispatch(addItemToCart({
-        productId: product.id,
-        title: product.attributes.title,
-        desc: 'description',
-        quantity: 1,
-        localCartItemId,
-        img: product.attributes.img.data[0].attributes.url,
-        size: selectedStock.size,
-        price: product.attributes.price
-      })).then((result) => {
-        if (result.error) {
-          // Handle error (e.g., show a message to the user)
-          console.error('Failed to add item to cart:', result.error.message);
-        } else {
-          // Optionally, show a success message or update UI
-          toast.success('Added to cart')
-          console.log('Item added to cart successfully');
-        }
-      });
+
     } else {
       setSelectedStockError(true);
     }
@@ -100,6 +133,8 @@ const Product = () => {
   const handleNotifyWhenAvailable = () => {
 
   }
+
+  // const stockWarning = 
 
   return (
     <div className="product-page">
@@ -190,22 +225,72 @@ const Product = () => {
                   <span className="no-of-items">{quantity}</span>
                   <button onMouseDown={() => setQuantity((prev) => prev + 1)}><span>+</span></button>
                 </div>
-                {selectedStock?.stock != null && selectedStock?.stock <= 5 &&
+                {
+                  selectedStock &&
                   <div className="stock-warning">
-                    {selectedStock?.stock > 0 ?
-                      <span className={`message ${selectedStock?.stock < 3 ? 'urgent' : ''}`}>{`Only ${selectedStock?.stock} left in stock - order soon.`}</span>
-                      :
-                      <div className="out-of-stock">
-                        <span>*This product is out of stock</span>
-                        <input
-                          type="email"
-                          value={email}
-                          onChange={(e) => setEmail(e.target.value)}
-                          placeholder="Enter email to find out when it's back" />
-                      </div>
-                    }
+
+                    {(() => {
+                      switch (true) {
+                        case selectedStock.stock === 0:
+                          return (
+                            <div className="out-of-stock">
+                              <span>*This product is out of stock</span>
+                              <input
+                                type="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                placeholder="Enter email to find out when it's back"
+                              />
+                            </div>
+                          );
+
+                        case displayedStock > 0 && displayedStock <= 5 && !maxStockReached:
+                          return (
+                            <span className={`message ${selectedStock?.stock < 3 ? 'urgent' : ''}`}>
+                              {`*Only ${displayedStock} left in stock - order soon.`}
+                            </span>
+                          );
+
+                        case displayedStock == 0:
+                          return (
+                            <div className="out-of-stock">
+                              <span className={`message`}>
+                                {`${displayedStock} left in stock.`}
+                              </span>
+                              <input
+                                type="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                placeholder="Enter email to find out when more are available" />
+                            </div>
+                          )
+
+                        case maxStockReached:
+                          return (
+                            <div className="out-of-stock">
+                              <span>You have requested more of {product?.attributes?.title} ({selectedStock?.size}) than the {selectedStock?.stock} available</span>
+                              <input
+                                type="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                placeholder="Enter email to find out when more are available" />
+                            </div>
+                          );
+
+                        default:
+                          return null;
+                      }
+                    })()}
                   </div>
                 }
+                {/* {maxStockReached && <div className="out-of-stock">
+                  <span>*This product is out of stock</span>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Enter email to find out when it's back" />
+                </div>} */}
                 {selectedStock?.stock === 0 ?
                   <button
                     className={`add btn-1`}
