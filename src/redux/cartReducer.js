@@ -161,15 +161,19 @@ export const fetchCartItems = createAsyncThunk(
       const mergedCart = transformCartItemsOnLogin(updatedresponse.data.mergedCart);
       const failures = updatedresponse?.data?.failures;
       const partialFailures = updatedresponse?.data?.partials;
-
+      const reducedItems = updatedresponse?.data?.reduced;
       console.log('failures', failures);
 
-      failures.forEach((fail) => {
+      failures?.forEach((fail) => {
         toast.error(`Failed to add ${fail.productTitle}(${fail.size}): ${fail.reason}`);
       });
 
-      partialFailures.forEach((partial) => {
+      partialFailures?.forEach((partial) => {
         toast.warning(`Only ${partial.added} of ${partial.productTitle} (${partial.size}) ${partial.added > 1 ? 'were' : 'was'} added: ${partial.reason}`);
+      });
+
+      reducedItems?.forEach((reduced) => {
+        toast.warning(`${reduced.removed} of ${reduced.productTitle} (${reduced.size}) ${reduced.added > 1 ? 'were' : 'was'} removed: ${reduced.reason}`);
       });
 
       console.log('mergedCart', mergedCart);
