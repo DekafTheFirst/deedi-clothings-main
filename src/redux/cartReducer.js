@@ -162,6 +162,8 @@ export const fetchCartItems = createAsyncThunk(
       const failures = updatedresponse?.data?.failures;
       const partialFailures = updatedresponse?.data?.partials;
       const reducedItems = updatedresponse?.data?.reduced;
+      const deletedItems = updatedresponse?.data?.deleted;
+
       console.log('failures', failures);
 
       failures?.forEach((fail) => {
@@ -174,6 +176,10 @@ export const fetchCartItems = createAsyncThunk(
 
       reducedItems?.forEach((reduced) => {
         toast.warning(`${reduced.removed} of ${reduced.productTitle} (${reduced.size}) ${reduced.added > 1 ? 'were' : 'was'} removed: ${reduced.reason}`);
+      });
+
+      deletedItems?.forEach((deleted) => {
+        toast.warning(`${deleted.productTitle} (${deleted.size}) has been removed from cart: ${deleted.reason}`);
       });
 
       console.log('mergedCart', mergedCart);
