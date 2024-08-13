@@ -3,6 +3,12 @@ import { makeRequest } from '../makeRequest';
 import { transformCartItems, transformCartItemsOnLogin } from '../utils/transformCartItems';
 import { toast } from 'react-toastify';
 
+const STATUS = {
+  PENDING: 'pending',
+  FULFILLED: 'fulfilled',
+  REJECTED: 'rejected',
+  SYNCING: 'syncing'
+};
 
 const initialState = {
   items: [],
@@ -224,7 +230,7 @@ export const cartSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchCartItems.pending, (state) => {
-        state.status = 'loading';
+        state.status = 'syncing';
       })
       .addCase(fetchCartItems.fulfilled, (state, action) => {
         state.status = 'succeeded';
@@ -259,7 +265,7 @@ export const cartSlice = createSlice({
 
         state.previousItems = state.items;
         state.items = updatedItems;
-        state.status = 'syncing';
+        state.status = 'pending';
         updateTotals(state);
       })
       .addCase(addItemToCart.fulfilled, (state, action) => {
@@ -294,7 +300,7 @@ export const cartSlice = createSlice({
         state.status = 'failed';
       })
       .addCase(removeItemFromCart.pending, (state, action) => {
-        state.status = 'syncing';
+        state.status = 'pending';
         state.previousItems = [...state.items];
         // state.items = action.payload
         state.items = state.items.filter(item => item.localCartItemId !== action.meta.arg.localCartItemId);
@@ -312,7 +318,7 @@ export const cartSlice = createSlice({
         updateTotals(state);
       })
       .addCase(syncCartOnPageRefresh.pending, (state) => {
-        state.status = 'loading';
+        state.status = 'syncing';
       })
       .addCase(syncCartOnPageRefresh.fulfilled, (state) => {
         state.status = 'succeeded';

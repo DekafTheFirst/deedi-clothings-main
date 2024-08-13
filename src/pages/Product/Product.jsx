@@ -14,6 +14,7 @@ import Accordion from "./Accordion/Accordion";
 
 import { v4 as uuidv4 } from 'uuid';
 import { toast } from "react-toastify";
+import { CircularProgress } from "@mui/material";
 
 
 const transformStocks = (stocks) => {
@@ -35,7 +36,9 @@ const Product = () => {
   const { data: product, loading, error } = useFetch(`/products/${id}?populate[img]=*&populate[categories]=*&populate[sub_categories]=*&populate[stocks][populate][size]=*&populate[stocks][populate]=*`)
   // console.log('product', product)
   const cartItems = useSelector(state => state.cart.items);
+  const cartStatus = useSelector(state => state.cart.status);
 
+  const isLoading = cartStatus === "pending" || cartStatus === 'syncing';
   const mappedStocks = useMemo(() => {
     return transformStocks(product?.attributes?.stocks?.data);
   }, [product?.attributes?.stocks?.data]);
@@ -131,7 +134,7 @@ const Product = () => {
       <div className="container-fluid">
 
         <div className="row">
-          {loading ? "loading" : (<>
+          {loading ? <CircularProgress style={{margin: 'auto', marginTop: 50}}/> : (<>
             <div className="col-md-6 images-wrapper">
               <div className="mainImg">
                 <OptimizedImage
@@ -277,10 +280,10 @@ const Product = () => {
                   :
                   <button
                     className={`add btn-1`}
-                    disabled={selectedStock?.stock === 0}
+                    disabled={selectedStock?.stock === 0 || isLoading}
                     onClick={handleAddToCart}
                   >
-                    {'Add to Cart'}
+                    {isLoading ? <CircularProgress size={16} sx={{ color: 'white' }}/> : 'Add to Cart'}
                   </button>}
                 <button className="add-to-wishlist btn-2">
                   <StarBorderIcon /> <span>ADD TO WISH LIST</span>
