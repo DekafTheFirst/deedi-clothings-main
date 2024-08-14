@@ -29,6 +29,7 @@ export const steps = [
 const initialState = {
   currentStep: steps[0],
   completedSteps: [],
+  items: [],
   previewedStep: null,
   shippingInfo: null,
   billingInfo: null,
@@ -40,6 +41,9 @@ const checkoutSlice = createSlice({
   name: 'checkout',
   initialState,
   reducers: {
+    setCheckoutItems: (state) => {
+
+    },
     setShippingInfo: (state, action) => {
       state.shippingInfo = action.payload;
       // storeShippingInfoInSession(action.payload);
