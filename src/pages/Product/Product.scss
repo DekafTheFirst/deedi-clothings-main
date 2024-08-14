@@ -343,7 +343,8 @@
                     gap: 15px;
 
                     .quantity {
-                        display: none;
+                        // display: none;
+                        display: flex;
                         align-items: center;
                         gap: 12px;
 

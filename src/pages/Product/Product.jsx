@@ -59,6 +59,15 @@ const Product = () => {
     }
   }, [mappedStocks, selectedStock]);
 
+  useEffect(() => {
+    if (selectedStock) {
+      if(quantity > selectedStock.stock && selectedStock.stock > 0) {
+        setQuantity(selectedStock.stock)
+      }
+    }
+  }, [selectedStock]);
+
+
   // const images = [
   //   "/img/products/1.1.jpg",
   //   "/img/products/1.2.jpg"
@@ -134,7 +143,7 @@ const Product = () => {
       <div className="container-fluid">
 
         <div className="row">
-          {loading ? <CircularProgress style={{margin: 'auto', marginTop: 50}}/> : (<>
+          {loading ? <CircularProgress style={{ margin: 'auto', marginTop: 50 }} /> : (<>
             <div className="col-md-6 images-wrapper">
               <div className="mainImg">
                 <OptimizedImage
@@ -206,7 +215,7 @@ const Product = () => {
                 </div> */}
               </div>
               <div className="section add-to-cart">
-                <div className="quantity">
+                {selectedStock && selectedStock.stock > 0 && <div className="quantity">
                   <button
                     onClick={() =>
                       setQuantity((prev) => (prev === 1 ? 1 : prev - 1))
@@ -215,8 +224,8 @@ const Product = () => {
                     <span>-</span>
                   </button>
                   <span className="no-of-items">{quantity}</span>
-                  <button onMouseDown={() => setQuantity((prev) => prev + 1)}><span>+</span></button>
-                </div>
+                  <button onMouseDown={() => setQuantity((prev) => (prev === selectedStock?.stock ? prev : prev + 1))}><span>+</span></button>
+                </div>}
                 {
                   selectedStock &&
                   <div className="stock-warning">
@@ -283,7 +292,7 @@ const Product = () => {
                     disabled={selectedStock?.stock === 0 || isLoading}
                     onClick={handleAddToCart}
                   >
-                    {isLoading ? <CircularProgress size={16} sx={{ color: 'white' }}/> : 'Add to Cart'}
+                    {isLoading ? <CircularProgress size={16} sx={{ color: 'white' }} /> : 'Add to Cart'}
                   </button>}
                 <button className="add-to-wishlist btn-2">
                   <StarBorderIcon /> <span>ADD TO WISH LIST</span>

@@ -49,22 +49,22 @@ export const addItemToCart = createAsyncThunk(
     // console.log(newCartItem)
     let strapiCartItemId;
 
-    if (auth.user) {
-      try {
-        let response;
-        // Add new newCartItem to backend
-        response = await makeRequest.post(`/carts/${cartId}/items`, {
-          ...newCartItem,
-          // cart: cartId, // Attach the cart ID to the newCartItem
-        });
-        strapiCartItemId = response?.data?.data?.id
-        console.log(response.data);
+    try {
+      let response;
+      // Add new newCartItem to backend
+      response = await makeRequest.post(`/carts/addItem`, {
+        ...newCartItem,
+        userId: auth.user?.id
+        // cart: cartId, // Attach the cart ID to the newCartItem
+      });
+      strapiCartItemId = response?.data?.data?.id
+      console.log(response.data);
 
-      } catch (error) {
-        console.error(error)
-        return rejectWithValue(error.response?.data?.message || 'Failed to update cart');
-      }
+    } catch (error) {
+      console.error(error)
+      return rejectWithValue(error.response?.data?.message || 'Failed to update cart');
     }
+
 
 
 
@@ -133,11 +133,7 @@ export const fetchCartItems = createAsyncThunk(
         }
       });
 
-      console.log('response', response);
-      let cartData = response?.data?.data?.[0];
-
-
-      const cartId = cartData?.id;
+      
 
 
 
@@ -163,12 +159,17 @@ export const fetchCartItems = createAsyncThunk(
 
       console.log('updatedresponse', updatedresponse)
 
+      console.log('response', response);
 
+      const cartId = updatedresponse?.data?.cartId;
+      
       const mergedCart = transformCartItemsOnLogin(updatedresponse.data.mergedCart);
       const failures = updatedresponse?.data?.failures;
       const partialFailures = updatedresponse?.data?.partials;
       const reducedItems = updatedresponse?.data?.reduced;
       const deletedItems = updatedresponse?.data?.deleted;
+
+
 
       console.log('failures', failures);
 
