@@ -55,13 +55,13 @@ const Product = () => {
   useEffect(() => {
     if (selectedStock) {
       setMaxStockReached(false);
-      console.log('selectedStock', selectedStock)
+      // console.log('selectedStock', selectedStock)
     }
   }, [mappedStocks, selectedStock]);
 
   useEffect(() => {
     if (selectedStock) {
-      if(quantity > selectedStock.stock && selectedStock.stock > 0) {
+      if (quantity > selectedStock.stock && selectedStock.stock > 0) {
         setQuantity(selectedStock.stock)
       }
     }
@@ -81,15 +81,16 @@ const Product = () => {
 
   const handleAddToCart = () => {
     if (selectedStock) {
-      const localCartItemId = `cartItem_${uuidv4()}`
+      const existingCartItem = cartItems.find((item) => item.productId === product.id && item.size == selectedStock.size);
+
+      const localCartItemId = existingCartItem ? existingCartItem.localCartItemId : `cartItem_${uuidv4()}`
 
 
-      const thisItemInCart = cartItems.find((item) => item.productId === product.id && item.size == selectedStock.size);
-      console.log('thisItemInCart', thisItemInCart)
-      console.log('selectedStock', selectedStock);
+      // console.log('existingCartItem', existingCartItem)
+      // console.log('selectedStock', selectedStock);
       // console.log('transformedStocks', transformedStocks);
 
-      if (thisItemInCart?.quantity + quantity > selectedStock.stock) {
+      if (existingCartItem?.quantity + quantity > selectedStock.stock) {
         setMaxStockReached(true)
       }
 
@@ -99,6 +100,7 @@ const Product = () => {
           title: product.attributes.title,
           desc: 'description',
           quantity,
+          alreadyExistingQuantity: existingCartItem?.quantity,
           localCartItemId,
           img: product.attributes.img.data[0].attributes.url,
           size: selectedStock.size,
@@ -119,7 +121,6 @@ const Product = () => {
               return stock;
             });
             // setMaxStockReached(false)
-            toast.success('Added to cart')
             console.log('Item added to cart successfully');
           }
         });
@@ -215,7 +216,7 @@ const Product = () => {
                 </div> */}
               </div>
               <div className="section add-to-cart">
-                {selectedStock && selectedStock.stock > 0 && <div className="quantity">
+                {selectedStock && selectedStock.stock > 0 && !maxStockReached && <div className="quantity">
                   <button
                     onClick={() =>
                       setQuantity((prev) => (prev === 1 ? 1 : prev - 1))
@@ -256,7 +257,11 @@ const Product = () => {
                         case maxStockReached:
                           return (
                             <div className="out-of-stock">
-                              <span>You have requested more of {product?.attributes?.title} ({selectedStock?.size}) than the {selectedStock?.stock} available</span>
+                              {selectedStock.stock > 1 ?
+                                <span>{`Your cart already contains all the ${selectedStock.stock} units ${product?.attributes?.title} (${selectedStock?.size}) left in stock.`}</span>
+                                :
+                                <span>{`Your cart already contains the last ${product?.attributes?.title} (${selectedStock?.size}) left in stock.`}</span>
+                              }
                               <input
                                 type="email"
                                 value={email}
@@ -279,7 +284,7 @@ const Product = () => {
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="Enter email to find out when it's back" />
                 </div>} */}
-                {selectedStock?.stock === 0 ?
+                {selectedStock?.stock === 0 || maxStockReached ?
                   <button
                     className={`add btn-1`}
                     onClick={handleNotifyWhenAvailable}

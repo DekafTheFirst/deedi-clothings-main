@@ -45,23 +45,31 @@ export const addItemToCart = createAsyncThunk(
 
     // Check if the newCartItem already exists in the cart
 
-
     // console.log(newCartItem)
     let strapiCartItemId;
-
+    let responseData;
     try {
       let response;
       // Add new newCartItem to backend
       response = await makeRequest.post(`/carts/addItem`, {
         ...newCartItem,
-        userId: auth.user?.id
+        userId: auth.user?.id,
+        localExistingItemQuantity: newCartItem?.alreadyExistingQuantity || 0
         // cart: cartId, // Attach the cart ID to the newCartItem
       });
       strapiCartItemId = response?.data?.data?.id
-      console.log(response.data);
+      // console.log(response.data);
+      responseData = response?.data;
 
     } catch (error) {
       console.error(error)
+      if (error?.response?.status === 400) {
+        const errorData = error?.response?.data;
+
+
+        toast.error(`Unable to add item to cart: ${errorData.message}`)
+
+      }
       return rejectWithValue(error.response?.data?.message || 'Failed to update cart');
     }
 
@@ -75,6 +83,7 @@ export const addItemToCart = createAsyncThunk(
 
     return {
       strapiCartItemId: strapiCartItemId,
+      responseData: responseData,
     };
 
   }
@@ -133,7 +142,7 @@ export const fetchCartItems = createAsyncThunk(
         }
       });
 
-      
+
 
 
 
@@ -162,7 +171,7 @@ export const fetchCartItems = createAsyncThunk(
       console.log('response', response);
 
       const cartId = updatedresponse?.data?.cartId;
-      
+
       const mergedCart = transformCartItemsOnLogin(updatedresponse.data.mergedCart);
       const failures = updatedresponse?.data?.failures;
       const partialFailures = updatedresponse?.data?.partials;
@@ -248,7 +257,6 @@ export const cartSlice = createSlice({
         const newCartItem = action.meta.arg;
 
         // console.log(action.meta.arg);
-
         const items = state.items;
         const existingItem = items.find(
           (i) => i.productId === newCartItem.productId && i.size === newCartItem.size
@@ -273,14 +281,36 @@ export const cartSlice = createSlice({
         // state.items = action.payload;
         // Calculate totals after successful addition
         const localCartItemId = action.meta.arg.localCartItemId;
-        // console.log('localCartItemId', localCartItemId)
+        console.log('localCartItemId', localCartItemId)
         const strapiCartItemId = action.payload.strapiCartItemId;
-        // console.log('strapiCartItemId', strapiCartItemId)
-
+        console.log('strapiCartItemId', strapiCartItemId)
+        const responseData = action.payload.responseData
+        console.log('responseData', responseData);
+        const status = responseData?.status;
 
         const addedItem = state.items.find(
           (i) => i.localCartItemId === localCartItemId
         );
+
+        console.log('addedItem', addedItem)
+
+        if (status === 'partial') {
+          addedItem.quantity = responseData.newQuantity;
+          toast.warning(`Only added ${responseData?.added} of ${addedItem.title} (${addedItem.size}): ${responseData.message}`)
+        }
+
+        if (status === 'reduced') {
+          addedItem.quantity = responseData.newQuantity;
+          toast.warning(`Reduced the quantity of ${addedItem.title} (${addedItem.size}) to ${responseData?.newQuantity}: ${responseData.message}`)
+        }
+
+        if (status === 'success') {
+          toast.success('Added to cart')
+        }
+
+
+
+
 
         if (addedItem && !addedItem?.strapiCartItemId) {
           addedItem.strapiCartItemId = strapiCartItemId
