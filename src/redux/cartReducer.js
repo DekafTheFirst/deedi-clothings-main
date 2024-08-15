@@ -54,7 +54,7 @@ export const addItemToCart = createAsyncThunk(
       response = await makeRequest.post(`/carts/addItem`, {
         ...newCartItem,
         userId: auth.user?.id,
-        localExistingItemQuantity: newCartItem?.alreadyExistingQuantity || 0
+        existingLocalCartItemQty: newCartItem?.alreadyExistingQuantity || 0
         // cart: cartId, // Attach the cart ID to the newCartItem
       });
       strapiCartItemId = response?.data?.data?.id
@@ -67,10 +67,10 @@ export const addItemToCart = createAsyncThunk(
         const errorData = error?.response?.data;
 
 
-        toast.error(`Unable to add item to cart: ${errorData.message}`)
+        // toast.error(`Unable to add item to cart: ${errorData.message}`)
 
       }
-      return rejectWithValue(error.response?.data?.message || 'Failed to update cart');
+      return rejectWithValue(error.response?.data || 'Failed to update cart');
     }
 
 
@@ -176,7 +176,7 @@ export const fetchCartItems = createAsyncThunk(
       const failures = updatedresponse?.data?.failures;
       const partialFailures = updatedresponse?.data?.partials;
       const reducedItems = updatedresponse?.data?.reduced;
-      const deletedItems = updatedresponse?.data?.deleted;
+      const outOfStockItems = updatedresponse?.data?.outOfStock;
 
 
 
@@ -194,8 +194,8 @@ export const fetchCartItems = createAsyncThunk(
         toast.warning(`${reduced.removed} of ${reduced.productTitle} (${reduced.size}) ${reduced.added > 1 ? 'were' : 'was'} removed: ${reduced.reason}`);
       });
 
-      deletedItems?.forEach((deleted) => {
-        toast.warning(`${deleted.productTitle} (${deleted.size}) has been removed from cart: ${deleted.reason}`);
+      outOfStockItems?.forEach((result) => {
+        toast.warning(`${result.productTitle} (${result.size}) is out of stock.`);
       });
 
       console.log('mergedCart', mergedCart);
@@ -285,7 +285,7 @@ export const cartSlice = createSlice({
         const strapiCartItemId = action.payload.strapiCartItemId;
         // console.log('strapiCartItemId', strapiCartItemId)
         const responseData = action.payload.responseData
-        // console.log('responseData', responseData);
+        console.log('responseData', responseData);
         const status = responseData?.status;
 
         const addedItem = state.items.find(
@@ -326,8 +326,22 @@ export const cartSlice = createSlice({
         state.items = state.previousItems;
         state.previousItems = [];
 
+        const error = action.payload;
+
+        if (error?.status === 'out-of-stock') {
+          const localCartItemId = action.meta.arg.localCartItemId;
+          // console.log('localCartItemId', localCartItemId)
+
+          const existingItem = state.items.find(
+            (i) => i.localCartItemId === localCartItemId
+          );
+
+          if(existingItem) existingItem.outOfStock = true;
+        }
+
         updateTotals(state);
-        state.error = action.payload;
+        state.error = error;
+        // console.log('rejected', action.payload)
         state.status = 'failed';
       })
       .addCase(removeItemFromCart.pending, (state, action) => {

@@ -26,7 +26,8 @@ export const transformCartItemsOnLogin = (items) => {
             img: item.product.img[0].url,
             size: item.size,
             price: item.product.price,
-            discountedPrice: item.discountedPrice
+            discountedPrice: item.discountedPrice,
+            outOfStock: item.outOfStock,
         }
     });
 };
@@ -34,4 +35,3 @@ export const transformCartItemsOnLogin = (items) => {
 
 
 
- 
