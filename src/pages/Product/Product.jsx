@@ -242,7 +242,8 @@ const Product = () => {
                 </div> */}
               </div>
               <div className="section add-to-cart">
-                {selectedStock && !becameOutOfStock && !maxStockReached && <div className="quantity">
+                {selectedStock && !becameOutOfStock && !maxStockReached && 
+                <div className="quantity">
                   <button
                     onClick={() =>
                       setQuantity((prev) => (prev === 1 ? 1 : prev - 1))
@@ -252,7 +253,8 @@ const Product = () => {
                   </button>
                   <span className="no-of-items">{quantity}</span>
                   <button onMouseDown={() => setQuantity((prev) => (prev === selectedStock?.stock ? prev : prev + 1))}><span>+</span></button>
-                </div>}
+                </div>
+                }
                 {
                   selectedStock &&
                   <div className="stock-warning">

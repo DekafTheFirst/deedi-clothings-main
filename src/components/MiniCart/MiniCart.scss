@@ -25,7 +25,7 @@
         border-bottom: 1px solid $lightGray;
     }
 
-    .products {
+    .items {
         display: flex;
         flex-direction: column;
         gap: 15px;
@@ -54,80 +54,7 @@
             /* Hide the track */
         }
 
-        .item {
-            display: flex;
-            align-items: flex-start;
-            gap: 5px;
-
-
-            .left {
-                display: flex;
-                gap: 10px;
-                text-decoration: none;
-                align-items: flex-start;
-                color: unset;
-
-                .img {
-                    background-color: $lighterGray;
-
-                    width: 70px;
-                    height: 85px;
-                    padding: 5px;
-
-                    img {
-                        object-fit: contain;
-                    }
-                }
-
-                .details {
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: flex-start;
-
-                    .title {
-                        margin-top: 0;
-                        font-size: 14px;
-                        font-weight: 600;
-                        margin-bottom: 8px;
-
-                    }
-
-                    p {
-                        color: gray;
-                        margin-bottom: 10px;
-                        font-size: 14px;
-                    }
-
-                    .bottom {
-                        display: flex;
-                        flex-direction: column;
-
-                        span {
-                            font-weight: 400;
-                            font-size: 13px;
-
-                            &.size {
-                                text-transform: uppercase;
-
-                            }
-
-                            &.price {
-                                font-weight: 500;
-                                font-size: 14px;
-                            }
-                        }
-
-                    }
-                }
-            }
-
-            .delete {
-                cursor: pointer;
-                font-size: 16px;
-                margin-left: auto;
-            }
-        }
-
+        
         .list-empty {
             text-align: center;
             font-size: 14px;
