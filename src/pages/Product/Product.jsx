@@ -90,41 +90,42 @@ const Product = () => {
       // console.log('selectedStock', selectedStock);
       // console.log('transformedStocks', transformedStocks);
 
-      if (existingCartItem?.quantity + quantity > selectedStock.stock) {
-        setMaxStockReached(true)
+      let quantityToAdd = quantity;
+
+      const existingItemQuantity = existingCartItem ? existingCartItem?.quantity : 0;
+      const availableStock = selectedStock?.stock;
+
+      if ((existingItemQuantity + quantityToAdd) > availableStock) {
+        if (availableStock - existingItemQuantity > 0) {
+          quantityToAdd = availableStock - existingItemQuantity;
+        }
+        else {
+          setMaxStockReached(true)
+          quantityToAdd = 0;
+          // console.log("exceeds")
+        }
       }
 
-      else {
+      console.log('quantityToAdd', quantityToAdd)
+
+      if (quantityToAdd > 0) {
         dispatch(addItemToCart({
           productId: product.id,
           title: product.attributes.title,
           desc: 'description',
-          quantity,
+          quantity: quantityToAdd,
           alreadyExistingQuantity: existingCartItem?.quantity,
           localCartItemId,
           img: product.attributes.img.data[0].attributes.url,
           size: selectedStock.size,
           price: product.attributes.price
-        })).then((result) => {
-          if (result.error) {
-            // Handle error (e.g., show a message to the user)
-            console.error('Failed to add item to cart:', result.error.message);
-          } else {
-            // Optionally, show a success message or update UI
-            const updatedStocks = mappedStocks.map((stock) => {
-              if (stock.id === selectedStock?.id) {
-                return {
-                  ...stock,
-                  stock: stock?.stock - quantity
-                }
-              }
-              return stock;
-            });
-            // setMaxStockReached(false)
-            console.log('Item added to cart successfully');
-          }
-        });
+        }))
       }
+
+
+      // Check if one item can still be added
+
+
       // Dispatch add item action
 
     } else {

@@ -281,18 +281,18 @@ export const cartSlice = createSlice({
         // state.items = action.payload;
         // Calculate totals after successful addition
         const localCartItemId = action.meta.arg.localCartItemId;
-        console.log('localCartItemId', localCartItemId)
+        // console.log('localCartItemId', localCartItemId)
         const strapiCartItemId = action.payload.strapiCartItemId;
-        console.log('strapiCartItemId', strapiCartItemId)
+        // console.log('strapiCartItemId', strapiCartItemId)
         const responseData = action.payload.responseData
-        console.log('responseData', responseData);
+        // console.log('responseData', responseData);
         const status = responseData?.status;
 
         const addedItem = state.items.find(
           (i) => i.localCartItemId === localCartItemId
         );
 
-        console.log('addedItem', addedItem)
+        // console.log('addedItem', addedItem)
 
         if (status === 'partial') {
           addedItem.quantity = responseData.newQuantity;
