@@ -90,6 +90,55 @@ export const addItemToCart = createAsyncThunk(
 );
 
 
+export const updateCartItem = createAsyncThunk(
+  'cart/updateCartItem',
+  async ({ currentQuantity, requestedQuantity, localCartItemId, stockId, strapiCartItemId }, { getState, rejectWithValue }) => {
+    const { auth } = getState();
+    // Check if the newCartItem already exists in the cart
+
+    // console.log(newCartItem)
+    let responseData;
+    try {
+      let response;
+      // Add new newCartItem to backend
+      response = await makeRequest.post(`/carts/updateCartItem/${strapiCartItemId}`, {
+        userId: auth.user?.id,
+        localCartItemId,
+        stockId,
+        currentQuantity,
+        requestedQuantity,
+        // cart: cartId, // Attach the cart ID to the newCartItem
+      });
+      // console.log(response.data);
+      responseData = response?.data;
+
+    } catch (error) {
+      console.error(error)
+      if (error?.response?.status === 400) {
+        const errorData = error?.response?.data;
+
+
+        // toast.error(`Unable to add item to cart: ${errorData.message}`)
+
+      }
+      return rejectWithValue(error.response?.data || 'Failed to update cart');
+    }
+
+
+
+
+
+    // Always return the updated items
+
+
+
+    return {
+      responseData: responseData,
+    };
+
+  }
+);
+
 export const removeItemFromCart = createAsyncThunk(
   'cart/removeItemFromCart',
   async ({ strapiCartItemId, localCartItemId }, { getState, rejectWithValue }) => {
@@ -157,19 +206,19 @@ export const fetchCartItems = createAsyncThunk(
       console.log('failures', failures);
 
       failures?.forEach((fail) => {
-        toast.error(`Failed to add ${fail.productTitle}(${fail.size}): ${fail.reason}`);
+        toast.error(`Failed to add ${fail.productTitle}(${fail.size.size}): ${fail.reason}`);
       });
 
       partialFailures?.forEach((partial) => {
-        toast.warning(`Only ${partial.added} of ${partial.productTitle} (${partial.size}) ${partial.added > 1 ? 'were' : 'was'} added: ${partial.reason}`);
+        toast.warning(`Only ${partial.added} of ${partial.productTitle} (${partial.size.size}) ${partial.added > 1 ? 'were' : 'was'} added: ${partial.reason}`);
       });
 
       reducedItems?.forEach((reduced) => {
-        toast.warning(`${reduced.removed} of ${reduced.productTitle} (${reduced.size}) ${reduced.added > 1 ? 'were' : 'was'} removed: ${reduced.reason}`);
+        toast.warning(`${reduced.removed} of ${reduced.productTitle} (${reduced.size.size}) ${reduced.added > 1 ? 'were' : 'was'} removed: ${reduced.reason}`);
       });
 
       outOfStockItems?.forEach((result) => {
-        toast.warning(`${result.productTitle} (${result.size}) is out of stock.`);
+        toast.warning(`${result.productTitle} (${result.size.size}) is out of stock.`);
       });
 
       console.log('mergedCart', mergedCart);
@@ -229,8 +278,7 @@ export const cartSlice = createSlice({
       })
       .addCase(addItemToCart.pending, (state, action) => {
         const newCartItem = action.meta.arg;
-
-        // console.log(action.meta.arg);
+        console.log('newCartItem', newCartItem)
         const items = state.items;
         const existingItem = items.find(
           (i) => i.productId === newCartItem.productId && i.size.size === newCartItem.size.size
@@ -269,13 +317,13 @@ export const cartSlice = createSlice({
         // console.log('addedItem', addedItem)
 
         if (status === 'partial') {
-          addedItem.quantity = responseData.newQuantity;
-          toast.warning(`Only added ${responseData?.added} of ${addedItem.title} (${addedItem.size}): ${responseData.message}`)
+          addedItem.quantity = responseData.data.quantity;
+          toast.warning(`Only added ${responseData?.added} of ${addedItem.title} (${addedItem.size.size}): ${responseData.message}`)
         }
 
         if (status === 'reduced') {
           addedItem.quantity = responseData.newQuantity;
-          toast.warning(`Reduced the quantity of ${addedItem.title} (${addedItem.size}) to ${responseData?.newQuantity}: ${responseData.message}`)
+          toast.warning(`Reduced the quantity of ${addedItem.title} (${addedItem.size.size}) to ${responseData?.newQuantity}: ${responseData.message}`)
         }
 
         if (status === 'success') {
@@ -350,7 +398,7 @@ export const cartSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const { mergeCartOnLogin, addToCart, removeItem, resetCart, updateCartItem } = cartSlice.actions
+export const { resetCart } = cartSlice.actions
 
 export default cartSlice.reducer
 

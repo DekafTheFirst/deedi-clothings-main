@@ -7,20 +7,20 @@ import { useDispatch } from 'react-redux'
 import { removeItemFromCart } from '../../../redux/cartReducer'
 import useFetch from '../../../hooks/useFetch'
 const CartItem = ({ item, setShowCart }) => {
-    console.log(item)
+    // console.log(item)
     const { data: stockData, loading, error } = useFetch(
         `/stocks?filters[product][id][$eq]=${item.productId}&filters[size][id][$eq]=${item.size.id}`
     );
-    console.log(stockData)
+    // console.log(stockData)
     const [availableStock, setAvailableStock] = useState(null)
 
     useEffect(() => {
-        console.log('stockData', stockData)
+        // console.log('stockData', stockData)
         setAvailableStock(stockData?.[0]?.attributes?.stock)
     }, [stockData]);
 
     useEffect(() => {
-        console.log('availableStock', availableStock)
+        // console.log('availableStock', availableStock)
     }, [availableStock]);
 
     const dispatch = useDispatch();
@@ -46,7 +46,7 @@ const CartItem = ({ item, setShowCart }) => {
     const handleUpdateCartItem = (e) => {
         e.preventDefault(); // Prevents default action
         e.stopPropagation();
-        
+
     }
 
     const handleRedirect = () => {
@@ -73,7 +73,7 @@ const CartItem = ({ item, setShowCart }) => {
                     />
                 </div>
                 <div className="details">
-                    <h1 className='title'>{item.title}</h1>
+                    <h1 className='title'>{item.title}{item.outOfStock ? '(Out Of Stock)' : ''}</h1>
                     {/* <p>{item.desc.substring(0, 100)}</p> */}
                     <span className='size'>SIZE : {item?.size?.size}</span>
 
