@@ -120,32 +120,7 @@ export const fetchCartItems = createAsyncThunk(
       const { cart } = getState();
       const localItems = cart.items;
 
-      console.log(localItems)
-      // Fetch the cart from the backend
-      const response = await makeRequest.get(`/carts`, {
-        params: {
-          // populate: {
-          //   items: {
-          //     populate: {
-          //       product: {
-          //         populate: ['img'],
-          //         fields: ['title', 'price', 'img']
-          //       }
-          //     }
-          //   }
-          // },
-          filters: {
-            user: {
-              id: userId
-            }
-          }
-        }
-      });
-
-
-
-
-
+      // console.log(localItems)
 
       // Merge local items with the Strapi cart items and get the updated cart
       const updatedresponse = await makeRequest.put(`/carts/fetchAndMergeCart/${userId}`,
@@ -168,7 +143,6 @@ export const fetchCartItems = createAsyncThunk(
 
       console.log('updatedresponse', updatedresponse)
 
-      console.log('response', response);
 
       const cartId = updatedresponse?.data?.cartId;
 
@@ -259,7 +233,7 @@ export const cartSlice = createSlice({
         // console.log(action.meta.arg);
         const items = state.items;
         const existingItem = items.find(
-          (i) => i.productId === newCartItem.productId && i.size === newCartItem.size
+          (i) => i.productId === newCartItem.productId && i.size.size === newCartItem.size.size
         );
         // UpdateItems
 
@@ -336,7 +310,7 @@ export const cartSlice = createSlice({
             (i) => i.localCartItemId === localCartItemId
           );
 
-          if(existingItem) existingItem.outOfStock = true;
+          if (existingItem) existingItem.outOfStock = true;
         }
 
         updateTotals(state);

@@ -7,16 +7,16 @@ import { useDispatch } from 'react-redux'
 import { removeItemFromCart } from '../../../redux/cartReducer'
 import useFetch from '../../../hooks/useFetch'
 const CartItem = ({ item, setShowCart }) => {
-
+    console.log(item)
     const { data: stockData, loading, error } = useFetch(
-        `/stocks?filters[product][id][$eq]=${item.productId}&filters[size][size][$eq]=${item.size}`
+        `/stocks?filters[product][id][$eq]=${item.productId}&filters[size][id][$eq]=${item.size.id}`
     );
-
+    console.log(stockData)
     const [availableStock, setAvailableStock] = useState(null)
 
     useEffect(() => {
         console.log('stockData', stockData)
-        setAvailableStock(stockData?.[0].attributes?.stock)
+        setAvailableStock(stockData?.[0]?.attributes?.stock)
     }, [stockData]);
 
     useEffect(() => {
@@ -75,7 +75,7 @@ const CartItem = ({ item, setShowCart }) => {
                 <div className="details">
                     <h1 className='title'>{item.title}</h1>
                     {/* <p>{item.desc.substring(0, 100)}</p> */}
-                    <span className='size'>SIZE : {item.size}</span>
+                    <span className='size'>SIZE : {item?.size?.size}</span>
 
                     <div className="bottom">
                         <span className='price'>{`$${item.price}`}</span>

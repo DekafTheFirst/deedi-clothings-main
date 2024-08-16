@@ -18,11 +18,14 @@ import { CircularProgress } from "@mui/material";
 
 
 const transformStocks = (stocks) => {
-  return stocks?.map((size) => {
+  return stocks?.map((stock) => {
     return {
-      id: size.id,
-      size: size.attributes.size.data.attributes.size,
-      stock: size.attributes.stock,
+      id: stock.id,
+      size: {
+        size: stock.attributes.size.data.attributes.size,
+        id: stock.attributes.size.data.id
+      },
+      stock: stock.attributes.stock,
     }
   })
 }
@@ -80,17 +83,17 @@ const Product = () => {
 
   useEffect(() => {
     const outOfStockSizesMap = {};
-    console.log('mappedStocks', mappedStocks)
+    // console.log('mappedStocks', mappedStocks)
     mappedStocks?.forEach(stock => {
       if (stock.stock === 0) {
-        outOfStockSizesMap[stock.size] = true;
+        outOfStockSizesMap[stock.size.size] = true;
       }
     });
     setOutOfStockSizes(outOfStockSizesMap);
   }, [mappedStocks]);
 
   useEffect(() => {
-    const isOutOfStock = outOfStockSizes[selectedStock?.size];
+    const isOutOfStock = outOfStockSizes[selectedStock?.size.size];
     setBecameOutOfStock(isOutOfStock);
   }, [selectedStock, outOfStockSizes]);
 
@@ -108,14 +111,13 @@ const Product = () => {
 
   const handleAddToCart = async () => {
     if (selectedStock) {
-      const existingCartItem = cartItems.find((item) => item.productId === product.id && item.size == selectedStock.size);
+      const existingCartItem = cartItems.find((item) => item.productId === product.id && item.size.size == selectedStock.size.size);
 
       const localCartItemId = existingCartItem ? existingCartItem.localCartItemId : `cartItem_${uuidv4()}`
 
 
-      // console.log('existingCartItem', existingCartItem)
+      // console.log('existingCartItem', existingCartItem);
       // console.log('selectedStock', selectedStock);
-      // console.log('transformedStocks', transformedStocks);
 
 
       const existingItemQuantity = existingCartItem ? existingCartItem?.quantity : 0;
@@ -142,7 +144,7 @@ const Product = () => {
         if (error.status === 'out-of-stock') {
           setOutOfStockSizes((prev) => ({
             ...prev,
-            [selectedStock.size]: true,
+            [selectedStock.size.size]: true,
           }));
         }
 
@@ -223,7 +225,7 @@ const Product = () => {
                             setSelectedStockError(null)
                           }}
                         >
-                          {stock.size}
+                          {stock.size.size}
                         </span>
                       )
                     }
@@ -242,18 +244,18 @@ const Product = () => {
                 </div> */}
               </div>
               <div className="section add-to-cart">
-                {selectedStock && !becameOutOfStock && !maxStockReached && 
-                <div className="quantity">
-                  <button
-                    onClick={() =>
-                      setQuantity((prev) => (prev === 1 ? 1 : prev - 1))
-                    }
-                  >
-                    <span>-</span>
-                  </button>
-                  <span className="no-of-items">{quantity}</span>
-                  <button onMouseDown={() => setQuantity((prev) => (prev === selectedStock?.stock ? prev : prev + 1))}><span>+</span></button>
-                </div>
+                {selectedStock && !becameOutOfStock && !maxStockReached &&
+                  <div className="quantity">
+                    <button
+                      onClick={() =>
+                        setQuantity((prev) => (prev === 1 ? 1 : prev - 1))
+                      }
+                    >
+                      <span>-</span>
+                    </button>
+                    <span className="no-of-items">{quantity}</span>
+                    <button onMouseDown={() => setQuantity((prev) => (prev === selectedStock?.stock ? prev : prev + 1))}><span>+</span></button>
+                  </div>
                 }
                 {
                   selectedStock &&
@@ -286,9 +288,9 @@ const Product = () => {
                           return (
                             <div className="out-of-stock">
                               {selectedStock.stock > 1 ?
-                                <span>{`Your cart already contains all the ${selectedStock.stock} units ${product?.attributes?.title} (${selectedStock?.size}) left in stock.`}</span>
+                                <span>{`Your cart already contains all the ${selectedStock.stock} units ${product?.attributes?.title} (${selectedStock?.size.size}) left in stock.`}</span>
                                 :
-                                <span>{`Your cart already contains the last ${product?.attributes?.title} (${selectedStock?.size}) left in stock.`}</span>
+                                <span>{`Your cart already contains the last ${product?.attributes?.title} (${selectedStock?.size.size}) left in stock.`}</span>
                               }
                               <input
                                 type="email"
