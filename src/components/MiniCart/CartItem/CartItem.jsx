@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import OptimizedImage from '../../OptimizedImage/OptimizedImage'
-import { Close } from '@mui/icons-material'
-import './CartItem.scss'
-import { useDispatch } from 'react-redux'
-import { removeItemFromCart, updateCartItem } from '../../../redux/cartReducer'
-import useFetch from '../../../hooks/useFetch'
-import { Skeleton } from '@mui/material'
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import OptimizedImage from '../../OptimizedImage/OptimizedImage';
+import { Close, Delete, DeleteForeverOutlined, DeleteOutline, FavoriteBorder } from '@mui/icons-material';
+import './CartItem.scss';
+import { useDispatch } from 'react-redux';
+import { removeItemFromCart, updateCartItem } from '../../../redux/cartReducer';
+import useFetch from '../../../hooks/useFetch';
+import { Skeleton } from '@mui/material';
+
 const CartItem = ({ item, setShowCart }) => {
     // console.log(item)
     const { data: stockData, loading, error } = useFetch(
@@ -30,8 +31,7 @@ const CartItem = ({ item, setShowCart }) => {
 
     const handleRemoveFromCart = (e, { localCartItemId, strapiCartItemId }) => {
         // console.log(localCartItemId)\
-        e.preventDefault(); // Prevents default action
-        e.stopPropagation(); // Prevents the parent click handler from firing
+        // Prevents the parent click handler from firing
         dispatch(removeItemFromCart({ localCartItemId, strapiCartItemId }))
             .unwrap()
             .then(() => {
@@ -45,9 +45,8 @@ const CartItem = ({ item, setShowCart }) => {
 
 
     const handleUpdateCartItem = async (e, { requestedQuantity }) => {
-        e.preventDefault(); // Prevents default action
+        e.preventDefault();
         e.stopPropagation();
-
         try {
             // Dispatch the update action and unwrap the result
             const response = await dispatch(updateCartItem({
@@ -81,28 +80,36 @@ const CartItem = ({ item, setShowCart }) => {
 
     return (
         <div
-            onClick={handleRedirect}
             className="cart-item"
         >
-            <div
-                className="info">
 
-                <div className="img-wrapper">
-                    <OptimizedImage
-                        // wrapperClassName='imgWrapper'
-                        className={'img'}
-                        alt=""
-                        src={import.meta.env.VITE_UPLOAD_URL + item.img}
-                        effect="blur"
-                    />
+            <div className="img-wrapper">
+                <OptimizedImage
+                    // wrapperClassName='imgWrapper'
+                    className={'img'}
+                    alt=""
+                    src={import.meta.env.VITE_UPLOAD_URL + item.img}
+                    effect="blur"
+                    onClick={handleRedirect}
+                />
+            </div>
+
+            <div className="body">
+                <div className="wrapper" onClick={handleRedirect}>
+                    <div className="details">
+                        <h1 className='title'>{item.title}{item.outOfStock ? '(Out Of Stock)' : ''}</h1>
+                        {/* <p>{item.desc.substring(0, 100)}</p> */}
+                        <div className='size'><span>Size:</span> <span className="value">{item?.size?.size}</span></div>
+                    </div>
+                    <div className="delete">
+                        <DeleteForeverOutlined sx={{ m: 0, p: 0, minWidth: 0 }} className='delete-icon' onClick={(e) => handleRemoveFromCart(e, { localCartItemId: item.localCartItemId, strapiCartItemId: item.strapiCartItemId })} />
+                        {/* <span>Remove</span> */}
+                    </div>
                 </div>
-                <div className="details">
-                    <h1 className='title'>{item.title}{item.outOfStock ? '(Out Of Stock)' : ''}</h1>
-                    {/* <p>{item.desc.substring(0, 100)}</p> */}
-                    <span className='size'>SIZE : {item?.size?.size}</span>
 
-                    <div className="bottom">
-                        <span className='price'>{`$${item.price}`}</span>
+                <div className="bottom">
+
+                    <div className='price-calc'>
                         {availableStock != null || undefined ?
                             <div className="quantity">
                                 <button
@@ -123,16 +130,25 @@ const CartItem = ({ item, setShowCart }) => {
                                         handleUpdateCartItem(e, { requestedQuantity: item.quantity + 1 }); // Prevents the parent click handler from firing
                                     }}
                                 ><span>+</span></button>
+
+
                             </div>
                             :
                             <Skeleton variant="rectangular" width={71} height={20} />
                         }
+                        {/* <div className="vertical-line"></div> */}
                     </div>
+                    <div className="price">
+                        <span className='sub-price'>({item.quantity} x ${item.price})</span>
+                        <span className="total-price-per-item">${item.price * item.quantity}</span>
+                    </div>
+
                 </div>
             </div>
-            <div className="actions">
-                <Close className='delete' onClick={(e) => handleRemoveFromCart(e, { localCartItemId: item.localCartItemId, strapiCartItemId: item.strapiCartItemId })} />
-            </div>
+
+
+
+
 
         </div>
     )

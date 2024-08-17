@@ -2,19 +2,20 @@ import React, { useEffect } from 'react'
 import "./CartPage.scss"
 import { Close, DeleteOutlineOutlined, ShoppingBag, ShoppingBagOutlined } from '@mui/icons-material'
 import { useDispatch, useSelector } from 'react-redux'
-import {   removeItemFromCart, resetCart } from '../../redux/cartReducer'
+import { removeItemFromCart, resetCart } from '../../redux/cartReducer'
 import { Link, useNavigate } from 'react-router-dom'
 import OptimizedImage from '../../components/OptimizedImage/OptimizedImage'
+import CartItem from '../../components/MiniCart/CartItem/CartItem'
 
 
 const CartPage = ({ showCart, setShowCart }) => {
-  const products = useSelector(state => state.cart.items)
+  const items = useSelector(state => state.cart.items)
   const navigate = useNavigate();
-  console.log(products)
+  console.log(items)
 
   const totalPrice = () => {
     let total = 0
-    products.forEach(item => (total += item.price));
+    items.forEach(item => (total += item.price));
     return total.toFixed(2)
   }
 
@@ -32,7 +33,50 @@ const CartPage = ({ showCart, setShowCart }) => {
         console.error('Failed to remove item from cart:', error);
       });
   };
-  
+
+
+  // {products.length > 0 ?
+  //   <>
+  //     {
+  //       products.map(item => (
+  //         <div
+  //           className="item"
+  //           key={item.idPerSize}
+  //         >
+  //           <Link
+  //             to={`/product/${item.productId}`}
+  //             onClick={() => setShowCart(false)}
+  //             className="left">
+  //             <div className="img-wrapper">
+  //               <OptimizedImage
+  //                 // wrapperClassName='imgWrapper'
+  //                 className={'img'}
+  //                 alt=""
+  //                 src={import.meta.env.VITE_UPLOAD_URL + item.img}
+  //                 effect="blur"
+  //               />
+  //             </div>
+  //             <div className="details">
+  //               <h1 className='title'>{item.title}</h1>
+  //               {/* <p>{item.desc.substring(0, 100)}</p> */}
+  //               <div className="bottom">
+  //                 <span className='size'>SIZE : {item.size.size}</span>
+  //                 <span className='price'>{`$${item.price}`}</span>
+  //               </div>
+  //             </div>
+  //           </Link>
+  //           <Close className='delete' onClick={() => handleRemoveFromCart(item.localCartItemId)} />
+  //         </div>
+  //       ))
+  //     }
+  //   </>
+  //   :
+
+  //   <div className='list-empty'>
+  //     <span>No Products</span>
+  //     <button onClick={() => navigate('/products/women')} className='btn-1'><ShoppingBagOutlined fontSize='small' /> Continue Shopping</button>
+  //   </div>
+  // }
 
   return (
     <div className="cart-page">
@@ -42,53 +86,26 @@ const CartPage = ({ showCart, setShowCart }) => {
             <div className="top">
               <span className="heading">Shopping Bag</span>
               <div className="total">
-                <span>{`SUBTOTAL(${products ? products.length : '0'})`}</span>
+                <span>{`SUBTOTAL(${items ? items.length : '0'})`}</span>
                 <span className='amount'>${totalPrice()}</span>
               </div>
             </div>
 
-            <div className="products">
-              {products.length > 0 ?
-                <>
-                  {
-                    products.map(item => (
-                      <div
-                        className="item"
-                        key={item.idPerSize}
-                      >
-                        <Link
-                          to={`/product/${item.productId}`}
-                          onClick={() => setShowCart(false)}
-                          className="left">
-                          <div className="img-wrapper">
-                            <OptimizedImage
-                              // wrapperClassName='imgWrapper'
-                              className={'img'}
-                              alt=""
-                              src={import.meta.env.VITE_UPLOAD_URL + item.img}
-                              effect="blur"
-                            />
-                          </div>
-                          <div className="details">
-                            <h1 className='title'>{item.title}</h1>
-                            {/* <p>{item.desc.substring(0, 100)}</p> */}
-                            <div className="bottom">
-                              <span className='size'>SIZE : {item.size}</span>
-                              <span className='price'>{`$${item.price}`}</span>
-                            </div>
-                          </div>
-                        </Link>
-                        <Close className='delete' onClick={() => handleRemoveFromCart(item.localCartItemId)} />
-                      </div>
-                    ))
-                  }
-                </>
-                :
+            <div className="items">
+              {items ? (
+                items.length > 0 ?
+                  <>
+                    {
+                      items.map(item => (
+                        <CartItem key={item.localCartItemId} item={item} setShowCart={setShowCart} />
+                      ))
+                    }
+                  </>
+                  :
+                  <span className='list-empty'>No items</span>
+              ) : <CircularProgress />}
 
-                <div className='list-empty'>
-                  <span>No Products</span>
-                  <button onClick={()=>navigate('/products/women')} className='btn-1'><ShoppingBagOutlined fontSize='small'/> Continue Shopping</button>
-                </div>}
+              
             </div>
           </div>
           <div className="col-md-5 actions-wrapper">
@@ -98,10 +115,10 @@ const CartPage = ({ showCart, setShowCart }) => {
                   <h5 className="heading">Order Summary</h5>
                   <div className="summary-items">
                     <div className="summary-item">Subtotal: <span className="value">${totalPrice()}</span></div>
-                    <div className="summary-item">No. of Items: <span className="value">{products.length}</span></div>
+                    <div className="summary-item">No. of Items: <span className="value">{items.length}</span></div>
                   </div>
                 </div>
-                <button onClick={ () => navigate('/checkout')} className='btn-1'>PROCEED TO CHECKOUT</button>
+                <button onClick={() => navigate('/checkout')} className='btn-1'>PROCEED TO CHECKOUT</button>
                 {/* <span className="reset" onClick={() => dispatch(resetCart())}>Reset Cart</span> */}
                 <Link to="/cart" className='secondary-action'> Continue Shopping </Link>
               </div>

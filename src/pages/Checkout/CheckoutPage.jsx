@@ -18,7 +18,7 @@ const CheckoutPage = () => {
 
 
   // Products
-  const products = useSelector(state => state.cart.items)
+  const items = useSelector(state => state.cart.items)
   const selectedCourier = useSelector(state => state.checkout.selectedCourier);
 
   const currentStep = useSelector(state => state.checkout.currentStep);
@@ -32,11 +32,11 @@ const CheckoutPage = () => {
   // Calculate totals
   const subtotal = useMemo(() => {
     let total = 0;
-    products.forEach(item => {
+    items.forEach(item => {
       total += item.price;
     });
     return total.toFixed(2);
-  }, [products]);
+  }, [items]);
 
   const vat = useMemo(() => (subtotal * 0.2).toFixed(2), [subtotal]);
 
@@ -70,7 +70,7 @@ const CheckoutPage = () => {
   const renderCurrentTab = () => {
     switch (previewedStep?.id || currentStep?.id) {
       case 1:
-        return <ShippingTab subtotal={subtotal} totalAmount={totalAmount} vat={vat} quantity={products.length} />
+        return <ShippingTab subtotal={subtotal} totalAmount={totalAmount} vat={vat} quantity={items.length} />
       case 2:
         return <CourierOptions />
       case 3:
@@ -96,7 +96,7 @@ const CheckoutPage = () => {
                   <h5 className="heading">Order Summary </h5>
 
                   <div className="summary-items">
-                    <div className="summary-item">No. of Items: <span className="value">{calculateNoOfProducts(products)}</span></div>
+                    <div className="summary-item">No. of Items: <span className="value">{calculateNoOfProducts(items)}</span></div>
                     <div className="summary-item">Subtotal: <span className="value">${subtotal}</span></div>
                     <div className="summary-item">VAT(20%): <span className="value">${vat}</span></div>
                     {selectedCourier && <div className="summary-item">Shipping: <span className="value">${selectedCourier.total_charge}</span></div>}
@@ -110,10 +110,10 @@ const CheckoutPage = () => {
                 </div> */}
 
                 <div className="products">
-                  {products.length > 0 ?
+                  {items.length > 0 ?
                     <>
                       {
-                        products.map((item, index) => (
+                        items.map((item, index) => (
                           <div
                             className="item"
                             key={index}
@@ -134,7 +134,7 @@ const CheckoutPage = () => {
                                 <h1 className='title'>{item.title}</h1>
                                 {/* <p>{item.desc.substring(0, 100)}</p> */}
                                 <div className="bottom">
-                                  <span className='size'>SIZE : {item.size}</span>
+                                  <span className='size'>SIZE : {item.size.size}</span>
                                   <span className='subtotal'>${item.price}</span>
 
                                 </div>

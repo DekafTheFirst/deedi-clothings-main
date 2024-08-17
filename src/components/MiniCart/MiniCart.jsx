@@ -57,7 +57,7 @@ const Cart = ({ showCart, setShowCart }) => {
         ) : <CircularProgress />}
       </div>
 
-      <div className="actions">
+      <div className="navigation">
         {noOfProducts > 0 ?
           <button onClick={handleCheckoutClicked} className='btn-1'>PROCEED TO CHECKOUT</button>
           :

@@ -46,84 +46,24 @@
                     }
                 }
 
-                .products {
+                .items {
                     display: flex;
                     flex-direction: column;
                     border-top: 1px solid $lightGray;
+                    gap: 20px;
+                    padding-block: 20px;
 
-
-                    .item {
-                        display: flex;
-                        align-items: flex-start;
-                        gap: 5px;
-                        border-bottom: 1px solid $lightGray;
-                        padding-block: 25px;
-
-
-                        .left {
-                            display: flex;
-                            gap: 12px;
-                            text-decoration: none;
-                            color: unset;
-
+                    .cart-item {
+                        gap: 15px;
+                        .img-wrapper {
                             .img {
-                                background-color: $lighterGray;
-
                                 width: 120px;
-                                height: 150px;
-                                padding: 5px;
+                                height: 130px;
 
-                                img {
+                                img{
                                     object-fit: contain;
                                 }
                             }
-
-                            .details {
-                                display: flex;
-                                flex-direction: column;
-                                justify-content: flex-start;
-
-                                .title {
-                                    margin-top: 0;
-                                    font-size: 17px;
-                                    font-weight: 600;
-                                    margin-bottom: 8px;
-
-                                }
-
-                                p {
-                                    color: gray;
-                                    margin-bottom: 10px;
-                                    font-size: 14px;
-                                }
-
-                                .bottom {
-                                    display: flex;
-                                    flex-direction: column;
-
-                                    span {
-                                        font-weight: 400;
-                                        font-size: 13px;
-
-                                        &.size {
-                                            text-transform: uppercase;
-
-                                        }
-
-                                        &.price {
-                                            font-weight: 600;
-                                            font-size: 16px;
-                                        }
-                                    }
-
-                                }
-                            }
-                        }
-
-                        .delete {
-                            cursor: pointer;
-                            font-size: 20px;
-                            margin-left: auto;
                         }
                     }
 
@@ -134,7 +74,7 @@
                         justify-content: center;
                         align-items: center;
                         gap: 20px;
-                        
+
 
                         span {
                             text-align: center;
@@ -146,6 +86,7 @@
                             font-size: 13px;
                             font-weight: 600;
                         }
+
                         // font-weight: 500;
                     }
                 }
