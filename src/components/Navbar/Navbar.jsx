@@ -123,7 +123,7 @@ const Navbar = ({ setShowCart, showCart }) => {
 
             {pathname !== '/checkout' && <div className="cartIcon" onClick={() => setShowCart((prev) => !prev)}>
               <ShoppingCartOutlinedIcon className='icon' />
-              <span>{noOfProducts}</span>
+              <div className='noOfProducts'><span>{noOfProducts}</span></div>
             </div>}
             {showCart && <Cart setShowCart={setShowCart} showCart={showCart} />}
 

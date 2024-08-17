@@ -309,7 +309,7 @@ export const cartSlice = createSlice({
         const strapiCartItemId = action.payload.strapiCartItemId;
         // console.log('strapiCartItemId', strapiCartItemId)
         const responseData = action.payload.responseData
-        // console.log('responseData', responseData);
+        console.log('responseData', responseData);
         const status = responseData?.status;
 
         const addedItem = state.items.find(
@@ -319,7 +319,7 @@ export const cartSlice = createSlice({
         // console.log('addedItem', addedItem)
 
         if (status === 'partial') {
-          addedItem.quantity = responseData.data.quantity;
+          addedItem.quantity = responseData.newQuantity;
           toast.warning(`Only added ${responseData?.added} of ${addedItem.title} (${addedItem.size.size}): ${responseData.message}`)
         }
 
