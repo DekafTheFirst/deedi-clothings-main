@@ -53,6 +53,7 @@ export const addItemToCart = createAsyncThunk(
       // Add new newCartItem to backend
       response = await makeRequest.post(`/carts/addItem`, {
         ...newCartItem,
+        cartId: cartId,
         userId: auth.user?.id,
         existingLocalCartItemQty: newCartItem?.alreadyExistingQuantity || 0
         // cart: cartId, // Attach the cart ID to the newCartItem
@@ -92,26 +93,27 @@ export const addItemToCart = createAsyncThunk(
 
 export const updateCartItem = createAsyncThunk(
   'cart/updateCartItem',
-  async ({ currentQuantity, requestedQuantity, localCartItemId, stockId, strapiCartItemId }, { getState, rejectWithValue }) => {
+  async (item, { getState, rejectWithValue }) => {
     const { auth } = getState();
     // Check if the newCartItem already exists in the cart
-
+    // console.log('item', item)
     // console.log(newCartItem)
     let responseData;
     try {
       let response;
       // Add new newCartItem to backend
-      response = await makeRequest.post(`/carts/updateCartItem/${strapiCartItemId}`, {
+      response = await makeRequest.patch(`/carts/updateCartItem/${item.strapiCartItemId}`, {
         userId: auth.user?.id,
-        localCartItemId,
-        stockId,
-        currentQuantity,
-        requestedQuantity,
+        localCartItemId: item.localCartItemId,
+        productId: item.productId,
+        size: item.size,
+        currentQuantity: item.currentQuantity,
+        requestedQuantity: item.requestedQuantity,
         // cart: cartId, // Attach the cart ID to the newCartItem
       });
       // console.log(response.data);
       responseData = response?.data;
-
+      // console.log('responseData', responseData);
     } catch (error) {
       console.error(error)
       if (error?.response?.status === 400) {
@@ -364,6 +366,76 @@ export const cartSlice = createSlice({
         updateTotals(state);
         state.error = error;
         // console.log('rejected', action.payload)
+        state.status = 'failed';
+      })
+      .addCase(updateCartItem.pending, (state, action) => {
+        const cartItems = state.items;
+        // console.log('cartItems', cartItems)
+        const itemData = action.meta.arg
+
+        const itemToUpdate = cartItems.find(
+          (i) => i.localCartItemId === itemData.localCartItemId
+        );
+
+        itemToUpdate.quantity = itemData.requestedQuantity;
+        // UpdateItems
+        state.status = 'updating';
+        updateTotals(state);
+      })
+
+      .addCase(updateCartItem.fulfilled, (state, action) => {
+        const cartItems = state.items;
+        const itemData = action.meta.arg
+
+        const itemToUpdate = cartItems.find(
+          (i) => i.localCartItemId === itemData.localCartItemId
+        );
+
+
+        const responseData = action.payload.responseData
+        console.log('responseData', responseData);
+
+        const status = responseData?.status;
+
+        if (status === 'reduced') {
+          itemToUpdate.quantity = responseData.newQuantity;
+          toast.success(`Stock was low. We adjusted your item to fit the available quantity. 🛒 (Now: ${responseData.availableStock})`)
+        }
+
+        itemToUpdate.latestStockData = responseData?.availableStock;
+        itemToUpdate.outOfStock = false;
+        state.status = 'idle';
+      })
+      .addCase(updateCartItem.rejected, (state, action) => {
+
+        // console.log('rejected');
+        const cartItems = state.items;
+
+        const itemData = action.meta.arg
+
+        const itemToUpdate = cartItems.find(
+          (i) => i.localCartItemId === itemData.localCartItemId
+        );
+
+        itemToUpdate.quantity = itemData.currentQuantity;
+        // UpdateItems
+
+        const responseData = action.payload
+
+        console.log('responseData', responseData);
+
+        if (responseData.status === 'max-stock-already') {
+          toast.warning(`Limited Stock. 🛒 (Available: ${responseData.availableStock})`)
+        }
+
+        if (responseData.status === 'out-of-stock') {
+          toast.error(`Oops 😳! ${itemToUpdate.title} (${itemToUpdate.size.size}) went out of stock!`)
+          itemToUpdate.quantity = 0;
+          itemToUpdate.outOfStock = true;
+          itemToUpdate.latestStockData = 0;
+        }
+
+        updateTotals(state);
         state.status = 'failed';
       })
       .addCase(removeItemFromCart.pending, (state, action) => {

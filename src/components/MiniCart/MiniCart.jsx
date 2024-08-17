@@ -1,9 +1,10 @@
-import React, { useCallback,  useMemo } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import "./MiniCart.scss"
 import { useDispatch, useSelector } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
 import calculateNoOfProducts from '../../utils/calculateNoOfProducts'
 import CartItem from './CartItem/CartItem'
+import { CircularProgress } from '@mui/material'
 
 
 const Cart = ({ showCart, setShowCart }) => {
@@ -42,16 +43,18 @@ const Cart = ({ showCart, setShowCart }) => {
       </div>
 
       <div className="items">
-        {items.length > 0 ?
-          <>
-            {
-              items.map(item => (
-                <CartItem key={item.localCartItemId} item={item} setShowCart={setShowCart} />
-              ))
-            }
-          </>
-          :
-          <span className='list-empty'>No Products</span>}
+        {items ? (
+          items.length > 0 ?
+            <>
+              {
+                items.map(item => (
+                  <CartItem key={item.localCartItemId} item={item} setShowCart={setShowCart} />
+                ))
+              }
+            </>
+            :
+            <span className='list-empty'>No Products</span>
+        ) : <CircularProgress />}
       </div>
 
       <div className="actions">
