@@ -259,7 +259,7 @@ const Product = () => {
                 }
                 {
                   selectedStock &&
-                  <div className="stock-warning">
+                  <>
 
                     {(() => {
                       switch (true) {
@@ -304,16 +304,9 @@ const Product = () => {
                           return null;
                       }
                     })()}
-                  </div>
+                  </>
                 }
-                {/* {maxStockReached && <div className="out-of-stock">
-                  <span>*This product is out of stock</span>
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Enter email to find out when it's back" />
-                </div>} */}
+                
                 {selectedStock?.stock === 0 || maxStockReached ?
                   <button
                     className={`add btn-1`}

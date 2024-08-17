@@ -339,8 +339,8 @@
                 &.add-to-cart {
                     display: flex;
                     flex-direction: column;
-                    padding-block: 25px;
-                    gap: 15px;
+                    padding-block: 20px;
+                    gap: 20px;
 
                     .quantity {
                         // display: none;
@@ -365,6 +365,7 @@
                             color: $deepCharcoal;
                             width: 50px;
                             height: 50px;
+                            border-radius: 10px;
                             
                             span {
                                 font-size: 25px;
@@ -373,7 +374,6 @@
                         }
                     }
 
-                    .stock-warning {
                         .out-of-stock {
                             display: flex;
                             flex-direction: column;
@@ -394,7 +394,6 @@
                                 color: $brightRed;
                             }
                         }
-                    }
 
                     .add {
                         // width: 250px;
