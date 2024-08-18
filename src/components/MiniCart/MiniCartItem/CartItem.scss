@@ -1,7 +1,7 @@
 @import '../../../variables.scss';
 @import '../../../mixins.scss';
 
-.mini-cart-item {
+.cart-item {
     display: flex;
     justify-content: space-evenly;
     align-items: stretch;
@@ -9,13 +9,15 @@
     text-decoration: none;
     color: unset;
     max-width: 100%;
+    padding-block: 20px;
+    border-bottom: 1px solid $lightGray;
 
 
     .img {
         background-color: $lighterGray;
         border: 1px solid $lightGray;
         border-radius: 3px;
-        width: 75px;
+        width: 90px;
         height: 90px;
         padding: 5px;
 
@@ -55,18 +57,58 @@
                     display: block;
                 }
 
-                .size {
-                    font-weight: 400;
-                    font-size: 15px;
+                .stock {
                     display: flex;
                     align-items: center;
-                    gap: 4px;
+                    gap: 6px;
 
-                    .value {
-                        font-weight: 500;
+                    .size {
+                        font-weight: 400;
                         font-size: 15px;
+                        display: flex;
+                        align-items: center;
+                        gap: 4px;
+
+
+
+                        .value {
+                            font-weight: 500;
+                            font-size: 15px;
+                        }
+
+
+
+
+                    }
+
+                    .vertical-line {
+                        width: 2px;
+                        height: 13px;
+                        background-color: $lightGray;
+                    }
+
+                    .stock-info {
+                        display: flex;
+
+                        span {
+                            font-weight: 600;
+
+                            &.out-of-stock {
+                                color: red;
+                            }
+
+                            &.in-stock {
+                                color: green;
+                            }
+
+                            &.low-stock {
+                                color: $brightRed;
+                            }
+
+                        }
                     }
                 }
+
 
 
 
@@ -214,7 +256,7 @@
                     }
 
 
-                    &.wishlist{
+                    &.wishlist {
                         display: none;
 
                         @include md {

@@ -18,23 +18,23 @@ import ScrollToTop from './components/ScrollToTop';
 import CheckoutPage from './pages/Checkout/CheckoutPage';
 import CheckoutSuccess from './pages/Checkout/CheckoutSuccess/CheckoutSuccess';
 import checkCartItemsLoader from './components/checkCartItemsLoader/checkCartItemsLoader';
-import { Provider, useDispatch } from 'react-redux';
+import { Provider, useDispatch, useSelector } from 'react-redux';
 import { store } from './redux/store';
 import Login from './pages/Auth/Login/Login';
 import Register from './pages/Auth/Register/Register';
-import { syncCartOnPageRefresh } from './redux/cartReducer';
+import { setShowCart, syncCartOnPageRefresh } from './redux/cartReducer';
 import { ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 
 
 const Layout = () => {
-  const [showCart, setShowCart] = useState(false);
-
+  const dispatch = useDispatch()
+  const showCart = useSelector(state => state.cart.showCart);
 
   useEffect(() => {
     const handleOutsideClick = (event) => {
       if (!event.target.closest('.mini-cart, .cartIcon, .delete')) {
-        setShowCart((prev) => false); // Close the navbar if clicked outside
+        dispatch(setShowCart(false)); // Close the navbar if clicked outside
       }
     };
 
@@ -61,7 +61,7 @@ const Layout = () => {
   return (
     <div className="app">
       <ScrollToTop />
-      <Navbar setShowCart={setShowCart} showCart={showCart} />
+      <Navbar  showCart={showCart} />
       <div id="content">
         <div className={`darkOverlay ${showCart ? 'show' : ''}`}></div>
         <ToastContainer />

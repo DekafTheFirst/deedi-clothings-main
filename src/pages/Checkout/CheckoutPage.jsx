@@ -10,6 +10,8 @@ import ShippingTab from './ShippingTab/ShippingTab'
 import calculateNoOfProducts from '../../utils/calculateNoOfProducts'
 import BillingTab from './BillingTab/BillingTab'
 import { getCurrentStepFromSession, getShippingInfoFromSession } from '../../utils/session'
+import CartItem from '../../components/MiniCart/MiniCartItem/CartItem'
+import { CircularProgress } from '@mui/material'
 
 
 const CheckoutPage = () => {
@@ -27,13 +29,13 @@ const CheckoutPage = () => {
 
   // const billingInfo = useSelector(state => state.checkout.billingInfo);
   // const shippingInfo = useSelector(state => state.checkout.shippingInfo);
-  
+
   // console.log('previewedStep', previewedStep, '\n\n' + 'currentStep', currentStep)
   // Calculate totals
   const subtotal = useMemo(() => {
     let total = 0;
     items.forEach(item => {
-      total += item.price;
+      total += item.price * item.quantity;
     });
     return total.toFixed(2);
   }, [items]);
@@ -56,7 +58,7 @@ const CheckoutPage = () => {
   // Payment
 
 
-  
+
 
   //Checkout Step
 
@@ -74,7 +76,7 @@ const CheckoutPage = () => {
       case 2:
         return <CourierOptions />
       case 3:
-        return <BillingTab totalAmount={totalAmount}/>
+        return <BillingTab totalAmount={totalAmount} />
     }
   }
 
@@ -90,7 +92,7 @@ const CheckoutPage = () => {
           </div>
 
           <div className="col-md-6 order-summary">
-            <div className="wrapper">
+            <div className="summary-wrapper">
               <div className="top">
                 <div className="order-total">
                   <h5 className="heading">Order Summary </h5>
@@ -144,6 +146,18 @@ const CheckoutPage = () => {
                           </div>
                         ))
                       }
+                      {items ? (
+                        items.length > 0 ?
+                          <>
+                            {
+                              items.map(item => (
+                                <CartItem key={item.localCartItemId} item={item}  cartType="mini" />
+                              ))
+                            }
+                          </>
+                          :
+                          <span className='list-empty'>No Products</span>
+                      ) : <CircularProgress />}
                     </>
                     :
 

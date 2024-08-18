@@ -17,7 +17,8 @@ const initialState = {
   vat: 0,
   totalAmount: 0,
   status: 'idle',
-  error: null
+  error: null,
+  showCart: false,
 }
 
 const calculateTotals = (items) => {
@@ -260,7 +261,19 @@ export const cartSlice = createSlice({
   reducers: {
     resetCart: (state) => {
       state.items = []
+    },
+    setShowCart: (state, action) => {
+      state.showCart = action.payload
+    },
+    setOutOfStock: (state, action) => {
+      const localCartItemId = action.payload;
+      console.log('localCartItemId', localCartItemId)
+      const item = state.items.find(item => item.localCartItemId === localCartItemId);
+      if (item) {
+        item.outOfStock = true;
+      }
     }
+
   },
   extraReducers: (builder) => {
     builder
@@ -470,7 +483,7 @@ export const cartSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const { resetCart } = cartSlice.actions
+export const { resetCart, setShowCart, setOutOfStock } = cartSlice.actions
 
 export default cartSlice.reducer
 

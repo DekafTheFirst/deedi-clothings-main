@@ -3,20 +3,20 @@ import { createSlice  } from '@reduxjs/toolkit';
 
 export const steps = [
   {
-    title: 'Shipping Info',
+    title: 'Shipping',
     slug: 'shipping-info',
     id: 1,
     completed: true,
   },
   {
-    title: 'Billing Info',
+    title: 'Billing',
     slug: 'billing-info',
     id: 2,
     completed: true,
   },
   {
-    title: 'Complete',
-    slug: 'complete',
+    title: 'Payment',
+    slug: 'payment',
     id: 3,
     completed: true,
   },

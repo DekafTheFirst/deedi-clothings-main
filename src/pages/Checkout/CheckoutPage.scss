@@ -38,12 +38,12 @@
             .order-summary {
 
                 @include md {
-                    padding: 12px 30px 12px;
+                    // padding: 12px 30px 12px;
                     position: sticky;
                     top: $navbarHeight;
                 }
 
-                .wrapper {
+                .summary-wrapper {
                     display: flex;
                     flex-direction: column;
                     padding: 20px 10px;
@@ -51,7 +51,7 @@
 
 
                     @include md {
-                        padding-left: 40px;
+                        padding-left: 60px;
                         gap: 20px;
                         justify-content: flex-start;
 
@@ -150,14 +150,14 @@
                                 background: transparent;
                                 /* Hide the track */
                             }
-                    
+
                             &::-webkit-scrollbar-thumb {
                                 background-color: $mediumGray;
                                 /* Scrollbar color */
                                 border-radius: 4px;
                                 /* Rounded corners for scrollbar */
                             }
-                    
+
                             &::-webkit-scrollbar-track {
                                 background: transparent;
                                 /* Hide the track */
@@ -244,6 +244,26 @@
                                     text-transform: uppercase;
                                     margin-left: auto;
                                     text-wrap: nowrap;
+                                }
+                            }
+
+                            .cart-item {
+                                padding: 20px;
+                                border-radius: 20px;
+                                border: 1px solid $lightGray;
+                                gap: 15px;
+
+                                .img {
+                                    background-color: $lighterGray;
+                                    border-radius: 10px;
+                                    border: 1px solid $lightGray;
+                                    width: 90px;
+                                    height: 90px;
+                                    padding: 5px;
+
+                                    img {
+                                        object-fit: contain;
+                                    }
                                 }
                             }
 

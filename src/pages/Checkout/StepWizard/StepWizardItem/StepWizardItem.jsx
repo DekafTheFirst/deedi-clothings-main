@@ -35,7 +35,7 @@ const StepWizardItem = ({ stepItem }) => {
             onClick={handleClick}
         >
             <span className="progress-count">{stepItem.id}</span>
-            <span className="progress-label">{stepItem.label}</span>
+            <span className="progress-label">{stepItem.title}</span>
         </li>
     )
 }

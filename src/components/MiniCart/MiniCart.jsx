@@ -4,13 +4,14 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
 import calculateNoOfProducts from '../../utils/calculateNoOfProducts'
 import { CircularProgress } from '@mui/material'
-import MiniCartItem from './MiniCartItem/MiniCartItem'
+import CartItem from './MiniCartItem/CartItem'
+import { setShowCart } from '../../redux/cartReducer'
 
 
-const Cart = ({ showCart, setShowCart }) => {
+const Cart = () => {
 
   const navigate = useNavigate();
-
+  
 
   const items = useSelector(state => state.cart.items);
 
@@ -22,7 +23,7 @@ const Cart = ({ showCart, setShowCart }) => {
 
 
   const dispatch = useDispatch()
-
+  
 
 
 
@@ -30,8 +31,8 @@ const Cart = ({ showCart, setShowCart }) => {
 
   const handleCheckoutClicked = useCallback(() => {
     navigate('/checkout');
-    setShowCart(false);
-  }, [navigate, setShowCart]);
+    dispatch(setShowCart(false));
+  }, [navigate]);
 
   // console.log(items)
 
@@ -48,7 +49,7 @@ const Cart = ({ showCart, setShowCart }) => {
             <>
               {
                 items.map(item => (
-                  <MiniCartItem key={item.localCartItemId} item={item} setShowCart={setShowCart} cartType="mini"/>
+                  <CartItem key={item.localCartItemId} item={item}  cartType="mini"/>
                 ))
               }
             </>
@@ -64,7 +65,7 @@ const Cart = ({ showCart, setShowCart }) => {
           <button onClick={() => navigate('/products/women')} className='btn-1'>GO SHOPPING</button>
         }
         {/* <span className="reset" onClick={() => dispatch(resetCart())}>Reset Cart</span> */}
-        <Link to="/cart" className='view-cart' onClick={() => setShowCart(false)}> View Shopping Bag </Link>
+        <Link to="/cart" className='view-cart' onClick={() => dispatch(setShowCart(false))}> View Shopping Bag </Link>
       </div>
 
     </div>

@@ -4,7 +4,6 @@
 .mini-cart {
     display: flex;
     flex-direction: column;
-    gap: 20px;
     position: absolute;
     right: 12px;
     top: 75px;
@@ -28,7 +27,6 @@
     .items {
         display: flex;
         flex-direction: column;
-        gap: 15px;
         max-height: 300px;
         max-width: 100%;
 
@@ -67,6 +65,7 @@
 
 
     .navigation {
+        margin-top: 20px;
         display: flex;
         flex-direction: column;
         gap: 10px;

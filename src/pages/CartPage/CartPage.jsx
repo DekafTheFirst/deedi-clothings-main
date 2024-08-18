@@ -3,17 +3,17 @@ import "./CartPage.scss"
 import { useDispatch, useSelector } from 'react-redux'
 import { removeItemFromCart, resetCart } from '../../redux/cartReducer'
 import { Link, useNavigate } from 'react-router-dom'
-import MiniCartItem from '../../components/MiniCart/MiniCartItem/MiniCartItem'
+import CartItem from '../../components/MiniCart/MiniCartItem/CartItem'
 
 
-const CartPage = ({ showCart, setShowCart }) => {
-  const items = useSelector(state => state.cart.items)
+const CartPage = () => {
+  const items = useSelector(state => state.cart.items);
   const navigate = useNavigate();
-  console.log(items)
+  console.log(items);
 
   const totalPrice = () => {
     let total = 0
-    items.forEach(item => (total += item.price));
+    items.forEach(item => (total += item.price * item.quantity));
     return total.toFixed(2)
   }
 
@@ -21,60 +21,9 @@ const CartPage = ({ showCart, setShowCart }) => {
 
 
 
-  const handleRemoveFromCart = (locallocalCartItemId) => {
-    dispatch(removeItemFromCart(localCartItemId))
-      .unwrap()
-      .then(() => {
-        console.log('Item removed from cart successfully');
-      })
-      .catch((error) => {
-        console.error('Failed to remove item from cart:', error);
-      });
-  };
 
 
-  // {products.length > 0 ?
-  //   <>
-  //     {
-  //       products.map(item => (
-  //         <div
-  //           className="item"
-  //           key={item.idPerSize}
-  //         >
-  //           <Link
-  //             to={`/product/${item.productId}`}
-  //             onClick={() => setShowCart(false)}
-  //             className="left">
-  //             <div className="img-wrapper">
-  //               <OptimizedImage
-  //                 // wrapperClassName='imgWrapper'
-  //                 className={'img'}
-  //                 alt=""
-  //                 src={import.meta.env.VITE_UPLOAD_URL + item.img}
-  //                 effect="blur"
-  //               />
-  //             </div>
-  //             <div className="details">
-  //               <h1 className='title'>{item.title}</h1>
-  //               {/* <p>{item.desc.substring(0, 100)}</p> */}
-  //               <div className="bottom">
-  //                 <span className='size'>SIZE : {item.size.size}</span>
-  //                 <span className='price'>{`$${item.price}`}</span>
-  //               </div>
-  //             </div>
-  //           </Link>
-  //           <Close className='delete' onClick={() => handleRemoveFromCart(item.localCartItemId)} />
-  //         </div>
-  //       ))
-  //     }
-  //   </>
-  //   :
-
-  //   <div className='list-empty'>
-  //     <span>No Products</span>
-  //     <button onClick={() => navigate('/products/women')} className='btn-1'><ShoppingBagOutlined fontSize='small' /> Continue Shopping</button>
-  //   </div>
-  // }
+ 
 
   return (
     <div className="cart-page">
@@ -95,7 +44,7 @@ const CartPage = ({ showCart, setShowCart }) => {
                   <>
                     {
                       items.map(item => (
-                        <MiniCartItem key={item.localCartItemId} item={item} setShowCart={setShowCart} cartType='full'/>
+                        <CartItem key={item.localCartItemId} item={item}  cartType='full'/>
                       ))
                     }
                   </>

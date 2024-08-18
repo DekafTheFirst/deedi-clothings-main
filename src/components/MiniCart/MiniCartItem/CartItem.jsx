@@ -2,23 +2,46 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import OptimizedImage from '../../OptimizedImage/OptimizedImage';
 import { Close, Delete, DeleteForeverOutlined, DeleteOutline, FavoriteBorder } from '@mui/icons-material';
-import './MiniCartItem.scss';
+import './CartItem.scss';
 import { useDispatch } from 'react-redux';
-import { removeItemFromCart, updateCartItem } from '../../../redux/cartReducer';
+import { removeItemFromCart, setOutOfStock, setShowCart, updateCartItem } from '../../../redux/cartReducer';
 import useFetch from '../../../hooks/useFetch';
 import { Skeleton } from '@mui/material';
+import { toast } from 'react-toastify';
 
-const MiniCartItem = ({ item, setShowCart, cartType }) => {
+const CartItem = ({ item, cartType }) => {
     // console.log(item)
     const { data: stockData, loading, error } = useFetch(
-        `/stocks?filters[product][id][$eq]=${item.productId}&filters[size][id][$eq]=${item.size.id}`
+        `/stocks?filters[product][id][$eq]=${item.productId}&filters[size][id][$eq]=${item.size.id}&populate=product`
     );
-    // console.log(stockData)
+
+    // const { data: product, loading, error } = useFetch(
+    //     `/products?filters[id][$eq]=${item.productId}&filters[stocks][size][id][$eq]=${item.size.id}`
+    // );
+    console.log('stockData', stockData);
+    const product = stockData?.[0]?.attributes?.product?.data?.attributes
     const [availableStock, setAvailableStock] = useState(null);
 
+    const fetchedAvailableStock = stockData?.[0]?.attributes?.stock
 
     useEffect(() => {
-        setAvailableStock(stockData?.[0]?.attributes?.stock)
+        console.log('fetchedAvailableStock', fetchedAvailableStock)
+        if ((fetchedAvailableStock < item.quantity)) {
+            if (fetchedAvailableStock <= 0) {
+                console.log('item.localCartItemId', item.localCartItemId)
+                toast.error(`${product?.title} (${item.size.size}) went out of stock!`)
+                dispatch(setOutOfStock(item.localCartItemId));
+
+            }
+            else {
+                callUpdateDispatch(fetchedAvailableStock)
+                toast.warning(`Reduced the quantity of ${product?.title} (${item.size.size}) to ${fetchedAvailableStock}: Limited Stock`)
+            }
+        }
+
+        setAvailableStock(fetchedAvailableStock);
+
+
     }, [stockData]);
 
 
@@ -43,10 +66,8 @@ const MiniCartItem = ({ item, setShowCart, cartType }) => {
 
     };
 
-
-    const handleUpdateCartItem = async (e, { requestedQuantity }) => {
-        e.preventDefault();
-        e.stopPropagation();
+    const callUpdateDispatch = async (requestedQuantity) => {
+        console.log('reqested quantity', requestedQuantity)
         try {
             // Dispatch the update action and unwrap the result
             const response = await dispatch(updateCartItem({
@@ -70,36 +91,60 @@ const MiniCartItem = ({ item, setShowCart, cartType }) => {
             setAvailableStock(latestAvaialableStockData);
             console.error('Failed to update cart item:', error);
         }
+    }
+
+    const handleUpdateCartItem = (e, { requestedQuantity }) => {
+        e.preventDefault();
+        e.stopPropagation();
+        callUpdateDispatch(requestedQuantity)
     };
 
     const handleRedirect = () => {
         // console.log('Navigating to',`/product/${item.productId}`)
         navigate(`/product/${item.productId}`)
-        setShowCart(false)
+        dispatch(setShowCart(false))
     }
 
     return (
         <div
-            className="mini-cart-item"
+            className="cart-item"
         >
 
-            <div className="img-wrapper">
+            <div className="img-wrapper" onClick={handleRedirect}>
                 <OptimizedImage
                     // wrapperClassName='imgWrapper'
                     className={'img'}
                     alt=""
                     src={import.meta.env.VITE_UPLOAD_URL + item.img}
                     effect="blur"
-                    onClick={handleRedirect}
                 />
             </div>
 
             <div className="body">
                 <div className="wrapper" onClick={handleRedirect}>
                     <div className="details">
-                        <h1 className='title'>{item.title}{item.outOfStock ? '(Out Of Stock)' : ''}</h1>
+                        <h1 className='title'>{item.title}</h1>
                         {/* <p>{item.desc.substring(0, 100)}</p> */}
-                        <div className='size'><span>Size:</span> <span className="value">{item?.size?.size}</span></div>
+                        <div className='stock'>
+                            <div className="size">
+                                <span>Size:</span> <span className="value">{item?.size?.size}</span>
+                            </div>
+                            <div className="vertical-line"></div>
+
+                            <div className="stock-info">{(() => {
+                                switch (true) {
+                                    case availableStock === 0:
+                                        return <span className='out-of-stock'>In Stock</span>
+                                    case availableStock <= 5:
+                                        return <span className='low-stock'>Only {availableStock} left !</span>
+
+                                    default:
+                                        return <span className='in-stock'>In Stock</span>
+
+                                }
+                            })()}</div>
+                        </div>
+                        {item.outOfStock && <span>Out Of Stock</span>}
                     </div>
                     <div className="price">
                         <span className="total-price-per-item">${item.price * item.quantity}</span>
@@ -135,7 +180,6 @@ const MiniCartItem = ({ item, setShowCart, cartType }) => {
                         :
                         <Skeleton variant="rectangular" width={71} height={20} />
                     }
-                    {/* <div className="vertical-line"></div> */}
 
                     <div className="others">
                         {cartType === 'full' &&
@@ -161,4 +205,4 @@ const MiniCartItem = ({ item, setShowCart, cartType }) => {
     )
 }
 
-export default MiniCartItem
+export default CartItem

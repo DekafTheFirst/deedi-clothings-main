@@ -7,19 +7,21 @@ import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import { Link, useLocation } from 'react-router-dom';
 import "./Navbar.scss"
 import Cart from '../MiniCart/MiniCart';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Close, Menu, MenuOpen } from '@mui/icons-material';
 import calculateNoOfProducts from '../../utils/calculateNoOfProducts';
+import { setShowCart } from '../../redux/cartReducer';
 
-const Navbar = ({ setShowCart, showCart }) => {
+const Navbar = () => {
   const [toggle, setToggle] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [noOfProducts, setNoOfProducts] = useState(0)
-  const products = useSelector(state => state.cart.items)
+  const { items: products, showCart } = useSelector(state => state.cart)
   const user = useSelector(state => state.auth.user);
 
   const { pathname, state } = useLocation()
 
+  const dispatch = useDispatch()
   useEffect(() => {
     const noOfProducts = calculateNoOfProducts(products);
     setNoOfProducts(noOfProducts);
@@ -121,11 +123,11 @@ const Navbar = ({ setShowCart, showCart }) => {
               <KeyboardArrowDownIcon className='icon down-arrow' fontSize="small" />
             </div>
 
-            {pathname !== '/checkout' && <div className="cartIcon" onClick={() => setShowCart((prev) => !prev)}>
+            {pathname !== '/checkout' && <div className="cartIcon" onClick={() => dispatch(setShowCart(!showCart))}>
               <ShoppingCartOutlinedIcon className='icon' />
               <div className='noOfProducts'><span>{noOfProducts}</span></div>
             </div>}
-            {showCart && <Cart setShowCart={setShowCart} showCart={showCart} />}
+            {showCart && <Cart />}
 
 
           </div>
