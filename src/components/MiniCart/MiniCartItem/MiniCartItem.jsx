@@ -2,13 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import OptimizedImage from '../../OptimizedImage/OptimizedImage';
 import { Close, Delete, DeleteForeverOutlined, DeleteOutline, FavoriteBorder } from '@mui/icons-material';
-import './CartItem.scss';
+import './MiniCartItem.scss';
 import { useDispatch } from 'react-redux';
 import { removeItemFromCart, updateCartItem } from '../../../redux/cartReducer';
 import useFetch from '../../../hooks/useFetch';
 import { Skeleton } from '@mui/material';
 
-const CartItem = ({ item, setShowCart }) => {
+const MiniCartItem = ({ item, setShowCart, cartType }) => {
     // console.log(item)
     const { data: stockData, loading, error } = useFetch(
         `/stocks?filters[product][id][$eq]=${item.productId}&filters[size][id][$eq]=${item.size.id}`
@@ -80,7 +80,7 @@ const CartItem = ({ item, setShowCart }) => {
 
     return (
         <div
-            className="cart-item"
+            className="mini-cart-item"
         >
 
             <div className="img-wrapper">
@@ -101,46 +101,53 @@ const CartItem = ({ item, setShowCart }) => {
                         {/* <p>{item.desc.substring(0, 100)}</p> */}
                         <div className='size'><span>Size:</span> <span className="value">{item?.size?.size}</span></div>
                     </div>
-                    <div className="delete">
-                        <DeleteForeverOutlined sx={{ m: 0, p: 0, minWidth: 0 }} className='delete-icon' onClick={(e) => handleRemoveFromCart(e, { localCartItemId: item.localCartItemId, strapiCartItemId: item.strapiCartItemId })} />
-                        {/* <span>Remove</span> */}
+                    <div className="price">
+                        <span className="total-price-per-item">${item.price * item.quantity}</span>
+                        <span className='calc'>({item.quantity} x ${item.price})</span>
                     </div>
                 </div>
 
-                <div className="bottom">
+                <div className="actions">
 
-                    <div className='price-calc'>
-                        {availableStock != null || undefined ?
-                            <div className="quantity">
-                                <button
-                                    className={`reduce ${item.quantity <= 1 ? 'disabled' : ''}`}
-                                    disabled={item.quantity <= 1}
-                                    onClick={(e) => {
-                                        handleUpdateCartItem(e, { requestedQuantity: item.quantity - 1 })// Prevents the parent click handler from firing
-                                    }
-                                    }
-                                >
-                                    <span>-</span>
-                                </button>
-                                <span className="no-of-items">{item.quantity}</span>
-                                <button
-                                    className={`add ${item.quantity >= availableStock ? 'disabled' : ''}`}
-                                    disabled={item.quantity >= availableStock}
-                                    onClick={(e) => {
-                                        handleUpdateCartItem(e, { requestedQuantity: item.quantity + 1 }); // Prevents the parent click handler from firing
-                                    }}
-                                ><span>+</span></button>
+                    {availableStock != null || undefined ?
+                        <div className="quantity">
+                            <button
+                                className={`reduce ${item.quantity <= 1 ? 'disabled' : ''}`}
+                                disabled={item.quantity <= 1}
+                                onClick={(e) => {
+                                    handleUpdateCartItem(e, { requestedQuantity: item.quantity - 1 })// Prevents the parent click handler from firing
+                                }
+                                }
+                            >
+                                <span>-</span>
+                            </button>
+                            <span className="no-of-items">{item.quantity}</span>
+                            <button
+                                className={`add ${item.quantity >= availableStock ? 'disabled' : ''}`}
+                                disabled={item.quantity >= availableStock}
+                                onClick={(e) => {
+                                    handleUpdateCartItem(e, { requestedQuantity: item.quantity + 1 }); // Prevents the parent click handler from firing
+                                }}
+                            ><span>+</span></button>
 
 
-                            </div>
-                            :
-                            <Skeleton variant="rectangular" width={71} height={20} />
-                        }
-                        {/* <div className="vertical-line"></div> */}
-                    </div>
-                    <div className="price">
-                        <span className='sub-price'>({item.quantity} x ${item.price})</span>
-                        <span className="total-price-per-item">${item.price * item.quantity}</span>
+                        </div>
+                        :
+                        <Skeleton variant="rectangular" width={71} height={20} />
+                    }
+                    {/* <div className="vertical-line"></div> */}
+
+                    <div className="others">
+                        {cartType === 'full' &&
+                            < div className="action wishlist">
+                                <FavoriteBorder sx={{ m: 0, p: 0, minWidth: 0 }} className='action-icon' />
+                                {/* <span>Remove</span> */}
+                                <span>Move to wishlist</span>
+                            </div>}
+                        <div className="action delete">
+                            <DeleteForeverOutlined sx={{ m: 0, p: 0, minWidth: 0 }} className='action-icon' onClick={(e) => handleRemoveFromCart(e, { localCartItemId: item.localCartItemId, strapiCartItemId: item.strapiCartItemId })} />
+                            {cartType === 'full' && <span>Remove</span>}
+                        </div>
                     </div>
 
                 </div>
@@ -150,8 +157,8 @@ const CartItem = ({ item, setShowCart }) => {
 
 
 
-        </div>
+        </div >
     )
 }
 
-export default CartItem
+export default MiniCartItem

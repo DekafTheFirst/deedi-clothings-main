@@ -50,7 +50,7 @@
                     display: flex;
                     flex-direction: column;
                     border-top: 1px solid $lightGray;
-                    gap: 20px;
+                    gap: 40px;
                     padding-block: 20px;
 
                     .cart-item {
@@ -100,7 +100,6 @@
                 @include md {
                     position: sticky;
                     top: calc($navbarHeight );
-                    height: calc(100vh - $navbarHeight );
                     padding-left: 40px;
                     display: flex;
                     align-items: center;
@@ -112,7 +111,7 @@
                     background-color: lighten($lightGray, 8%);
                     width: 100%;
                     height: 100%;
-                    padding: 25px 20px;
+                    padding: 40px 20px;
                     margin-bottom: 12px;
                     border-radius: 3px;
                     display: flex;
@@ -122,7 +121,7 @@
                     gap: 30px;
 
                     @include md {
-                        padding: 30px;
+                        padding: 50px 30px;
                         margin-bottom: unset;
 
                     }

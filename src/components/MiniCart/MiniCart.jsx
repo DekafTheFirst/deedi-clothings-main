@@ -3,8 +3,8 @@ import "./MiniCart.scss"
 import { useDispatch, useSelector } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
 import calculateNoOfProducts from '../../utils/calculateNoOfProducts'
-import CartItem from './CartItem/CartItem'
 import { CircularProgress } from '@mui/material'
+import MiniCartItem from './MiniCartItem/MiniCartItem'
 
 
 const Cart = ({ showCart, setShowCart }) => {
@@ -48,7 +48,7 @@ const Cart = ({ showCart, setShowCart }) => {
             <>
               {
                 items.map(item => (
-                  <CartItem key={item.localCartItemId} item={item} setShowCart={setShowCart} />
+                  <MiniCartItem key={item.localCartItemId} item={item} setShowCart={setShowCart} cartType="mini"/>
                 ))
               }
             </>

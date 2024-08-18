@@ -1,0 +1,248 @@
+@import '../../../variables.scss';
+@import '../../../mixins.scss';
+
+.mini-cart-item {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: stretch;
+    gap: 10px;
+    text-decoration: none;
+    color: unset;
+    max-width: 100%;
+
+
+    .img {
+        background-color: $lighterGray;
+        border: 1px solid $lightGray;
+        border-radius: 3px;
+        width: 75px;
+        height: 90px;
+        padding: 5px;
+
+        img {
+            object-fit: contain;
+        }
+    }
+
+    .body {
+        flex: 1;
+        display: flex;
+        gap: 15px;
+        flex-direction: column;
+        justify-content: space-between;
+        overflow: hidden;
+        // justify-content: space-between;
+
+        .wrapper {
+            display: flex;
+            align-items: start;
+
+            .details {
+                display: flex;
+                flex-direction: column;
+                gap: 5px;
+                flex: 1;
+                overflow: hidden;
+
+                .title {
+                    margin-top: 0;
+                    font-size: 16px;
+                    font-weight: 500;
+
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    display: block;
+                }
+
+                .size {
+                    font-weight: 400;
+                    font-size: 15px;
+                    display: flex;
+                    align-items: center;
+                    gap: 4px;
+
+                    .value {
+                        font-weight: 500;
+                        font-size: 15px;
+                    }
+                }
+
+
+
+            }
+
+            .price {
+                display: flex;
+                gap: 3px;
+                align-items: flex-end;
+                flex-direction: column;
+
+                .calc {
+                    font-weight: 500;
+                    font-size: 12px;
+                    color: $darkGray;
+                }
+
+                .total-price-per-item {
+                    font-size: 18px;
+                    font-weight: 600;
+                }
+            }
+
+
+        }
+
+        span {
+            line-height: 1; // Ensures the text is centered
+            font-size: 15px;
+            vertical-align: middle;
+        }
+
+
+
+
+        .actions {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+            justify-content: space-between;
+
+
+
+
+
+
+            .quantity {
+                // display: none;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+
+
+
+                .no-of-items {
+                    color: black;
+                    min-width: 11px;
+                    text-align: center;
+                }
+
+
+
+                button {
+                    all: unset;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    cursor: pointer;
+                    border: none;
+                    background-color: $lighterGray;
+                    color: $deepCharcoal;
+                    border-radius: 3px;
+                    height: 30px !important;
+                    width: 30px !important;
+                    min-width: 0 !important;
+                    appearance: none;
+                    -webkit-appearance: none;
+                    -moz-appearance: none;
+                    box-sizing: border-box;
+                    transform: scale(1); // Starting at the default scale
+                    transition: transform 0.05s ease-in-out; // Transition for smooth scaling
+                    box-sizing: border-box;
+                    /* Ensures padding and border are included in width/height */
+
+
+                    span {
+                        font-size: 16px;
+                        font-weight: 600;
+                        text-align: center;
+                    }
+
+                    &.disabled {
+                        background-color: $lighterGray;
+                        color: $mediumGray;
+                    }
+
+
+                    &:active:not(.disabled) {
+                        transform: scale(0.9);
+                        transition: transform;
+                    }
+
+                }
+            }
+
+
+
+
+            .others {
+                display: flex;
+                gap: 10px;
+
+                .action {
+                    display: inline-flex;
+                    gap: 3px;
+                    align-items: center;
+                    cursor: pointer;
+                    flex-shrink: 0;
+
+
+                    /* Prevents the sibling from shrinking */
+
+                    // margin-left: auto;
+
+                    // Reset margin inside the svg
+                    color: $darkGray;
+
+                    &:hover {
+                        color: $deepCharcoal;
+                    }
+
+                    &:active {
+                        transform: scale(0.95);
+                    }
+
+                    svg {
+                        display: block;
+                        margin: 0; // Reset margin inside the svg
+
+
+                        path {
+                            width: 100%;
+                            height: 100%;
+                        }
+                    }
+
+
+                    &.wishlist{
+                        display: none;
+
+                        @include md {
+                            display: inline-flex;
+                        }
+                    }
+
+
+                }
+            }
+
+
+
+
+
+
+
+
+        }
+
+
+
+
+
+
+    }
+
+
+
+
+}

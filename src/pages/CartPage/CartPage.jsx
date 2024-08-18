@@ -1,11 +1,9 @@
 import React, { useEffect } from 'react'
 import "./CartPage.scss"
-import { Close, DeleteOutlineOutlined, ShoppingBag, ShoppingBagOutlined } from '@mui/icons-material'
 import { useDispatch, useSelector } from 'react-redux'
 import { removeItemFromCart, resetCart } from '../../redux/cartReducer'
 import { Link, useNavigate } from 'react-router-dom'
-import OptimizedImage from '../../components/OptimizedImage/OptimizedImage'
-import CartItem from '../../components/MiniCart/CartItem/CartItem'
+import MiniCartItem from '../../components/MiniCart/MiniCartItem/MiniCartItem'
 
 
 const CartPage = ({ showCart, setShowCart }) => {
@@ -97,7 +95,7 @@ const CartPage = ({ showCart, setShowCart }) => {
                   <>
                     {
                       items.map(item => (
-                        <CartItem key={item.localCartItemId} item={item} setShowCart={setShowCart} />
+                        <MiniCartItem key={item.localCartItemId} item={item} setShowCart={setShowCart} cartType='full'/>
                       ))
                     }
                   </>
