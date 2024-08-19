@@ -92,6 +92,7 @@
 
                         span {
                             font-weight: 600;
+                            font-size: 14px;
 
                             &.out-of-stock {
                                 color: red;
@@ -116,16 +117,11 @@
 
             .price {
                 display: flex;
-                gap: 3px;
+                gap: 5px;
                 align-items: flex-end;
                 flex-direction: column;
 
-                .calc {
-                    font-weight: 500;
-                    font-size: 12px;
-                    color: $darkGray;
-                }
-
+                
                 .total-price-per-item {
                     font-size: 18px;
                     font-weight: 600;
@@ -212,6 +208,13 @@
                     }
 
                 }
+
+                .calc {
+                    font-weight: 500;
+                    font-size: 12px;
+                    color: $darkGray;
+                }
+
             }
 
 
@@ -220,6 +223,7 @@
             .others {
                 display: flex;
                 gap: 10px;
+                margin-left: auto;
 
                 .action {
                     display: inline-flex;
@@ -264,6 +268,11 @@
                         }
                     }
 
+                    &.delete {
+
+                        
+                    }
+
 
                 }
             }
@@ -275,6 +284,12 @@
 
 
 
+        }
+
+        .notify-me {
+            background-color: transparent;
+            border-radius: 7px;
+            padding: 8px;
         }
 
 

@@ -11,7 +11,7 @@ import { setShowCart } from '../../redux/cartReducer'
 const Cart = () => {
 
   const navigate = useNavigate();
-  
+
 
   const items = useSelector(state => state.cart.items);
 
@@ -23,7 +23,7 @@ const Cart = () => {
 
 
   const dispatch = useDispatch()
-  
+
 
 
 
@@ -47,12 +47,22 @@ const Cart = () => {
         {items ? (
           items.length > 0 ?
             <>
-              {
-                items.map(item => (
-                  <CartItem key={item.localCartItemId} item={item}  cartType="mini"/>
-                ))
-              }
+              <div className="cart-items in-stock">
+                {
+                  items.filter(item => !item.outOfStock).map(item => (
+                    <CartItem key={item.localCartItemId} item={item} cartType="mini" />
+                  ))
+                }
+              </div>
+              <div className="cart-items out-of-stock">
+                  {
+                    items.filter(item => item.outOfStock).map(item => (
+                      <CartItem key={item.localCartItemId} item={item} cartType="mini" />
+                    ))
+                  }
+              </div>
             </>
+
             :
             <span className='list-empty'>No Products</span>
         ) : <CircularProgress />}

@@ -267,7 +267,7 @@ export const cartSlice = createSlice({
     },
     setOutOfStock: (state, action) => {
       const localCartItemId = action.payload;
-      console.log('localCartItemId', localCartItemId)
+      // console.log('localCartItemId', localCartItemId)
       const item = state.items.find(item => item.localCartItemId === localCartItemId);
       if (item) {
         item.outOfStock = true;
@@ -443,7 +443,6 @@ export const cartSlice = createSlice({
 
         if (responseData.status === 'out-of-stock') {
           toast.error(`Oops 😳! ${itemToUpdate.title} (${itemToUpdate.size.size}) went out of stock!`)
-          itemToUpdate.quantity = 0;
           itemToUpdate.outOfStock = true;
           itemToUpdate.latestStockData = 0;
         }

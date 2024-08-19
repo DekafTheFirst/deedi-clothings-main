@@ -18,7 +18,6 @@ const CartItem = ({ item, cartType }) => {
     // const { data: product, loading, error } = useFetch(
     //     `/products?filters[id][$eq]=${item.productId}&filters[stocks][size][id][$eq]=${item.size.id}`
     // );
-    console.log('stockData', stockData);
     const product = stockData?.[0]?.attributes?.product?.data?.attributes
     const [availableStock, setAvailableStock] = useState(null);
 
@@ -26,28 +25,26 @@ const CartItem = ({ item, cartType }) => {
 
     useEffect(() => {
         console.log('fetchedAvailableStock', fetchedAvailableStock)
-        if ((fetchedAvailableStock < item.quantity)) {
-            if (fetchedAvailableStock <= 0) {
-                console.log('item.localCartItemId', item.localCartItemId)
-                toast.error(`${product?.title} (${item.size.size}) went out of stock!`)
-                dispatch(setOutOfStock(item.localCartItemId));
-
-            }
-            else {
+        const validateStock = () => {
+            if ((fetchedAvailableStock < item.quantity) && !item.outOfStock) {
                 callUpdateDispatch(fetchedAvailableStock)
-                toast.warning(`Reduced the quantity of ${product?.title} (${item.size.size}) to ${fetchedAvailableStock}: Limited Stock`)
             }
+
+            setAvailableStock(fetchedAvailableStock);
+
         }
 
-        setAvailableStock(fetchedAvailableStock);
+        validateStock()
 
 
-    }, [stockData]);
+    }, [fetchedAvailableStock]);
 
 
     useEffect(() => {
         console.log('availableStock', availableStock)
     }, [availableStock]);
+
+    const isOutOfStock = availableStock <= 1;
 
     const dispatch = useDispatch();
     const navigate = useNavigate()
@@ -134,31 +131,30 @@ const CartItem = ({ item, cartType }) => {
                             <div className="stock-info">{(() => {
                                 switch (true) {
                                     case availableStock === 0:
-                                        return <span className='out-of-stock'>In Stock</span>
+                                        return <span className='out-of-stock'>Out of Stock</span>
                                     case availableStock <= 5:
                                         return <span className='low-stock'>Only {availableStock} left !</span>
 
-                                    default:
+                                    case availableStock > 5:
                                         return <span className='in-stock'>In Stock</span>
+
 
                                 }
                             })()}</div>
                         </div>
-                        {item.outOfStock && <span>Out Of Stock</span>}
                     </div>
                     <div className="price">
                         <span className="total-price-per-item">${item.price * item.quantity}</span>
-                        <span className='calc'>({item.quantity} x ${item.price})</span>
                     </div>
                 </div>
 
                 <div className="actions">
 
-                    {availableStock != null || undefined ?
+                    {availableStock != null || availableStock != undefined ?
                         <div className="quantity">
                             <button
-                                className={`reduce ${item.quantity <= 1 ? 'disabled' : ''}`}
-                                disabled={item.quantity <= 1}
+                                className={`reduce ${item.quantity <= 1 || isOutOfStock ? 'disabled' : ''}`}
+                                disabled={item.quantity <= 1 || isOutOfStock}
                                 onClick={(e) => {
                                     handleUpdateCartItem(e, { requestedQuantity: item.quantity - 1 })// Prevents the parent click handler from firing
                                 }
@@ -175,11 +171,13 @@ const CartItem = ({ item, cartType }) => {
                                 }}
                             ><span>+</span></button>
 
+                            <span className='calc'>({item.quantity} x ${item.price})</span>
 
                         </div>
                         :
                         <Skeleton variant="rectangular" width={71} height={20} />
                     }
+                    
 
                     <div className="others">
                         {cartType === 'full' &&
@@ -195,6 +193,8 @@ const CartItem = ({ item, cartType }) => {
                     </div>
 
                 </div>
+
+                {item.outOfStock && <button className='notify-me'>Notify me</button>}
             </div>
 
 

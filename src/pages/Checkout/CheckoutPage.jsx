@@ -114,44 +114,13 @@ const CheckoutPage = () => {
                 <div className="products">
                   {items.length > 0 ?
                     <>
-                      {
-                        items.map((item, index) => (
-                          <div
-                            className="item"
-                            key={index}
-                          >
-                            <Link
-                              to={`/product/${item.productId}`}
-                              className="left">
-                              <div className="img-wrapper">
-                                <OptimizedImage
-                                  // wrapperClassName='imgWrapper'
-                                  className={'img'}
-                                  alt=""
-                                  src={import.meta.env.VITE_UPLOAD_URL + item.img}
-                                  effect="blur"
-                                />
-                              </div>
-                              <div className="details">
-                                <h1 className='title'>{item.title}</h1>
-                                {/* <p>{item.desc.substring(0, 100)}</p> */}
-                                <div className="bottom">
-                                  <span className='size'>SIZE : {item.size.size}</span>
-                                  <span className='subtotal'>${item.price}</span>
 
-                                </div>
-                              </div>
-                            </Link>
-                            <span className='quantity'>QTY : {item.quantity}</span>
-                          </div>
-                        ))
-                      }
                       {items ? (
                         items.length > 0 ?
                           <>
                             {
                               items.map(item => (
-                                <CartItem key={item.localCartItemId} item={item}  cartType="mini" />
+                                <CartItem key={item.localCartItemId} item={item} cartType="mini" />
                               ))
                             }
                           </>
