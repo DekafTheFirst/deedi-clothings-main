@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useState } from 'react'
 import "./CheckoutPage.scss"
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -12,6 +12,7 @@ import BillingTab from './BillingTab/BillingTab'
 import { getCurrentStepFromSession, getShippingInfoFromSession } from '../../utils/session'
 import CartItem from '../../components/MiniCart/MiniCartItem/CartItem'
 import { CircularProgress } from '@mui/material'
+import CheckoutItem from './CheckoutItem/CheckoutItem'
 
 
 const CheckoutPage = () => {
@@ -27,6 +28,8 @@ const CheckoutPage = () => {
   const previewedStep = useSelector(state => state.checkout.previewedStep);
   const currentStepFromSession = getCurrentStepFromSession();
 
+
+  const [editingAllowed, setEditingAllowed] = useState(false)
   // const billingInfo = useSelector(state => state.checkout.billingInfo);
   // const shippingInfo = useSelector(state => state.checkout.shippingInfo);
 
@@ -82,36 +85,32 @@ const CheckoutPage = () => {
 
   return (
     <div className="checkout-page">
-      <div className="container-fluid">
+      <div className="container">
         <div className="row">
           <div className="col-md-6 tabs">
-            <StepWizard />
-            <div className="current-tab">
-              {renderCurrentTab()}
+            <div className="tabs-wrapper">
+              <StepWizard />
+              <div className="current-tab">
+                {renderCurrentTab()}
+              </div>
             </div>
           </div>
 
           <div className="col-md-6 order-summary">
             <div className="summary-wrapper">
-              <div className="top">
-                <div className="order-total">
-                  <h5 className="heading">Order Summary </h5>
 
-                  <div className="summary-items">
-                    <div className="summary-item">No. of Items: <span className="value">{calculateNoOfProducts(items)}</span></div>
-                    <div className="summary-item">Subtotal: <span className="value">${subtotal}</span></div>
-                    <div className="summary-item">VAT(20%): <span className="value">${vat}</span></div>
-                    {selectedCourier && <div className="summary-item">Shipping: <span className="value">${selectedCourier.total_charge}</span></div>}
-                    <div className="summary-item total">Total: <span className="value">${totalAmount}</span></div>
-                  </div></div>
+              <div className="header">
+                <h5 className="heading">Order Summary </h5>
+                <span className='edit-cart' onClick={() => setEditingAllowed(!editingAllowed)}>{editingAllowed ? 'Done':'Edit Cart'}</span>
               </div>
+
               <div className="checkout-items">
                 {/* <div className="top">
                   <span className="heading">Order Items</span>
                   <p >Check your items and confirm them before checking out.</p>
                 </div> */}
 
-                <div className="products">
+                <div className="items">
                   {items.length > 0 ?
                     <>
 
@@ -120,7 +119,7 @@ const CheckoutPage = () => {
                           <>
                             {
                               items.map(item => (
-                                <CartItem key={item.localCartItemId} item={item} cartType="mini" />
+                                <CheckoutItem key={item.localCartItemId} item={item} editingAllowed={editingAllowed} />
                               ))
                             }
                           </>
@@ -136,6 +135,17 @@ const CheckoutPage = () => {
                     </div>}
                 </div>
               </div>
+              <div className="totals">
+                <div className="order-total">
+                  <div className="summary-items">
+                    <div className="summary-item">No. of Items: <span className="value">{calculateNoOfProducts(items)}</span></div>
+                    <div className="summary-item">Subtotal: <span className="value">${subtotal}</span></div>
+                    <div className="summary-item">VAT(20%): <span className="value">${vat}</span></div>
+                    {selectedCourier && <div className="summary-item">Shipping: <span className="value">${selectedCourier.total_charge}</span></div>}
+                    <div className="summary-item total">Total: <span className="value">${totalAmount}</span></div>
+                  </div></div>
+              </div>
+
 
             </div>
           </div>

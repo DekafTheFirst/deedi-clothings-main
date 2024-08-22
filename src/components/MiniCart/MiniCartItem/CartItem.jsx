@@ -24,7 +24,7 @@ const CartItem = ({ item, cartType }) => {
     const fetchedAvailableStock = stockData?.[0]?.attributes?.stock
 
     useEffect(() => {
-        console.log('fetchedAvailableStock', fetchedAvailableStock)
+        // console.log('fetchedAvailableStock', fetchedAvailableStock)
         const validateStock = () => {
             if ((fetchedAvailableStock < item.quantity) && !item.outOfStock) {
                 callUpdateDispatch(fetchedAvailableStock)
@@ -33,6 +33,8 @@ const CartItem = ({ item, cartType }) => {
             setAvailableStock(fetchedAvailableStock);
 
         }
+        console.log('product:', product)
+
 
         validateStock()
 
@@ -41,7 +43,7 @@ const CartItem = ({ item, cartType }) => {
 
 
     useEffect(() => {
-        console.log('availableStock', availableStock)
+        // console.log('availableStock', availableStock)
     }, [availableStock]);
 
     const isOutOfStock = availableStock <= 1;
@@ -76,7 +78,7 @@ const CartItem = ({ item, cartType }) => {
                 strapiCartItemId: item.strapiCartItemId,
             })).unwrap(); // Unwrap to get the result
 
-            console.log('response', response)
+            // console.log('response', response)
             // Update local state with the result
             const latestAvaialableStockData = response.responseData?.availableStock;
 
@@ -120,7 +122,7 @@ const CartItem = ({ item, cartType }) => {
             <div className="body">
                 <div className="wrapper" onClick={handleRedirect}>
                     <div className="details">
-                        <h1 className='title'>{item.title}</h1>
+                        {product?.title ? <h6 className='title'>{product.title}</h6> : <Skeleton className="title" variant="text" sx={{ fontSize: '16px' }} />}
                         {/* <p>{item.desc.substring(0, 100)}</p> */}
                         <div className='stock'>
                             <div className="size">
@@ -144,7 +146,7 @@ const CartItem = ({ item, cartType }) => {
                         </div>
                     </div>
                     <div className="price">
-                        <span className="total-price-per-item">${item.price * item.quantity}</span>
+                        {product?.price? <span className="total-price-per-item">${product?.price * item.quantity}</span> : <Skeleton className="total-price-per-item" variant="text" sx={{ fontSize: '16px' }} />}
                     </div>
                 </div>
 
@@ -171,13 +173,13 @@ const CartItem = ({ item, cartType }) => {
                                 }}
                             ><span>+</span></button>
 
-                            <span className='calc'>({item.quantity} x ${item.price})</span>
+                            <span className='calc'>({item.quantity} x ${product?.price})</span>
 
                         </div>
                         :
                         <Skeleton variant="rectangular" width={71} height={20} />
                     }
-                    
+
 
                     <div className="others">
                         {cartType === 'full' &&

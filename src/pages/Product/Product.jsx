@@ -129,14 +129,11 @@ const Product = () => {
       try {
         await dispatch(addItemToCart({
           productId: product.id,
-          title: product.attributes.title,
-          desc: 'description',
           quantity: quantityAddable,
           alreadyExistingQuantity: existingCartItem?.quantity,
           localCartItemId,
           img: product.attributes.img.data[0].attributes.url,
           size: selectedStock.size,
-          price: product.attributes.price
         })).unwrap()
 
         console.log('Item added to cart')

@@ -1,0 +1,289 @@
+@import '../../../variables.scss';
+@import '../../../mixins.scss';
+
+.checkout-item {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: stretch;
+    gap: 10px;
+    text-decoration: none;
+    color: unset;
+    max-width: 100%;
+    padding-block: 12px;
+
+
+
+
+    .body {
+        flex: 1;
+        display: flex;
+        gap: 15px;
+        overflow: hidden;
+        padding-top: 10px;
+        align-items: center;
+
+        .img-wrapper {
+            position: relative;
+
+            .img {
+                background-color: white;
+                border: 1px solid $lightGray;
+                border-radius: 5px;
+                width: 80px;
+                height: 80px;
+                padding: 5px;
+
+                img {
+                    object-fit: contain;
+                }
+            }
+
+            .img-quantity {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                position: absolute;
+                top: -10px;
+                right: -10px;
+                z-index: 1;
+                background: $darkGray;
+                padding: 5px;
+                width: 22px;
+                height: 22px;
+                border-radius: 50%;
+
+                span {
+                    color: $lighterGray;
+                    font-size: 12px;
+                    font-weight: 600;
+                }
+            }
+        }
+
+        .wrapper {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            gap: 10px;
+
+            .top {
+                display: flex;
+                align-items: center;
+            }
+
+            .details {
+                display: flex;
+                flex-direction: column;
+                gap: 5px;
+                flex: 1;
+                overflow: hidden;
+
+                .title {
+                    margin-top: 0;
+                    font-size: 15px;
+                    // font-weight: 500;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    display: block;
+                }
+
+                .stock {
+                    display: flex;
+                    align-items: center;
+                    gap: 6px;
+
+                    .size {
+                        font-weight: 400;
+                        font-size: 14px;
+                        display: flex;
+                        align-items: center;
+                        gap: 4px;
+                        color: $darkGray;
+
+
+
+                        .value {
+                            font-weight: 500;
+                            font-size: 15px;
+                        }
+
+
+
+
+                    }
+
+                    .vertical-line {
+                        width: 2px;
+                        height: 13px;
+                        background-color: $lightGray;
+                    }
+
+                    .stock-info {
+                        display: flex;
+
+                        span {
+                            font-weight: 600;
+                            font-size: 14px;
+
+                            &.out-of-stock {
+                                color: red;
+                            }
+
+                            &.in-stock {
+                                color: green;
+                            }
+
+                            &.low-stock {
+                                color: $brightRed;
+                            }
+
+                        }
+                    }
+                }
+
+
+
+
+            }
+
+            .price {
+                display: flex;
+                gap: 5px;
+
+
+                .total-price-per-item {
+                    font-size: 16px;
+                    font-weight: 600;
+                }
+            }
+
+
+        }
+
+        span {
+            line-height: 1; // Ensures the text is centered
+            font-size: 15px;
+            vertical-align: middle;
+        }
+
+    }
+
+    .actions {
+        display: flex;
+        gap: 5px;
+        align-items: center;
+        justify-content: space-between;
+
+
+
+
+
+
+        .quantity {
+            // display: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+
+
+            .no-of-items {
+                color: black;
+                min-width: 11px;
+                text-align: center;
+            }
+
+
+
+            button {
+                all: unset;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                border: none;
+                background-color: transparent;
+                border: 2px solid $lightGray;
+                color: $darkGray;
+                border-radius: 3px;
+                height: 30px !important;
+                width: 30px !important;
+                min-width: 0 !important;
+                appearance: none;
+                -webkit-appearance: none;
+                -moz-appearance: none;
+                box-sizing: border-box;
+                transform: scale(1); // Starting at the default scale
+                transition: transform 0.05s ease-in-out; // Transition for smooth scaling
+                box-sizing: border-box;
+                /* Ensures padding and border are included in width/height */
+
+
+                span {
+                    font-size: 16px;
+                    font-weight: 600;
+                    text-align: center;
+                }
+
+                &.disabled {
+                    background-color: transparent;
+                    border: 2px solid $lightGray;
+                    color: $darkGray;
+                }
+
+
+                &:active:not(.disabled) {
+                    transform: scale(0.9);
+                    transition: transform;
+                }
+
+            }
+
+            .calc {
+                font-weight: 500;
+                font-size: 12px;
+                color: $darkGray;
+            }
+
+        }
+
+
+
+
+
+
+        .action {
+            color: #007BFF;
+            cursor: pointer;
+            transform: all .3s ease;
+
+            &:hover {
+                color: darken(#007BFF, 10%);
+                text-decoration: underline;
+            }
+
+
+        }
+
+
+
+
+
+
+
+
+
+    }
+
+    .notify-me {
+        background-color: transparent;
+        border-radius: 7px;
+        padding: 8px;
+    }
+
+
+
+
+}
