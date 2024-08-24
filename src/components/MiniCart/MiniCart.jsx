@@ -1,11 +1,11 @@
-import React, { useCallback, useMemo } from 'react'
+import React, { useCallback, useEffect, useMemo } from 'react'
 import "./MiniCart.scss"
 import { useDispatch, useSelector } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
 import calculateNoOfProducts from '../../utils/calculateNoOfProducts'
 import { CircularProgress } from '@mui/material'
 import CartItem from './MiniCartItem/CartItem'
-import { setShowCart } from '../../redux/cartReducer'
+import { setShowCart, validateStock } from '../../redux/cartReducer'
 
 
 const Cart = () => {
@@ -26,6 +26,9 @@ const Cart = () => {
 
 
 
+  useEffect(()=>{
+    dispatch(validateStock())
+  }, [])
 
 
 

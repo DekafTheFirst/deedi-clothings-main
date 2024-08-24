@@ -21,7 +21,6 @@ export const registerUser = createAsyncThunk(
             // Create cart for the new user
             await makeRequest.post('/carts', { userId: strapiUser.id });            
             dispatch(fetchCartItems(strapiUser.id))
-
             
             return {
                 user: {
@@ -51,7 +50,8 @@ export const loginUser = createAsyncThunk(
             });
 
             const strapiUser = response.data.user;
-           
+            console.log('strapiUser', response.data)
+
 
             dispatch(fetchCartItems(strapiUser.id))
 
@@ -61,7 +61,8 @@ export const loginUser = createAsyncThunk(
                     email: strapiUser.email,
                     id: strapiUser.id,
                     username: strapiUser.username,
-                    photoUrl: strapiUser.photoUrl
+                    photoUrl: strapiUser.photoUrl,
+                    
                 },
             };
         } catch (error) {

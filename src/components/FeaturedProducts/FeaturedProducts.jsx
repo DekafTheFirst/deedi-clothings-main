@@ -50,7 +50,7 @@ const FeaturedProducts = ({ type }) => {
 
   const { data, loading, error } = useFetch(`/products?populate=*&[filters][type][$eq]=${type}`)
 
-  console.log(data)
+  // console.log(data)
 
   return (
     <div className='featuredProducts'>

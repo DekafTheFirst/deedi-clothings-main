@@ -11,35 +11,37 @@ import { toast } from 'react-toastify';
 
 const CartItem = ({ item, cartType }) => {
     // console.log(item)
-    const { data: stockData, loading, error } = useFetch(
-        `/stocks?filters[product][id][$eq]=${item.productId}&filters[size][id][$eq]=${item.size.id}&populate=product`
-    );
-
-    // const { data: product, loading, error } = useFetch(
-    //     `/products?filters[id][$eq]=${item.productId}&filters[stocks][size][id][$eq]=${item.size.id}`
+    // const { data: stockData, loading, error } = useFetch(
+    //     `/stocks?filters[product][id][$eq]=${item.productId}&filters[size][id][$eq]=${item.size.id}&populate=product`
     // );
-    const product = stockData?.[0]?.attributes?.product?.data?.attributes
-    const [availableStock, setAvailableStock] = useState(null);
 
-    const fetchedAvailableStock = stockData?.[0]?.attributes?.stock
+    const { data, loading, error } = useFetch(
+        `/products?filters[id][$eq]=${item.productId}`
+    );
+    const product = data?.[0]?.attributes
+    // console.log("product", product)
 
-    useEffect(() => {
-        // console.log('fetchedAvailableStock', fetchedAvailableStock)
-        const validateStock = () => {
-            if ((fetchedAvailableStock < item.quantity) && !item.outOfStock) {
-                callUpdateDispatch(fetchedAvailableStock)
-            }
+    const [availableStock, setAvailableStock] = useState(0);
 
-            setAvailableStock(fetchedAvailableStock);
+    // const fetchedAvailableStock = stockData?.[0]?.attributes?.stock
 
-        }
-        console.log('product:', product)
+    // useEffect(() => {
+    //     // console.log('fetchedAvailableStock', fetchedAvailableStock)
+    //     const validateStock = () => {
+    //         if ((fetchedAvailableStock < item.quantity) && !item.outOfStock) {
+    //             callUpdateDispatch(fetchedAvailableStock)
+    //         }
+
+    //         setAvailableStock(fetchedAvailableStock);
+
+    //     }
+    //     console.log('product:', product)
 
 
-        validateStock()
+    //     validateStock()
 
 
-    }, [fetchedAvailableStock]);
+    // }, [fetchedAvailableStock]);
 
 
     useEffect(() => {

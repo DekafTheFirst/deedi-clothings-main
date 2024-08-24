@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import "./CartPage.scss"
 import { useDispatch, useSelector } from 'react-redux'
-import { removeItemFromCart, resetCart } from '../../redux/cartReducer'
+import { removeItemFromCart, resetCart, validateStock } from '../../redux/cartReducer'
 import { Link, useNavigate } from 'react-router-dom'
 import CartItem from '../../components/MiniCart/MiniCartItem/CartItem'
 
@@ -19,11 +19,12 @@ const CartPage = () => {
 
   const dispatch = useDispatch()
 
-
-
-
-
  
+
+
+
+
+
 
   return (
     <div className="cart-page">
@@ -44,7 +45,7 @@ const CartPage = () => {
                   <>
                     {
                       items.map(item => (
-                        <CartItem key={item.localCartItemId} item={item}  cartType='full'/>
+                        <CartItem key={item.localCartItemId} item={item} cartType='full' />
                       ))
                     }
                   </>
@@ -52,7 +53,7 @@ const CartPage = () => {
                   <span className='list-empty'>No items</span>
               ) : <CircularProgress />}
 
-              
+
             </div>
           </div>
           <div className="col-md-5 actions-wrapper">

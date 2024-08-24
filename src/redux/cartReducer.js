@@ -18,6 +18,7 @@ const initialState = {
   totalAmount: 0,
   status: 'idle',
   error: null,
+  checkoutError: null,
   showCart: false,
 }
 
@@ -233,6 +234,64 @@ export const fetchCartItems = createAsyncThunk(
   }
 );
 
+
+export const validateStock = createAsyncThunk(
+  'cart/validateStock',
+  async (_, { getState, rejectWithValue }) => {
+    try {
+      // console.log('reached here')
+      const { cart } = getState();
+      const items = cart.items;
+      const cartId = cart.cartId;
+
+
+      // Merge local items with the Strapi cart items and get the updated cart
+      const validatedResponse = await makeRequest.patch(`/carts/validate-stock`,
+        { items, cartId },
+        {
+          params: {
+            populate: {
+              items: {
+                populate: {
+                  product: {
+                    populate: ['img'],
+                    fields: ['title', 'price', 'img'],
+                  },
+                },
+              },
+            },
+          },
+        }
+      );
+
+      console.log('validatedResponse', validatedResponse);
+
+
+
+      const reducedItems = validatedResponse?.data?.reduced;
+      const outOfStockItems = validatedResponse?.data?.outOfStock;
+      // console.log('reducedItems', reducedItems)
+
+      reducedItems?.forEach((reduced) => {
+        toast.warning(`${reduced.reducedBy} of ${reduced.productTitle} (${reduced.size.size}) ${reduced.added > 1 ? 'were' : 'was'} removed: ${reduced.message}`);
+      });
+
+      outOfStockItems?.forEach((result) => {
+        toast.warning(`${result.productTitle} (${result.size.size}) is out of stock.`);
+      });
+
+      // console.log('mergedCart', mergedCart);
+      return { cartId, reducedItems: reducedItems, outOfStockItems: reducedItems };
+    } catch (error) {
+      console.error(error)
+      return rejectWithValue(error.response?.data?.message || 'Failed to fetch cart items');
+    }
+  }
+);
+
+
+
+
 // Async thunk to synchronize the cart with the backend
 export const syncCart = createAsyncThunk('cart/syncCart', async (_, { getState }) => {
   const { cart } = getState();
@@ -272,6 +331,10 @@ export const cartSlice = createSlice({
       if (item) {
         item.outOfStock = true;
       }
+    },
+
+    setCheckoutError: (state, action) => {
+
     }
 
   },
@@ -450,6 +513,88 @@ export const cartSlice = createSlice({
         updateTotals(state);
         state.status = 'failed';
       })
+      .addCase(validateStock.pending, (state) => {
+        const cartItems = state.items;
+        // console.log('cartItems', cartItems)
+
+        state.status = 'validating';
+        updateTotals(state);
+      })
+
+      .addCase(validateStock.fulfilled, (state, action) => {
+
+        const outOfStockItems = action.payload.outOfStockItems
+        const reducedItems = action.payload.reducedItems
+
+        console.log('outOfStockItems', outOfStockItems);
+
+        outOfStockItems.forEach(item => {
+          console.log(item)
+          // Find the index of the item in the cart
+          const index = state.items.findIndex(cartItem => cartItem.localCartItemId === item.localCartItemId);
+          console.log('index', index)
+          if (index !== -1) {
+            // Update the item to reflect out of stock
+            state.items[index] = {
+              ...state.items[index],
+              quantity: 0, // or remove the item if preferred
+              outOfStock: true,
+              status: item.status,
+            };
+          }
+        });
+
+
+        reducedItems.forEach(item => {
+          // Find the index of the item in the cart
+          const index = state.items.findIndex(cartItem => cartItem.localCartItemId === item.localCartItemId);
+  
+          if (index !== -1) {
+              // Update the item to reflect reduced stock
+              state.items[index] = {
+                  ...state.items[index],
+                  quantity: item.newQuantity,
+                  status: item.status,
+                  reducedBy: item.reducedBy,
+                  availableStock: item.availableStock,
+              };
+          }
+      });
+
+
+        state.status = 'idle';
+      })
+      .addCase(validateStock.rejected, (state, action) => {
+
+        // console.log('action', action);
+        // const cartItems = state.items;
+
+        // const itemData = action.meta.arg
+        // console.log('itemData', itemData)
+        // const itemToUpdate = cartItems.find(
+        //   (i) => i.localCartItemId === itemData.localCartItemId
+        // );
+
+        // itemToUpdate.quantity = itemData.currentQuantity;
+        // // UpdateItems
+
+        // const responseData = action.payload
+
+        // console.log('responseData', responseData);
+
+        // if (responseData.status === 'max-stock-already') {
+        //   toast.warning(`Limited Stock. 🛒 (Available: ${responseData.availableStock})`)
+        // }
+
+        // if (responseData.status === 'out-of-stock') {
+        //   toast.error(`Oops 😳! ${itemToUpdate.title} (${itemToUpdate.size.size}) went out of stock!`)
+        //   itemToUpdate.outOfStock = true;
+        //   itemToUpdate.latestStockData = 0;
+        // }
+
+        updateTotals(state);
+        state.status = 'failed';
+      })
       .addCase(removeItemFromCart.pending, (state, action) => {
         state.status = 'pending';
         state.previousItems = [...state.items];
@@ -482,7 +627,7 @@ export const cartSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const { resetCart, setShowCart, setOutOfStock } = cartSlice.actions
+export const { resetCart, setShowCart, setOutOfStock, setCheckoutError } = cartSlice.actions
 
 export default cartSlice.reducer
 

@@ -113,7 +113,6 @@ const CheckoutPage = () => {
                 <div className="items">
                   {items.length > 0 ?
                     <>
-
                       {items ? (
                         items.length > 0 ?
                           <>

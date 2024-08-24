@@ -190,7 +190,7 @@ const CheckoutItem = ({ item, editingAllowed }) => {
                         }
 
 
-                        < div className="action wishlist" onClick={(e)=> handleAddToWishlist(e, { localCartItemId: item.localCartItemId, strapiCartItemId: item.strapiCartItemId })}>
+                        < div className="action wishlist" onClick={(e) => handleAddToWishlist(e, { localCartItemId: item.localCartItemId, strapiCartItemId: item.strapiCartItemId })}>
                             {/* <FavoriteBorder sx={{ m: 0, p: 0, minWidth: 0 }} className='action-icon' /> */}
                             {/* <span>Remove</span> */}
                             <span>Move to wishlist</span>
