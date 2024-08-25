@@ -118,7 +118,6 @@ const CartItem = ({ item, cartType }) => {
                 <div className="wrapper" onClick={handleRedirect}>
                     <div className="details">
                         {product?.title ? <h6 className='title'>{product.title}</h6> : <Skeleton className="title" variant="text" sx={{ fontSize: '16px' }} />}
-                        {/* <p>{item.desc.substring(0, 100)}</p> */}
                         <div className='stock'>
                             <div className="size">
                                 <span>Size:</span> <span className="value">{item?.size?.size}</span>
@@ -139,6 +138,8 @@ const CartItem = ({ item, cartType }) => {
                                 }
                             })()}</div>
                         </div>
+                        <span className='product-price'>${product?.price}</span>
+
                     </div>
                     <div className="price">
                         {product?.price ? <span className="total-price-per-item">${product?.price * item.quantity}</span> : <Skeleton className="total-price-per-item" variant="text" sx={{ fontSize: '16px' }} />}
@@ -168,7 +169,6 @@ const CartItem = ({ item, cartType }) => {
                                 }}
                             ><span>+</span></button>
 
-                            <span className='calc'>({item.quantity} x ${product?.price})</span>
                         </div>
                     ) : (
                         <button className='notify-me'>Notify me</button>

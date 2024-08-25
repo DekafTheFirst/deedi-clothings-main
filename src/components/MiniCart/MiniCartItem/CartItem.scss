@@ -110,7 +110,11 @@
                     }
                 }
 
-
+                .product-price {
+                    font-weight: 500;
+                    font-size: 15px;
+                    color: $darkGray;
+                }
 
 
             }
@@ -209,11 +213,7 @@
 
                 }
 
-                .calc {
-                    font-weight: 500;
-                    font-size: 12px;
-                    color: $darkGray;
-                }
+                
 
             }
 
@@ -232,7 +232,7 @@
                     cursor: pointer;
                     flex-shrink: 0;
 
-
+                    
                     /* Prevents the sibling from shrinking */
 
                     // margin-left: auto;
@@ -263,13 +263,25 @@
                     &.wishlist {
                         display: none;
 
-                        @include md {
+                        @include sm {
                             display: inline-flex;
                         }
+
+                        
                     }
 
                     &.delete {
+                        
+                        span {
+                            @include md {
+                                display: none;
+                            }
 
+                            @include min-breakpoint(850px) {
+                                display: inline-flex;
+                            }
+                    
+                        }
                         
                     }
 
