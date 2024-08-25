@@ -31,6 +31,30 @@
 
                     }
 
+                    .stock-validation-errors {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 10px;
+
+                        .error-message {
+                            padding: 10px;
+                            border-radius: 3px;
+                            &.out-of-stock {
+                                color: #d9534f;
+                                /* Red text */
+                                background-color: #f2dede;
+                                /* Light red background */
+                                border-left: 5px solid #d9534f;
+                            }
+
+                            &.reduced-stock {
+                                color: #f0ad4e; /* Yellow text */
+                                background-color: #fcf8e3; /* Light yellow background */
+                                border-left: 5px solid #f0ad4e; /* Yellow border */
+                            }
+                        }
+                    }
+
                     .total {
                         padding-bottom: 10px;
                         display: flex;
@@ -54,12 +78,13 @@
 
                     .cart-item {
                         gap: 15px;
+
                         .img-wrapper {
                             .img {
                                 width: 120px;
                                 height: 130px;
 
-                                img{
+                                img {
                                     object-fit: contain;
                                 }
                             }

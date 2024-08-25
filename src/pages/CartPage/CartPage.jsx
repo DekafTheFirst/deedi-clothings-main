@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import "./CartPage.scss"
 import { useDispatch, useSelector } from 'react-redux'
 import { removeItemFromCart, resetCart, validateStock } from '../../redux/cartReducer'
@@ -8,8 +8,21 @@ import CartItem from '../../components/MiniCart/MiniCartItem/CartItem'
 
 const CartPage = () => {
   const items = useSelector(state => state.cart.items);
+
+  const stockValidationErrors = useSelector(state => state.cart.stockValidationErrors);
+
+  const sortedErrors = useMemo(() => {
+    return stockValidationErrors.slice().sort((a, b) => {
+      const sortOrder = {
+        'out-of-stock': 1,
+        'reduced-stock': 2,
+      };
+      return sortOrder[a.type] - sortOrder[b.type];
+    });
+  }, [stockValidationErrors]);
+
   const navigate = useNavigate();
-  console.log(items);
+  // console.log(items);
 
   const totalPrice = () => {
     let total = 0
@@ -19,7 +32,14 @@ const CartPage = () => {
 
   const dispatch = useDispatch()
 
- 
+  const callValidateStock = (items) => {
+
+  }
+
+  useEffect(() => {
+    dispatch(validateStock())
+  }, [])
+
 
 
 
@@ -33,6 +53,15 @@ const CartPage = () => {
           <div className="col-md-7 cart-body">
             <div className="top">
               <span className="heading">Shopping Bag</span>
+              {stockValidationErrors.length > 0 &&
+                <div className="stock-validation-errors">
+                  {sortedErrors.map(error => (
+                    <div key={error.itemId} className={`error-message ${error.type}`}>
+                      {error.error}
+                    </div>
+                  ))}
+                </div>
+              }
               <div className="total">
                 <span>{`SUBTOTAL(${items ? items.length : '0'})`}</span>
                 <span className='amount'>${totalPrice()}</span>

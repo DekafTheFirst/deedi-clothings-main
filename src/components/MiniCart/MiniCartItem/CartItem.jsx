@@ -7,7 +7,6 @@ import { useDispatch } from 'react-redux';
 import { removeItemFromCart, setOutOfStock, setShowCart, updateCartItem } from '../../../redux/cartReducer';
 import useFetch from '../../../hooks/useFetch';
 import { Skeleton } from '@mui/material';
-import { toast } from 'react-toastify';
 
 const CartItem = ({ item, cartType }) => {
     // console.log(item)
@@ -21,7 +20,6 @@ const CartItem = ({ item, cartType }) => {
     const product = data?.[0]?.attributes
     // console.log("product", product)
 
-    const [availableStock, setAvailableStock] = useState(0);
 
     // const fetchedAvailableStock = stockData?.[0]?.attributes?.stock
 
@@ -44,11 +42,8 @@ const CartItem = ({ item, cartType }) => {
     // }, [fetchedAvailableStock]);
 
 
-    useEffect(() => {
-        // console.log('availableStock', availableStock)
-    }, [availableStock]);
 
-    const isOutOfStock = availableStock <= 1;
+    const isOutOfStock = item.outOfStock;
 
     const dispatch = useDispatch();
     const navigate = useNavigate()
@@ -68,7 +63,7 @@ const CartItem = ({ item, cartType }) => {
     };
 
     const callUpdateDispatch = async (requestedQuantity) => {
-        console.log('reqested quantity', requestedQuantity)
+        // console.log('reqested quantity', requestedQuantity)
         try {
             // Dispatch the update action and unwrap the result
             const response = await dispatch(updateCartItem({
@@ -82,14 +77,8 @@ const CartItem = ({ item, cartType }) => {
 
             // console.log('response', response)
             // Update local state with the result
-            const latestAvaialableStockData = response.responseData?.availableStock;
-
-            setAvailableStock(latestAvaialableStockData || availableStock);
-
+            
         } catch (error) {
-            const latestAvaialableStockData = error?.status === 'out-of-stock' ? 0 : error?.availableStock;
-
-            setAvailableStock(latestAvaialableStockData);
             console.error('Failed to update cart item:', error);
         }
     }
@@ -105,6 +94,10 @@ const CartItem = ({ item, cartType }) => {
         navigate(`/product/${item.productId}`)
         dispatch(setShowCart(false))
     }
+
+    useEffect(() => {
+        // console.log(product?.title, 'availableStock', item.availableStock)
+    }, [item.availableStock, product?.title])
 
     return (
         <div
@@ -134,12 +127,12 @@ const CartItem = ({ item, cartType }) => {
 
                             <div className="stock-info">{(() => {
                                 switch (true) {
-                                    case availableStock === 0:
+                                    case item.availableStock === 0:
                                         return <span className='out-of-stock'>Out of Stock</span>
-                                    case availableStock <= 5:
-                                        return <span className='low-stock'>Only {availableStock} left !</span>
+                                    case item.availableStock <= 5:
+                                        return <span className='low-stock'>Only {item.availableStock} left !</span>
 
-                                    case availableStock > 5:
+                                    case item.availableStock > 5:
                                         return <span className='in-stock'>In Stock</span>
 
 
@@ -148,13 +141,13 @@ const CartItem = ({ item, cartType }) => {
                         </div>
                     </div>
                     <div className="price">
-                        {product?.price? <span className="total-price-per-item">${product?.price * item.quantity}</span> : <Skeleton className="total-price-per-item" variant="text" sx={{ fontSize: '16px' }} />}
+                        {product?.price ? <span className="total-price-per-item">${product?.price * item.quantity}</span> : <Skeleton className="total-price-per-item" variant="text" sx={{ fontSize: '16px' }} />}
                     </div>
                 </div>
 
                 <div className="actions">
 
-                    {availableStock != null || availableStock != undefined ?
+                    {!item.outOfStock ? (
                         <div className="quantity">
                             <button
                                 className={`reduce ${item.quantity <= 1 || isOutOfStock ? 'disabled' : ''}`}
@@ -168,20 +161,18 @@ const CartItem = ({ item, cartType }) => {
                             </button>
                             <span className="no-of-items">{item.quantity}</span>
                             <button
-                                className={`add ${item.quantity >= availableStock ? 'disabled' : ''}`}
-                                disabled={item.quantity >= availableStock}
+                                className={`add ${item.quantity >= item.availableStock ? 'disabled' : ''}`}
+                                disabled={item.quantity >= item.availableStock}
                                 onClick={(e) => {
                                     handleUpdateCartItem(e, { requestedQuantity: item.quantity + 1 }); // Prevents the parent click handler from firing
                                 }}
                             ><span>+</span></button>
 
                             <span className='calc'>({item.quantity} x ${product?.price})</span>
-
                         </div>
-                        :
-                        <Skeleton variant="rectangular" width={71} height={20} />
-                    }
-
+                    ) : (
+                        <button className='notify-me'>Notify me</button>
+                    )}
 
                     <div className="others">
                         {cartType === 'full' &&
@@ -198,7 +189,6 @@ const CartItem = ({ item, cartType }) => {
 
                 </div>
 
-                {item.outOfStock && <button className='notify-me'>Notify me</button>}
             </div>
 
 

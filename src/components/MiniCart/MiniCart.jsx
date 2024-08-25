@@ -12,7 +12,6 @@ const Cart = () => {
 
   const navigate = useNavigate();
 
-
   const items = useSelector(state => state.cart.items);
 
   const noOfProducts = useMemo(() => calculateNoOfProducts(items), [items]);
@@ -80,7 +79,6 @@ const Cart = () => {
         {/* <span className="reset" onClick={() => dispatch(resetCart())}>Reset Cart</span> */}
         <Link to="/cart" className='view-cart' onClick={() => dispatch(setShowCart(false))}> View Shopping Bag </Link>
       </div>
-
     </div>
   )
 }
