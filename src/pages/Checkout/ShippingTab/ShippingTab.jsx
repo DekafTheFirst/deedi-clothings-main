@@ -211,7 +211,7 @@ const ShippingTab = () => {
 
     // Error Handling
     const [errorWhileSubmittingForm, setErrorSubmittingForm] = useState(null);
-    console.log(errorWhileSubmittingForm)
+    // console.log(errorWhileSubmittingForm)
     // useEffect(() => {
     //     console.log('Error fetching couriers', errorWhileSubmittingForm);
     // }, [errorWhileSubmittingForm])

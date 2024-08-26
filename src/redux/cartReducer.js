@@ -239,7 +239,7 @@ export const validateStock = createAsyncThunk(
   'cart/validateStock',
   async (_, { getState, rejectWithValue }) => {
     try {
-      console.log('reached here')
+      // console.log('reached here')
       const { cart } = getState();
       const items = cart.items;
       const cartId = cart.cartId;
@@ -264,7 +264,7 @@ export const validateStock = createAsyncThunk(
         }
       );
 
-      console.log('validatedResponse', validatedResponse);
+      // console.log('validatedResponse', validatedResponse);
 
 
 
@@ -272,13 +272,7 @@ export const validateStock = createAsyncThunk(
       const outOfStockItems = validatedResponse?.data?.outOfStock;
       const successfulItems = validatedResponse?.data?.success;
 
-      reducedItems?.forEach((reduced) => {
-        toast.warning(`${reduced.reducedBy} of ${reduced.productTitle} (${reduced.size.size}) ${reduced.added > 1 ? 'were' : 'was'} removed: ${reduced.message}`);
-      });
-
-      outOfStockItems?.forEach((result) => {
-      });
-
+      
       // console.log('mergedCart', mergedCart);
       return { cartId, reducedItems: reducedItems, outOfStockItems: outOfStockItems, successfulItems: successfulItems };
     } catch (error) {
@@ -521,130 +515,99 @@ export const cartSlice = createSlice({
       })
 
       .addCase(validateStock.fulfilled, (state, action) => {
-
         const { outOfStockItems, reducedItems, successfulItems } = action.payload;
-        // state.stockValidationErrors = []
-        // console.log('outOfStockItems', outOfStockItems);
-
-
-        // outOfStockItems.forEach(item => {
-        //   // Find the index of the item in the cart
-        //   // console.log(item)
-        //   const index = state.items.findIndex(cartItem => cartItem.localCartItemId === item.localCartItemId);
-        //   // console.log('index', index)
-        //   if (index !== -1) {
-        //     // Update the item to reflect out of stock
-        //     // console.log('state.items[index]', state.items[index].outOfStock)
-        //     if (!state.items[index].outOfStock) {
-        //       state.stockValidationErrors = [...state.stockValidationErrors, {itemId: item.localCartItemId, error: `${item.productTitle} (${item.size.size}) is out of stock.`}]
-        //       toast.warning(`${item.productTitle} (${item.size.size}) is out of stock.`);
-        //       state.items[index] = {
-        //         ...state.items[index],
-        //         availableStock: 0,  // or remove the item if preferred
-        //         outOfStock: true,
-        //       };
-        //     }
-        //   }
-        // });
-
+      
+        // Convert items and errors array to Map for efficient access and updates
+        const itemsMap = new Map(state.items.map(item => [item.localCartItemId, item]));
+        const errorsMap = new Map(state.stockValidationErrors.map(error => [error.itemId, error]));
         const processedItemIds = new Set();
-
+      
+        // Function to upsert error in the Map
+        const upsertError = (item, errorMessage, errorType) => {
+          errorsMap.set(item.localCartItemId, {
+            itemId: item.localCartItemId,
+            error: errorMessage,
+            type: errorType,
+          });
+        };
+      
         // Process out-of-stock items
         outOfStockItems.forEach(item => {
-          const index = state.items.findIndex(cartItem => cartItem.localCartItemId === item.localCartItemId);
-          if (index !== -1) {
-            if (!state.items[index].outOfStock) {
-              // Add error if not already present
-              if (!state.stockValidationErrors.some(error => error.itemId === item.localCartItemId && error.type === 'out-of-stock')) {
-                state.stockValidationErrors.push({
-                  itemId: item.localCartItemId,
-                  error: `${item.productTitle} (${item.size.size}) is out of stock.`,
-                  type: 'out-of-stock'
-                });
-                toast.error(`${item.productTitle} (${item.size.size}) is out of stock.`);
-              }
-              // Update item status
-              state.items[index] = {
-                ...state.items[index],
-                availableStock: 0,  // or remove the item if preferred
-                outOfStock: true,
-              };
-              processedItemIds.add(item.localCartItemId);
-            }
-          }
-        });
-
-
-        // successfulItems.forEach(item => {
-        //   const index = state.items.findIndex(cartItem => cartItem.localCartItemId === item.localCartItemId);
-        //   if (index !== -1) {
-        //     // Ensure that items processed for stock reduction are updated correctly
-        //     if (!processedItemIds.has(item.localCartItemId)) {
-        //       state.items[index] = {
-        //         ...state.items[index],
-        //         availableStock: item.availableStock,
-        //         outOfStock: false
-        //       }; 
-
-        //       state.checkoutErrors = state.checkoutErrors.filter(
-        //         error => error.itemId !== item.localCartItemId
-        //       );
-        //     }
-        //   }
-        // });
-
-        successfulItems.forEach(item => {
-          const index = state.items.findIndex(cartItem => cartItem.localCartItemId === item.localCartItemId);
-          if (index !== -1) {
-            // Update the item to reflect the successful stock validation
-            const currentCartItem = state.items[index];
-
-            state.items[index] = {
-              ...currentCartItem,
-              availableStock: item.availableStock,
-              outOfStock: false,
-            };
-
-            // Remove any related error from checkoutErrors
-            state.stockValidationErrors = state.stockValidationErrors.filter(
-              error => error.itemId !== item.localCartItemId
+          const cartItem = itemsMap.get(item.localCartItemId);
+          if (cartItem && !cartItem.outOfStock) {
+            // Add or update out-of-stock error
+            upsertError(
+              item,
+              `${item.productTitle} (${item.size.size}) is out of stock.`,
+              'out-of-stock'
             );
-
-            // Notify user that product is back in stock
-            if (currentCartItem.availableStock === 0 && item.availableStock > 0) {
-              toast.success(`${item.productTitle} (${currentCartItem.size.size}) is back in stock 🎉.`);
-
-              if(currentCartItem.quantity < item.availableStock) {
-                currentCartItem.quantity = item.availableStock
-              }
-            }
-          }
-        });
-
-        reducedItems.forEach(item => {
-          const index = state.items.findIndex(cartItem => cartItem.localCartItemId === item.localCartItemId);
-          if (index !== -1) {
-            if (!processedItemIds.has(item.localCartItemId) && !state.stockValidationErrors.some(error => error.itemId === item.localCartItemId && error.type === 'reduced-stock')) {
-              state.stockValidationErrors.push({
-                itemId: item.localCartItemId,
-                error: `Quantity of ${item.productTitle} (${item.size.size}) was reduced due to insufficient stock.`,
-                type: 'reduced-stock'
-              });
-              toast.info(`${item.productTitle} (${item.size.size}) had its quantity reduced due to insufficient stock.`);
-            }
-            // Update item quantity and stock
-            state.items[index] = {
-              ...state.items[index],
-              quantity: item.newQuantity,
-              availableStock: item.availableStock,
-            };
+      
+            toast.error(`${item.productTitle} (${item.size.size}) is out of stock.`);
+      
+            // Update item status
+            itemsMap.set(item.localCartItemId, {
+              ...cartItem,
+              availableStock: 0,
+              outOfStock: true,
+            });
             processedItemIds.add(item.localCartItemId);
           }
         });
-
-
+      
+        // Process successful items
+        successfulItems.forEach(item => {
+          const cartItem = itemsMap.get(item.localCartItemId);
+          if (cartItem) {
+            itemsMap.set(item.localCartItemId, {
+              ...cartItem,
+              availableStock: item.availableStock,
+              outOfStock: false,
+            });
+      
+            // Remove any related error from errorsMap
+            errorsMap.delete(item.localCartItemId);
+      
+            // Notify user that product is back in stock
+            if (cartItem.availableStock === 0 && item.availableStock > 0) {
+              toast.success(`${item.productTitle} (${cartItem.size.size}) is back in stock 🎉.`);
+      
+              if (cartItem.quantity < item.availableStock) {
+                cartItem.quantity = item.availableStock;
+              }
+            }
+          }
+        });
+      
+        // Process reduced items
+        reducedItems.forEach(item => {
+          const cartItem = itemsMap.get(item.localCartItemId);
+          if (cartItem) {
+            // Add or update reduced-stock error
+            upsertError(
+              item,
+              `Quantity of ${item.productTitle} (${item.size.size}) was reduced due to insufficient stock.`,
+              'reduced-stock'
+            );
+      
+            toast.info(`${item.productTitle} (${item.size.size}) had its quantity reduced due to insufficient stock.`);
+      
+            // Update item quantity and stock
+            itemsMap.set(item.localCartItemId, {
+              ...cartItem,
+              quantity: item.newQuantity,
+              availableStock: item.availableStock,
+            });
+            processedItemIds.add(item.localCartItemId);
+          }
+        });
+      
+        // Convert the Map back to arrays
+        state.items = Array.from(itemsMap.values());
+        state.stockValidationErrors = Array.from(errorsMap.values());
+      
         state.status = 'idle';
       })
+      
       .addCase(validateStock.rejected, (state, action) => {
 
 

@@ -33,7 +33,7 @@ const CheckoutItem = ({ item, editingAllowed }) => {
             setAvailableStock(fetchedAvailableStock);
 
         }
-        console.log('product:', product)
+        // console.log('product:', product)
 
 
         validateStock()

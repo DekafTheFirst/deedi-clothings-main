@@ -133,8 +133,6 @@ const CartItem = ({ item, cartType }) => {
 
                                     case item.availableStock > 5:
                                         return <span className='in-stock'>In Stock</span>
-
-
                                 }
                             })()}</div>
                         </div>

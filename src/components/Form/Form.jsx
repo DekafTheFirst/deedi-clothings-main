@@ -96,7 +96,7 @@ const FormComponent = ({ formItems, countryData, stateData, cityData, handleSubm
                 // }, [initialValues]);
 
                 useEffect(() => {
-                    console.log('values:', values);
+                    // console.log('values:', values);
                     // console.log('errors:', errors);
                 }, [values])
 

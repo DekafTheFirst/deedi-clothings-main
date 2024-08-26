@@ -25,15 +25,34 @@ const Cart = () => {
 
 
 
-  useEffect(()=>{
+  useEffect(() => {
     dispatch(validateStock())
   }, [])
 
 
 
-  const handleCheckoutClicked = useCallback(() => {
-    navigate('/checkout');
-    dispatch(setShowCart(false));
+
+
+
+  const initializeCheckout = useCallback(async () => {
+    try {
+      const response = await dispatch(validateStock()).unwrap();
+      const { outOfStockItems, reducedItems, successfulItems } = response
+      // console.log('outOfStockItems', outOfStockItems)
+      if (outOfStockItems.length > 0 || reducedItems.length > 0) {
+        navigate('/cart');
+        // console.log('can\'t checkout')
+      }
+      else {
+        navigate('/checkout');
+      }
+      dispatch(setShowCart(false));
+    }
+    catch (error) {
+      console.log('error initializing checkout', error)
+    }
+
+
   }, [navigate]);
 
   // console.log(items)
@@ -57,11 +76,11 @@ const Cart = () => {
                 }
               </div>
               <div className="cart-items out-of-stock">
-                  {
-                    items.filter(item => item.outOfStock).map(item => (
-                      <CartItem key={item.localCartItemId} item={item} cartType="mini" />
-                    ))
-                  }
+                {
+                  items.filter(item => item.outOfStock).map(item => (
+                    <CartItem key={item.localCartItemId} item={item} cartType="mini" />
+                  ))
+                }
               </div>
             </>
 
@@ -72,7 +91,7 @@ const Cart = () => {
 
       <div className="navigation">
         {noOfProducts > 0 ?
-          <button onClick={handleCheckoutClicked} className='btn-1'>PROCEED TO CHECKOUT</button>
+          <button onClick={initializeCheckout} className='btn-1'>PROCEED TO CHECKOUT</button>
           :
           <button onClick={() => navigate('/products/women')} className='btn-1'>GO SHOPPING</button>
         }
