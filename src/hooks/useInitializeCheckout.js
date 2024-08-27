@@ -8,9 +8,9 @@ const useInitializeCheckout = (onSuccess, onFailure) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const initializeCheckout = useCallback(async () => {
+  const handleInitializeCheckout = useCallback(async () => {
     try {
-      const response = await dispatch(validateStock()).unwrap();
+      const response = await dispatch(validateStock({ reserve: true })).unwrap();
       const { outOfStockItems, reducedItems } = response;
       //   console.log('outOfStockItems', outOfStockItems);
 
@@ -39,7 +39,7 @@ const useInitializeCheckout = (onSuccess, onFailure) => {
     }
   }, [dispatch, navigate, onSuccess, onFailure]);
 
-  return initializeCheckout;
+  return handleInitializeCheckout;
 };
 
 export default useInitializeCheckout;
