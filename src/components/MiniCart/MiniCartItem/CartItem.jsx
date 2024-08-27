@@ -77,7 +77,7 @@ const CartItem = ({ item, cartType }) => {
 
             // console.log('response', response)
             // Update local state with the result
-            
+
         } catch (error) {
             console.error('Failed to update cart item:', error);
         }
@@ -146,31 +146,29 @@ const CartItem = ({ item, cartType }) => {
 
                 <div className="actions">
 
-                    {!item.outOfStock ? (
-                        <div className="quantity">
-                            <button
-                                className={`reduce ${item.quantity <= 1 || isOutOfStock ? 'disabled' : ''}`}
-                                disabled={item.quantity <= 1 || isOutOfStock}
-                                onClick={(e) => {
-                                    handleUpdateCartItem(e, { requestedQuantity: item.quantity - 1 })// Prevents the parent click handler from firing
-                                }
-                                }
-                            >
-                                <span>-</span>
-                            </button>
-                            <span className="no-of-items">{item.quantity}</span>
-                            <button
-                                className={`add ${item.quantity >= item.availableStock ? 'disabled' : ''}`}
-                                disabled={item.quantity >= item.availableStock}
-                                onClick={(e) => {
-                                    handleUpdateCartItem(e, { requestedQuantity: item.quantity + 1 }); // Prevents the parent click handler from firing
-                                }}
-                            ><span>+</span></button>
 
-                        </div>
-                    ) : (
-                        <button className='notify-me'>Notify me</button>
-                    )}
+                    <div className="quantity">
+                        <button
+                            className={`reduce ${item.quantity <= 1 || isOutOfStock ? 'disabled' : ''}`}
+                            disabled={item.quantity <= 1 || isOutOfStock}
+                            onClick={(e) => {
+                                handleUpdateCartItem(e, { requestedQuantity: item.quantity - 1 })// Prevents the parent click handler from firing
+                            }
+                            }
+                        >
+                            <span>-</span>
+                        </button>
+                        <span className="no-of-items">{item.quantity}</span>
+                        <button
+                            className={`add ${item.quantity >= item.availableStock ? 'disabled' : ''}`}
+                            disabled={item.quantity >= item.availableStock}
+                            onClick={(e) => {
+                                handleUpdateCartItem(e, { requestedQuantity: item.quantity + 1 }); // Prevents the parent click handler from firing
+                            }}
+                        ><span>+</span></button>
+
+                    </div>
+
 
                     <div className="others">
                         {cartType === 'full' &&

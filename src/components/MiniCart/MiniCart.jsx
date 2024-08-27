@@ -5,7 +5,8 @@ import { Link, useNavigate } from 'react-router-dom'
 import calculateNoOfProducts from '../../utils/calculateNoOfProducts'
 import { CircularProgress } from '@mui/material'
 import CartItem from './MiniCartItem/CartItem'
-import { setShowCart, validateStock } from '../../redux/cartReducer'
+import { CART_MODE, setCartMode, setShowCart, validateStock } from '../../redux/cartReducer'
+import useInitializeCheckout from '../../hooks/useInitializeCheckout'
 
 
 const Cart = () => {
@@ -29,33 +30,8 @@ const Cart = () => {
     dispatch(validateStock())
   }, [])
 
+  const initializeCheckout = useInitializeCheckout(null, () => navigate('/cart'));
 
-
-
-
-
-  const initializeCheckout = useCallback(async () => {
-    try {
-      const response = await dispatch(validateStock()).unwrap();
-      const { outOfStockItems, reducedItems, successfulItems } = response
-      // console.log('outOfStockItems', outOfStockItems)
-      if (outOfStockItems.length > 0 || reducedItems.length > 0) {
-        navigate('/cart');
-        // console.log('can\'t checkout')
-      }
-      else {
-        navigate('/checkout');
-      }
-      dispatch(setShowCart(false));
-    }
-    catch (error) {
-      console.log('error initializing checkout', error)
-    }
-
-
-  }, [navigate]);
-
-  // console.log(items)
 
   return (
     <div className="mini-cart">
@@ -91,7 +67,7 @@ const Cart = () => {
 
       <div className="navigation">
         {noOfProducts > 0 ?
-          <button onClick={initializeCheckout} className='btn-1'>PROCEED TO CHECKOUT</button>
+          <button onClick={() => initializeCheckout()} className='btn-1'>PROCEED TO CHECKOUT</button>
           :
           <button onClick={() => navigate('/products/women')} className='btn-1'>GO SHOPPING</button>
         }

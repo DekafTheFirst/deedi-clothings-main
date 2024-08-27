@@ -1,15 +1,26 @@
-import React, { useEffect, useMemo } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import "./CartPage.scss"
 import { useDispatch, useSelector } from 'react-redux'
-import { removeItemFromCart, resetCart, validateStock } from '../../redux/cartReducer'
+import { CART_MODE, removeItemFromCart, resetCart, validateStock } from '../../redux/cartReducer'
 import { Link, useNavigate } from 'react-router-dom'
 import CartItem from '../../components/MiniCart/MiniCartItem/CartItem'
+import useInitializeCheckout from '../../hooks/useInitializeCheckout'
 
 
 const CartPage = () => {
-  const items = useSelector(state => state.cart.items);
+  const { items, cartMode } = useSelector(state => state.cart);
+
+  const { outOfStockItems, inStockItems } = items.reduce((acc, item) => {
+    if (!item.outOfStock) {
+      acc.inStockItems.push(item);
+    } else {
+      acc.outOfStockItems.push(item);
+    }
+    return acc;
+  }, { outOfStockItems: [], inStockItems: [] });
 
   const stockValidationErrors = useSelector(state => state.cart.stockValidationErrors);
+  const [validated, setValidated] = useState(false);
 
   const sortedErrors = useMemo(() => {
     return stockValidationErrors.slice().sort((a, b) => {
@@ -32,17 +43,25 @@ const CartPage = () => {
 
   const dispatch = useDispatch()
 
-  const callValidateStock = (items) => {
 
-  }
 
   useEffect(() => {
-    dispatch(validateStock())
-  }, [])
+    const validateAndSet = () => {
+      try {
+        dispatch(validateStock());
+        // setValidated(true);
+      } catch (error) {
+        console.error('Error validating stock:', error);
+      }
+    };
+
+    validateAndSet();
+  }, []);
 
 
 
 
+  const initializeCheckout = useInitializeCheckout(null, () => { });
 
 
 
@@ -62,21 +81,39 @@ const CartPage = () => {
                   ))}
                 </div>
               }
-              <div className="total">
-                <span>{`SUBTOTAL(${items ? items.length : '0'})`}</span>
-                <span className='amount'>${totalPrice()}</span>
-              </div>
+
             </div>
 
-            <div className="items">
+            <div className="all-items">
               {items ? (
                 items.length > 0 ?
                   <>
-                    {
-                      items.map(item => (
-                        <CartItem key={item.localCartItemId} item={item} cartType='full' />
-                      ))
-                    }
+                    <div className="item-group in-stock">
+                      <div className="total">
+                        <span>{`Items(${items ? inStockItems.length : '0'})`}</span>
+                        <span className='amount'>${totalPrice()}</span>
+                      </div>
+                      <div className="cart-items">
+                        {
+                          inStockItems.map(item => (
+                            <CartItem key={item.localCartItemId} item={item} cartType="full" />
+                          ))
+                        }
+                      </div>
+                    </div>
+                    <div className="item-group out-of-stock">
+                      <div className="total">
+                        <span>{`NOT INCLUDED(${items ? outOfStockItems.length : '0'})`}</span>
+                        {/* <span className='amount'>${totalPrice()}</span> */}
+                      </div>
+                      <div className="cart-items">
+                        {
+                          outOfStockItems.map(item => (
+                            <CartItem key={item.localCartItemId} item={item} cartType="full" />
+                          ))
+                        }
+                      </div>
+                    </div>
                   </>
                   :
                   <span className='list-empty'>No items</span>
@@ -95,7 +132,7 @@ const CartPage = () => {
                     <div className="summary-item">No. of Items: <span className="value">{items.length}</span></div>
                   </div>
                 </div>
-                <button onClick={() => navigate('/checkout')} className='btn-1'>PROCEED TO CHECKOUT</button>
+                <button onClick={() => { initializeCheckout() }} className='btn-1'>{cartMode === CART_MODE.NORMAL ? 'PROCEED TO CHECKOUT' : 'CONFIRM CHANGES & CONTINUE'}</button>
                 {/* <span className="reset" onClick={() => dispatch(resetCart())}>Reset Cart</span> */}
                 <Link to="/cart" className='secondary-action'> Continue Shopping </Link>
               </div>

@@ -10,6 +10,11 @@ const STATUS = {
   SYNCING: 'syncing'
 };
 
+export const CART_MODE = {
+  NORMAL: 'normal',
+  REVIEW: 'review',
+};
+
 const initialState = {
   items: [],
   previousItems: [],
@@ -20,6 +25,7 @@ const initialState = {
   error: null,
   stockValidationErrors: [],
   showCart: false,
+  cartMode: CART_MODE.NORMAL
 }
 
 const calculateTotals = (items) => {
@@ -272,7 +278,7 @@ export const validateStock = createAsyncThunk(
       const outOfStockItems = validatedResponse?.data?.outOfStock;
       const successfulItems = validatedResponse?.data?.success;
 
-      
+
       // console.log('mergedCart', mergedCart);
       return { cartId, reducedItems: reducedItems, outOfStockItems: outOfStockItems, successfulItems: successfulItems };
     } catch (error) {
@@ -316,6 +322,9 @@ export const cartSlice = createSlice({
     },
     setShowCart: (state, action) => {
       state.showCart = action.payload
+    },
+    setCartMode: (state, action) => {
+      state.cartMode = action.payload
     },
     setOutOfStock: (state, action) => {
       const localCartItemId = action.payload;
@@ -516,12 +525,13 @@ export const cartSlice = createSlice({
 
       .addCase(validateStock.fulfilled, (state, action) => {
         const { outOfStockItems, reducedItems, successfulItems } = action.payload;
-      
+
         // Convert items and errors array to Map for efficient access and updates
         const itemsMap = new Map(state.items.map(item => [item.localCartItemId, item]));
         const errorsMap = new Map(state.stockValidationErrors.map(error => [error.itemId, error]));
         const processedItemIds = new Set();
-      
+
+
         // Function to upsert error in the Map
         const upsertError = (item, errorMessage, errorType) => {
           errorsMap.set(item.localCartItemId, {
@@ -530,7 +540,7 @@ export const cartSlice = createSlice({
             type: errorType,
           });
         };
-      
+
         // Process out-of-stock items
         outOfStockItems.forEach(item => {
           const cartItem = itemsMap.get(item.localCartItemId);
@@ -541,9 +551,9 @@ export const cartSlice = createSlice({
               `${item.productTitle} (${item.size.size}) is out of stock.`,
               'out-of-stock'
             );
-      
+
             toast.error(`${item.productTitle} (${item.size.size}) is out of stock.`);
-      
+
             // Update item status
             itemsMap.set(item.localCartItemId, {
               ...cartItem,
@@ -553,7 +563,7 @@ export const cartSlice = createSlice({
             processedItemIds.add(item.localCartItemId);
           }
         });
-      
+
         // Process successful items
         successfulItems.forEach(item => {
           const cartItem = itemsMap.get(item.localCartItemId);
@@ -563,51 +573,64 @@ export const cartSlice = createSlice({
               availableStock: item.availableStock,
               outOfStock: false,
             });
-      
+
             // Remove any related error from errorsMap
             errorsMap.delete(item.localCartItemId);
-      
+
             // Notify user that product is back in stock
             if (cartItem.availableStock === 0 && item.availableStock > 0) {
               toast.success(`${item.productTitle} (${cartItem.size.size}) is back in stock 🎉.`);
-      
+
               if (cartItem.quantity < item.availableStock) {
                 cartItem.quantity = item.availableStock;
               }
             }
           }
         });
-      
+
         // Process reduced items
+        // console.log('trigged')
         reducedItems.forEach(item => {
           const cartItem = itemsMap.get(item.localCartItemId);
           if (cartItem) {
             // Add or update reduced-stock error
+
+            let errorMessage;
+            // Check if current quantity is higher than the amount of new available stock
+            if (cartItem.availableStock === 0) {
+              errorMessage = `${item.productTitle} (${item.size.size}) is now available. Your cart has been updated to match the current stock.`
+              toast.success(errorMessage);
+            }
+            else {
+              errorMessage = `Quantity of ${item.productTitle} (${item.size.size}) was reduced due ${item.newQuantity} to insufficient stock.`
+              toast.warning(errorMessage);
+            }
+
             upsertError(
               item,
-              `Quantity of ${item.productTitle} (${item.size.size}) was reduced due to insufficient stock.`,
+              errorMessage,
               'reduced-stock'
             );
-      
-            toast.info(`${item.productTitle} (${item.size.size}) had its quantity reduced due to insufficient stock.`);
-      
+
+
             // Update item quantity and stock
             itemsMap.set(item.localCartItemId, {
               ...cartItem,
               quantity: item.newQuantity,
               availableStock: item.availableStock,
+              outOfStock: false,
             });
             processedItemIds.add(item.localCartItemId);
           }
         });
-      
+
         // Convert the Map back to arrays
         state.items = Array.from(itemsMap.values());
         state.stockValidationErrors = Array.from(errorsMap.values());
-      
+
         state.status = 'idle';
       })
-      
+
       .addCase(validateStock.rejected, (state, action) => {
 
 
@@ -622,8 +645,9 @@ export const cartSlice = createSlice({
         state.items = state.items.filter(item => item.localCartItemId !== action.meta.arg.localCartItemId);
         updateTotals(state);
       })
-      .addCase(removeItemFromCart.fulfilled, (state) => {
+      .addCase(removeItemFromCart.fulfilled, (state, action) => {
         // Calculate totals after successful removal
+        state.stockValidationErrors = state.stockValidationErrors.filter(error => error.itemId !== action.meta.arg.localCartItemId);
         state.status = 'succeeded';
       })
       .addCase(removeItemFromCart.rejected, (state, action) => {
@@ -647,7 +671,7 @@ export const cartSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const { resetCart, setShowCart, setOutOfStock, setCheckoutError } = cartSlice.actions
+export const { resetCart, setShowCart, setOutOfStock, setCheckoutError, setCartMode } = cartSlice.actions
 
 export default cartSlice.reducer
 
