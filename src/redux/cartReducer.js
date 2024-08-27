@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { makeRequest } from '../makeRequest';
 import { transformCartItems, transformCartItemsOnLogin } from '../utils/transformCartItems';
 import { toast } from 'react-toastify';
+import { processOutOfStockItems, processReducedItems, processSuccessfulItems } from '../utils/cartSliceUtils';
 
 const STATUS = {
   PENDING: 'pending',
@@ -390,260 +391,6 @@ export const cartSlice = createSlice({
   },
   extraReducers: (builder) => {
 
-
-    const handleRejected = (state, action) => {
-      updateTotals(state);
-      state.status = 'failed';
-    };
-
-    builder
-      .addCase(validateStock.pending, (state) => {
-        // const cartItems = state.items;
-        // console.log('cartItems', cartItems)
-
-        state.status = 'validating';
-        updateTotals(state);
-      })
-
-      .addCase(validateStock.fulfilled, (state, action) => {
-        const { outOfStockItems, reducedItems, successfulItems } = action.payload;
-        console.log('response', action.payload)
-        // Convert items and errors array to Map for efficient access and updates
-        const itemsMap = new Map(state.items.map(item => [item.localCartItemId, item]));
-        const errorsMap = new Map(state.stockValidationErrors.map(error => [error.itemId, error]));
-        const processedItemIds = new Set();
-
-
-        // Function to upsert error in the Map
-        const upsertError = (item, errorMessage, errorType) => {
-          errorsMap.set(item.localCartItemId, {
-            itemId: item.localCartItemId,
-            error: errorMessage,
-            type: errorType,
-          });
-        };
-
-        // Process out-of-stock items
-        outOfStockItems.forEach(item => {
-          const cartItem = itemsMap.get(item.localCartItemId);
-          if (cartItem && !cartItem.outOfStock) {
-            // Add or update out-of-stock error
-            upsertError(
-              item,
-              `${item.productTitle} (${item.size.size}) is out of stock.`,
-              'out-of-stock'
-            );
-
-            toast.error(`${item.productTitle} (${item.size.size}) is out of stock.`);
-
-            // Update item status
-            itemsMap.set(item.localCartItemId, {
-              ...cartItem,
-              availableStock: 0,
-              outOfStock: true,
-            });
-            processedItemIds.add(item.localCartItemId);
-          }
-        });
-
-        // Process successful items
-        successfulItems.forEach(item => {
-          const cartItem = itemsMap.get(item.localCartItemId);
-          if (cartItem) {
-            itemsMap.set(item.localCartItemId, {
-              ...cartItem,
-              availableStock: item.availableStock,
-              outOfStock: false,
-            });
-
-            // Remove any related error from errorsMap
-            errorsMap.delete(item.localCartItemId);
-
-            // Notify user that product is back in stock
-            if (cartItem.availableStock === 0 && item.availableStock > 0) {
-              toast.success(`${item.productTitle} (${cartItem.size.size}) is back in stock 🎉.`);
-
-              if (cartItem.quantity < item.availableStock) {
-                cartItem.quantity = item.availableStock;
-              }
-            }
-          }
-        });
-
-        // Process reduced items
-        // console.log('trigged')
-        reducedItems.forEach(item => {
-          const cartItem = itemsMap.get(item.localCartItemId);
-          if (cartItem) {
-            // Add or update reduced-stock error
-
-            let errorMessage;
-            // Check if current quantity is higher than the amount of new available stock
-            if (cartItem.availableStock === 0) {
-              errorMessage = `${item.productTitle} (${item.size.size}) is now available. Your cart has been updated to match the current stock.`
-              toast.success(errorMessage);
-            }
-            else {
-              errorMessage = `Quantity of ${item.productTitle} (${item.size.size}) was reduced due ${item.newQuantity} to insufficient stock.`
-              toast.warning(errorMessage);
-            }
-
-            upsertError(
-              item,
-              errorMessage,
-              'reduced-stock'
-            );
-
-
-            // Update item quantity and stock
-            itemsMap.set(item.localCartItemId, {
-              ...cartItem,
-              quantity: item.newQuantity,
-              availableStock: item.availableStock,
-              outOfStock: false,
-            });
-            processedItemIds.add(item.localCartItemId);
-          }
-        });
-
-        // Convert the Map back to arrays
-        state.items = Array.from(itemsMap.values());
-        state.stockValidationErrors = Array.from(errorsMap.values());
-
-        state.status = 'idle';
-      })
-
-      .addCase(validateStock.rejected, (state, action) => {
-
-
-
-        updateTotals(state);
-        state.status = 'failed';
-      })
-      .addCase(initializeCheckout.pending, (state) => {
-        // const cartItems = state.items;
-        // console.log('cartItems', cartItems)
-
-        state.status = 'validating';
-        updateTotals(state);
-      })
-
-      .addCase(initializeCheckout.fulfilled, (state, action) => {
-        const { outOfStockItems, reducedItems, successfulItems } = action.payload;
-        console.log('response', action.payload)
-        // Convert items and errors array to Map for efficient access and updates
-        const itemsMap = new Map(state.items.map(item => [item.localCartItemId, item]));
-        const errorsMap = new Map(state.stockValidationErrors.map(error => [error.itemId, error]));
-        const processedItemIds = new Set();
-
-
-        // Function to upsert error in the Map
-        const upsertError = (item, errorMessage, errorType) => {
-          errorsMap.set(item.localCartItemId, {
-            itemId: item.localCartItemId,
-            error: errorMessage,
-            type: errorType,
-          });
-        };
-
-        // Process out-of-stock items
-        outOfStockItems.forEach(item => {
-          const cartItem = itemsMap.get(item.localCartItemId);
-          if (cartItem && !cartItem.outOfStock) {
-            // Add or update out-of-stock error
-            upsertError(
-              item,
-              `${item.productTitle} (${item.size.size}) is out of stock.`,
-              'out-of-stock'
-            );
-
-            toast.error(`${item.productTitle} (${item.size.size}) is out of stock.`);
-
-            // Update item status
-            itemsMap.set(item.localCartItemId, {
-              ...cartItem,
-              availableStock: 0,
-              outOfStock: true,
-            });
-            processedItemIds.add(item.localCartItemId);
-          }
-        });
-
-        // Process successful items
-        successfulItems.forEach(item => {
-          const cartItem = itemsMap.get(item.localCartItemId);
-          if (cartItem) {
-            itemsMap.set(item.localCartItemId, {
-              ...cartItem,
-              availableStock: item.availableStock,
-              outOfStock: false,
-            });
-
-            // Remove any related error from errorsMap
-            errorsMap.delete(item.localCartItemId);
-
-            // Notify user that product is back in stock
-            if (cartItem.availableStock === 0 && item.availableStock > 0) {
-              toast.success(`${item.productTitle} (${cartItem.size.size}) is back in stock 🎉.`);
-
-              if (cartItem.quantity < item.availableStock) {
-                cartItem.quantity = item.availableStock;
-              }
-            }
-          }
-        });
-
-        // Process reduced items
-        // console.log('trigged')
-        reducedItems.forEach(item => {
-          const cartItem = itemsMap.get(item.localCartItemId);
-          if (cartItem) {
-            // Add or update reduced-stock error
-
-            let errorMessage;
-            // Check if current quantity is higher than the amount of new available stock
-            if (cartItem.availableStock === 0) {
-              errorMessage = `${item.productTitle} (${item.size.size}) is now available. Your cart has been updated to match the current stock.`
-              toast.success(errorMessage);
-            }
-            else {
-              errorMessage = `Quantity of ${item.productTitle} (${item.size.size}) was reduced due ${item.newQuantity} to insufficient stock.`
-              toast.warning(errorMessage);
-            }
-
-            upsertError(
-              item,
-              errorMessage,
-              'reduced-stock'
-            );
-
-
-            // Update item quantity and stock
-            itemsMap.set(item.localCartItemId, {
-              ...cartItem,
-              quantity: item.newQuantity,
-              availableStock: item.availableStock,
-              outOfStock: false,
-            });
-            processedItemIds.add(item.localCartItemId);
-          }
-        });
-
-        // Convert the Map back to arrays
-        state.items = Array.from(itemsMap.values());
-        state.stockValidationErrors = Array.from(errorsMap.values());
-
-        state.status = 'idle';
-      })
-
-      .addCase(initializeCheckout.rejected, (state, action) => {
-
-
-
-        updateTotals(state);
-        state.status = 'failed';
-      })
-
     builder
       .addCase(fetchCartItems.pending, (state) => {
         state.status = 'syncing';
@@ -659,6 +406,9 @@ export const cartSlice = createSlice({
         state.status = 'failed';
         state.error = action.error.message;
       })
+
+
+    builder
       .addCase(addItemToCart.pending, (state, action) => {
         const newCartItem = action.meta.arg;
         // console.log('newCartItem', newCartItem)
@@ -749,6 +499,8 @@ export const cartSlice = createSlice({
         // console.log('rejected', action.payload)
         state.status = 'failed';
       })
+
+    builder
       .addCase(updateCartItem.pending, (state, action) => {
         const cartItems = state.items;
         // console.log('cartItems', cartItems)
@@ -819,6 +571,51 @@ export const cartSlice = createSlice({
         state.status = 'failed';
       })
 
+    const handlePending = (state) => {
+      state.status = 'validating';
+      updateTotals(state);
+    };
+
+    const ACTION_TYPES = {
+      
+    }
+    const handleFulfilled = (state, action, actionType) => {
+      const { outOfStockItems, reducedItems, successfulItems } = action.payload;
+      console.log(actionType)
+      // Convert state items and errors to Maps for efficient access
+      const itemsMap = new Map(state.items.map(item => [item.localCartItemId, item]));
+      const errorsMap = new Map(state.stockValidationErrors.map(error => [error.itemId, error]));
+      const processedItemIds = new Set();
+
+      // Process each type of item
+      processOutOfStockItems(outOfStockItems, itemsMap, errorsMap, processedItemIds);
+      processSuccessfulItems(successfulItems, itemsMap, errorsMap);
+      processReducedItems(reducedItems, itemsMap, errorsMap, processedItemIds);
+
+      // Convert the Map back to arrays
+      state.items = Array.from(itemsMap.values());
+      state.stockValidationErrors = Array.from(errorsMap.values());
+
+      // Update the state status based on the action type
+      state.status = actionType === 'validateStock' ? 'validated' : 'checkoutInitialized';
+    };
+
+
+
+    const handleRejected = (state, action) => {
+      updateTotals(state);
+      state.status = 'failed';
+    };
+
+    builder
+      .addCase(validateStock.pending, handlePending)
+      .addCase(validateStock.fulfilled, (state, action) => handleFulfilled(state, action, 'validateStock'))
+      .addCase(validateStock.rejected, handleRejected)
+      .addCase(initializeCheckout.pending, handlePending)
+      .addCase(initializeCheckout.fulfilled, (state, action) => handleFulfilled(state, action, 'initializeCheckout'))
+      .addCase(initializeCheckout.rejected, handleRejected);
+
+    builder
       .addCase(removeItemFromCart.pending, (state, action) => {
         state.status = 'pending';
         state.previousItems = [...state.items];
@@ -838,6 +635,8 @@ export const cartSlice = createSlice({
         state.error = action.payload;
         updateTotals(state);
       })
+
+    builder
       .addCase(syncCartOnPageRefresh.pending, (state) => {
         state.status = 'syncing';
       })

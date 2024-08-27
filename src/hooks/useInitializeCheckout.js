@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { CART_MODE, validateStock, setCartMode, setShowCart } from '../redux/cartReducer'; // Adjust the import path
+import { CART_MODE, validateStock, setCartMode, setShowCart, initializeCheckout } from '../redux/cartReducer'; // Adjust the import path
 
 // Custom hook with parameters for different behaviors
 const useInitializeCheckout = (onSuccess, onFailure) => {
@@ -10,7 +10,7 @@ const useInitializeCheckout = (onSuccess, onFailure) => {
 
   const handleInitializeCheckout = useCallback(async () => {
     try {
-      const response = await dispatch(validateStock({ reserve: true })).unwrap();
+      const response = await dispatch(initializeCheckout({ reserve: true })).unwrap();
       const { outOfStockItems, reducedItems } = response;
       //   console.log('outOfStockItems', outOfStockItems);
 

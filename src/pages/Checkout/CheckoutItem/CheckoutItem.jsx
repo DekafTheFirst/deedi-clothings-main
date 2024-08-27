@@ -15,7 +15,7 @@ const CheckoutItem = ({ item }) => {
     );
     const product = data?.attributes
     const productImg = product?.img?.data?.[0]?.attributes?.formats?.thumbnail?.url || product?.img?.data?.[0]?.attributes?.url
-    console.log('product', product)
+    // console.log('product', product)
 
     // useEffect(() => {
     //     console.log('product', data)
