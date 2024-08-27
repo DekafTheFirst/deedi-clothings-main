@@ -15,9 +15,12 @@ const CartItem = ({ item, cartType }) => {
     // );
 
     const { data, loading, error } = useFetch(
-        `/products?filters[id][$eq]=${item.productId}`
+        `/products?filters[id][$eq]=${item.productId}&populate=img`
     );
     const product = data?.[0]?.attributes
+    // console.log('product', product)
+    const productImg = product?.img?.data?.[0]?.attributes?.formats?.thumbnail?.url || product?.img?.data?.[0]?.attributes?.url
+
     // console.log("product", product)
 
 
@@ -109,7 +112,7 @@ const CartItem = ({ item, cartType }) => {
                     // wrapperClassName='imgWrapper'
                     className={'img'}
                     alt=""
-                    src={import.meta.env.VITE_UPLOAD_URL + item.img}
+                    src={import.meta.env.VITE_UPLOAD_URL + productImg}
                     effect="blur"
                 />
             </div>

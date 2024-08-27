@@ -525,7 +525,7 @@ export const cartSlice = createSlice({
 
       .addCase(validateStock.fulfilled, (state, action) => {
         const { outOfStockItems, reducedItems, successfulItems } = action.payload;
-
+        console.log('response', action.payload)
         // Convert items and errors array to Map for efficient access and updates
         const itemsMap = new Map(state.items.map(item => [item.localCartItemId, item]));
         const errorsMap = new Map(state.stockValidationErrors.map(error => [error.itemId, error]));

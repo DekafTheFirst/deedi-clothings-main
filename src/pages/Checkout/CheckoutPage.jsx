@@ -29,7 +29,6 @@ const CheckoutPage = () => {
   const currentStepFromSession = getCurrentStepFromSession();
 
 
-  const [editingAllowed, setEditingAllowed] = useState(false)
   // const billingInfo = useSelector(state => state.checkout.billingInfo);
   // const shippingInfo = useSelector(state => state.checkout.shippingInfo);
 
@@ -101,7 +100,6 @@ const CheckoutPage = () => {
 
               <div className="header">
                 <h5 className="heading">Order Summary </h5>
-                <span className='edit-cart' onClick={() => setEditingAllowed(!editingAllowed)}>{editingAllowed ? 'Done':'Edit Cart'}</span>
               </div>
 
               <div className="checkout-items">
@@ -118,7 +116,7 @@ const CheckoutPage = () => {
                           <>
                             {
                               items.map(item => (
-                                <CheckoutItem key={item.localCartItemId} item={item} editingAllowed={editingAllowed} />
+                                <CheckoutItem key={item.localCartItemId} item={item}  />
                               ))
                             }
                           </>

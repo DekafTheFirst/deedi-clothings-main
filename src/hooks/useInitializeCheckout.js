@@ -12,7 +12,7 @@ const useInitializeCheckout = (onSuccess, onFailure) => {
     try {
       const response = await dispatch(validateStock()).unwrap();
       const { outOfStockItems, reducedItems } = response;
-    //   console.log('outOfStockItems', outOfStockItems);
+      //   console.log('outOfStockItems', outOfStockItems);
 
       if (outOfStockItems.length > 0 || reducedItems.length > 0) {
         if (onFailure) {
@@ -25,15 +25,17 @@ const useInitializeCheckout = (onSuccess, onFailure) => {
         if (onSuccess) {
           onSuccess(); // Execute custom success logic
         } else {
+
           navigate('/checkout');
-          dispatch(reserveStock());
+          dispatch(setShowCart(false))
+          // dispatch(reserveStock());
 
         }
       }
 
       dispatch(setShowCart(false));
     } catch (error) {
-      console.log('Error initializing checkout', error);
+      console.error('Error initializing checkout', error);
     }
   }, [dispatch, navigate, onSuccess, onFailure]);
 

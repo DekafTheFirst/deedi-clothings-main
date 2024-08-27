@@ -19,6 +19,7 @@ const CartPage = () => {
     return acc;
   }, { outOfStockItems: [], inStockItems: [] });
 
+
   const stockValidationErrors = useSelector(state => state.cart.stockValidationErrors);
   const [validated, setValidated] = useState(false);
 
@@ -85,39 +86,41 @@ const CartPage = () => {
             </div>
 
             <div className="all-items">
-              {items ? (
-                items.length > 0 ?
-                  <>
-                    <div className="item-group in-stock">
-                      <div className="total">
-                        <span>{`Items(${items ? inStockItems.length : '0'})`}</span>
-                        <span className='amount'>${totalPrice()}</span>
-                      </div>
-                      <div className="cart-items">
-                        {
-                          inStockItems.map(item => (
-                            <CartItem key={item.localCartItemId} item={item} cartType="full" />
-                          ))
-                        }
-                      </div>
+              <>
+                <div className="item-group in-stock">
+                  <div className="total">
+                    <span>{`Items(${items ? inStockItems.length : '0'})`}</span>
+                    <span className='amount'>${totalPrice()}</span>
+                  </div>
+                  <div className="cart-items">
+
+                    {
+                      inStockItems.length > 0 ?
+                        inStockItems.map(item => (
+                          <CartItem key={item.localCartItemId} item={item} cartType="full" />
+                        ))
+                        :
+                        <span className='list-empty'>No items</span>
+                    }
+
+                  </div>
+                </div>
+                {outOfStockItems.length > 0 &&
+                  <div className="item-group out-of-stock">
+                    <div className="total">
+                      <span>{`NOT INCLUDED(${items ? outOfStockItems.length : '0'})`}</span>
+                      {/* <span className='amount'>${totalPrice()}</span> */}
                     </div>
-                    <div className="item-group out-of-stock">
-                      <div className="total">
-                        <span>{`NOT INCLUDED(${items ? outOfStockItems.length : '0'})`}</span>
-                        {/* <span className='amount'>${totalPrice()}</span> */}
-                      </div>
-                      <div className="cart-items">
-                        {
-                          outOfStockItems.map(item => (
-                            <CartItem key={item.localCartItemId} item={item} cartType="full" />
-                          ))
-                        }
-                      </div>
+                    <div className="cart-items">
+                      {outOfStockItems.map(item => (
+                        <CartItem key={item.localCartItemId} item={item} cartType="full" />
+                      ))}
+
                     </div>
-                  </>
-                  :
-                  <span className='list-empty'>No items</span>
-              ) : <CircularProgress />}
+                  </div>
+                }
+              </>
+
 
 
             </div>
