@@ -255,20 +255,6 @@ export const validateStock = createAsyncThunk(
       // Merge local items with the Strapi cart items and get the updated cart
       const validatedResponse = await makeRequest.patch(`/carts/validate-stock`,
         { items, cartId },
-        {
-          params: {
-            populate: {
-              items: {
-                populate: {
-                  product: {
-                    populate: ['img'],
-                    fields: ['title', 'price', 'img'],
-                  },
-                },
-              },
-            },
-          },
-        }
       );
 
       console.log('validatedResponse', validatedResponse);
@@ -284,7 +270,7 @@ export const validateStock = createAsyncThunk(
       return { cartId, reducedItems: reducedItems, outOfStockItems: outOfStockItems, successfulItems: successfulItems };
     } catch (error) {
       console.error(error)
-      return rejectWithValue(error.response?.data?.message || 'Failed to fetch cart items');
+      return rejectWithValue(error.response?.data?.error?.message || 'Failed to validate stock');
     }
   }
 );
@@ -301,25 +287,25 @@ export const initializeCheckout = createAsyncThunk(
 
 
       // Merge local items with the Strapi cart items and get the updated cart
-      const validatedResponse = await makeRequest.patch(`/carts/validate-stock`,
+      const validatedResponse = await makeRequest.patch(`/orders/initialize-checkout`,
         { items, cartId },
-        {
-          params: {
-            populate: {
-              items: {
-                populate: {
-                  product: {
-                    populate: ['img'],
-                    fields: ['title', 'price', 'img'],
-                  },
-                },
-              },
-            },
-          },
-        }
+        // {
+        //   params: {
+        //     populate: {
+        //       items: {
+        //         populate: {
+        //           product: {
+        //             populate: ['img'],
+        //             fields: ['title', 'price', 'img'],
+        //           },
+        //         },
+        //       },
+        //     },
+        //   },
+        // }
       );
 
-      // console.log('validatedResponse', validatedResponse);
+      console.log('checkout response', validatedResponse);
 
 
 
@@ -332,7 +318,7 @@ export const initializeCheckout = createAsyncThunk(
       return { cartId, reducedItems: reducedItems, outOfStockItems: outOfStockItems, successfulItems: successfulItems };
     } catch (error) {
       console.error(error)
-      return rejectWithValue(error.response?.data?.message || 'Failed to fetch cart items');
+      return rejectWithValue(error.response?.data?.error?.message || 'Failed to initialize checkout');
     }
   }
 )
@@ -581,7 +567,6 @@ export const cartSlice = createSlice({
     }
     const handleFulfilled = (state, action, actionType) => {
       const { outOfStockItems, reducedItems, successfulItems } = action.payload;
-      console.log(actionType)
       // Convert state items and errors to Maps for efficient access
       const itemsMap = new Map(state.items.map(item => [item.localCartItemId, item]));
       const errorsMap = new Map(state.stockValidationErrors.map(error => [error.itemId, error]));
@@ -604,6 +589,9 @@ export const cartSlice = createSlice({
 
     const handleRejected = (state, action) => {
       updateTotals(state);
+      console.log(action.payload)
+      toast.error(action.payload || action.error.message)
+
       state.status = 'failed';
     };
 
