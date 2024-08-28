@@ -271,7 +271,7 @@ export const validateStock = createAsyncThunk(
         }
       );
 
-      // console.log('validatedResponse', validatedResponse);
+      console.log('validatedResponse', validatedResponse);
 
 
 
