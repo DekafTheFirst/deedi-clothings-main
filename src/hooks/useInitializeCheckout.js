@@ -19,7 +19,7 @@ const useInitializeCheckout = (onSuccess, onFailure) => {
         const { outOfStockItems, reducedItems } = response;
         //   console.log('outOfStockItems', outOfStockItems);
 
-        if (outOfStockItems.length > 0 || reducedItems.length > 0) {
+        if (outOfStockItems.length > 0) {
           if (onFailure) {
             onFailure(); // Execute custom failure logic
           } else {

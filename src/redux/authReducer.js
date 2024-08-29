@@ -2,12 +2,15 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { makeRequest } from '../makeRequest';
 import { fetchCartItems, resetCart } from './cartReducer';
+import Cookies from "universal-cookie"
+import { jwtDecode } from "jwt-decode"
 
-
+const cookies = new Cookies();
+console.log(cookies)
 // Async thunks
 export const registerUser = createAsyncThunk(
     'auth/registerUser',
-    async ({ email, password, username, photoUrl }, {dispatch, thunkAPI}) => {
+    async ({ email, password, username, photoUrl }, { dispatch, thunkAPI }) => {
         try {
             const response = await makeRequest.post('/auth/local/register?populate=*', {
                 username,
@@ -19,17 +22,23 @@ export const registerUser = createAsyncThunk(
             const strapiUser = response.data.user;
 
             // Create cart for the new user
-            await makeRequest.post('/carts', { userId: strapiUser.id });            
+            await makeRequest.post('/carts', { userId: strapiUser.id });
             dispatch(fetchCartItems(strapiUser.id))
-            
+
+            // const jwtToken = response.data.jwt
+            // const decoded = jwtDecode(jwtToken)
+            // console.log(jwtToken)
+            // cookies.set('jwt_authentication', jwtToken, {
+            //     expires: new Date()
+            // });
             return {
                 user: {
                     email: strapiUser.email,
                     id: strapiUser.id,
                     username: strapiUser.username,
-                    photoUrl: strapiUser.photoUrl
+                    photoUrl: strapiUser.photoUrl,
                 },
-                
+
             };
         } catch (error) {
             console.log(error);
@@ -41,7 +50,7 @@ export const registerUser = createAsyncThunk(
 
 export const loginUser = createAsyncThunk(
     'auth/loginUser',
-    async ({ email, password }, {dispatch, thunkAPI}) => {
+    async ({ email, password }, { dispatch, thunkAPI }) => {
         try {
 
             const response = await makeRequest.post('/auth/local', {
@@ -54,15 +63,21 @@ export const loginUser = createAsyncThunk(
 
 
             dispatch(fetchCartItems(strapiUser.id))
+            const jwtToken = response.data.jwt
+            const decoded = jwtDecode(jwtToken)
+            console.log(decoded)
+            cookies.set('jwt_authentication', jwtToken, {
+                expires: new Date(decoded.exp * 1000),
+                sameSite: 'lax',
+                secure: true,
+            });
 
-            
             return {
                 user: {
                     email: strapiUser.email,
                     id: strapiUser.id,
                     username: strapiUser.username,
                     photoUrl: strapiUser.photoUrl,
-                    
                 },
             };
         } catch (error) {
@@ -132,8 +147,9 @@ export const logoutUser = createAsyncThunk(
         try {
             // Clear user session on Strapi if necessary
             // Note: You may need to handle session clearing differently
+            cookies.remove('jwt_authentication', { path: '/' });
             dispatch(resetCart());
-            
+
             return {};
         } catch (error) {
             console.log(error)

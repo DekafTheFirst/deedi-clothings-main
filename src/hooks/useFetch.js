@@ -1,6 +1,11 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { makeRequest } from "../makeRequest";
+import Cookies from "universal-cookie"
+
+const cookies = new Cookies();
+const jwtToken = cookies.get('jwt_authentication') || null;
+console.log('jwtToken', jwtToken);
 
 const useFetch = (url) => {
 
