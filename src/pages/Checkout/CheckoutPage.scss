@@ -45,7 +45,7 @@
 
             .order-summary {
                 background-color: lighten($lighterGray, 2%);
-                border-left: 2px solid $lightGray; // Very light gray border
+                border-left: 1px solid $lightGray; // Very light gray border
 
                 @include md {
                     // padding: 12px 30px 12px;

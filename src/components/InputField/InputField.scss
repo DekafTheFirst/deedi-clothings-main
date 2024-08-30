@@ -17,14 +17,14 @@
     }
 
     .inputField {
-        padding: 8px ;
+        padding: 10px ;
         font-size: 14px;
         font-weight: 400;
         width: 100%;
         // background-color: $lighterGray;
         border: 1px solid $lightGray;
         outline: none;
-        border-radius: 5px;
+        border-radius: 8px;
 
         &:focus-visible {
             outline: none;

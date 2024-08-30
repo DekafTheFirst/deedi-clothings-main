@@ -7,5 +7,16 @@ export default defineConfig(() => {
       outDir: 'build',
     },
     plugins: [react()],
+    // server: {
+    //   proxy: {
+    //     '/api': {
+    //       target: 'http://localhost:1337', // Your backend URL
+    //       changeOrigin: true,
+    //       secure: false, // Set to true if your backend uses HTTPS
+    //       rewrite: (path) => path.replace(/^\/api/, ''),
+
+    //     }
+    //   }
+    // }
   };
 });
