@@ -71,7 +71,7 @@ const CheckoutItem = ({ item }) => {
 
 
             <div className="body">
-                <div className="img-wrapper" onClick={handleRedirect}>
+                <div className="img-wrapper">
                     <OptimizedImage
                         // wrapperClassName='imgWrapper'
                         className={'img'}
@@ -84,7 +84,7 @@ const CheckoutItem = ({ item }) => {
                     </div>
                 </div>
 
-                <div className="wrapper" onClick={handleRedirect} >
+                <div className="wrapper" >
                     <div className="top">
                         <div className="details">
                             {product?.title ? <h6 className='title'>{product.title}</h6> : <Skeleton className="title" variant="text" sx={{ fontSize: '16px' }} />}

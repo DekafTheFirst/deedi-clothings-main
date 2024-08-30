@@ -288,7 +288,7 @@ export const initializeCheckout = createAsyncThunk(
 
       // Merge local items with the Strapi cart items and get the updated cart
       const validatedResponse = await makeRequest.patch(`/orders/initialize-checkout`,
-        { items, cartId },
+        { items, cartId, customerEmail: 'dekeji1@gmail.com' },
         // {
         //   params: {
         //     populate: {
@@ -306,12 +306,12 @@ export const initializeCheckout = createAsyncThunk(
       );
 
       console.log('checkout response', validatedResponse);
+      const validationResults = validatedResponse?.data?.validationResults;
+      const sessionId = validatedResponse?.data?.sessionId;
 
-
-
-      const reducedItems = validatedResponse?.data?.reduced;
-      const outOfStockItems = validatedResponse?.data?.outOfStock;
-      const successfulItems = validatedResponse?.data?.success;
+      const reducedItems = validationResults?.reduced;
+      const outOfStockItems = validationResults?.outOfStock;
+      const successfulItems = validationResults?.success;
 
 
       // console.log('mergedCart', mergedCart);
@@ -563,7 +563,7 @@ export const cartSlice = createSlice({
     };
 
     const ACTION_TYPES = {
-      
+
     }
     const handleFulfilled = (state, action, actionType) => {
       const { outOfStockItems, reducedItems, successfulItems } = action.payload;
