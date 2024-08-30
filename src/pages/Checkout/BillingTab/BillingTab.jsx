@@ -224,7 +224,6 @@ const BillingTab = ({ totalAmount }) => {
     //     console.log('changed')
     // };
 
-    const stripePromise = loadStripe('pk_test_51OzQqiP8nMwtf7KwjeDBvSrJh0QU2AMmJncITWpVrXW9Cm8XesZc1MqofLogMUrphlOB0exTEsHSQ91mJoA5V94u00JrVmVkWL');
 
     const [loading, setLoading] = useState(false)
 
@@ -232,6 +231,8 @@ const BillingTab = ({ totalAmount }) => {
 
 
     const handlePlaceOrder = async (billingInfo) => {
+        const stripePromise = loadStripe('pk_test_51OzQqiP8nMwtf7KwjeDBvSrJh0QU2AMmJncITWpVrXW9Cm8XesZc1MqofLogMUrphlOB0exTEsHSQ91mJoA5V94u00JrVmVkWL');
+
         if (products.length > 0) {
             try {
                 setLoading(true)
