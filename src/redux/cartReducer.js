@@ -191,8 +191,8 @@ export const fetchCartItems = createAsyncThunk(
               items: {
                 populate: {
                   product: {
-                    populate: ['img'],
-                    fields: ['title', 'price', 'img'],
+                    populate: ['images'],
+                    fields: ['title', 'price'],
                   },
                 },
               },
@@ -242,8 +242,8 @@ export const fetchCartItems = createAsyncThunk(
 );
 
 
-export const validateStock = createAsyncThunk(
-  'cart/validateStock',
+export const validateCartItem = createAsyncThunk(
+  'cart/validateCartItem',
   async (_, { getState, rejectWithValue }) => {
     try {
       // console.log('reached here')
@@ -289,20 +289,7 @@ export const initializeCheckout = createAsyncThunk(
       // Merge local items with the Strapi cart items and get the updated cart
       const validatedResponse = await makeRequest.patch(`/orders/initialize-checkout`,
         { items, cartId, customerEmail: 'dekeji1@gmail.com' },
-        // {
-        //   params: {
-        //     populate: {
-        //       items: {
-        //         populate: {
-        //           product: {
-        //             populate: ['img'],
-        //             fields: ['title', 'price', 'img'],
-        //           },
-        //         },
-        //       },
-        //     },
-        //   },
-        // }
+      
       );
 
       console.log('checkout response', validatedResponse);
@@ -582,7 +569,7 @@ export const cartSlice = createSlice({
       state.stockValidationErrors = Array.from(errorsMap.values());
 
       // Update the state status based on the action type
-      state.status = actionType === 'validateStock' ? 'validated' : 'checkoutInitialized';
+      state.status = actionType === 'validateCartItem' ? 'validated' : 'checkoutInitialized';
     };
 
 
@@ -596,9 +583,9 @@ export const cartSlice = createSlice({
     };
 
     builder
-      .addCase(validateStock.pending, handlePending)
-      .addCase(validateStock.fulfilled, (state, action) => handleFulfilled(state, action, 'validateStock'))
-      .addCase(validateStock.rejected, handleRejected)
+      .addCase(validateCartItem.pending, handlePending)
+      .addCase(validateCartItem.fulfilled, (state, action) => handleFulfilled(state, action, 'validateCartItem'))
+      .addCase(validateCartItem.rejected, handleRejected)
       .addCase(initializeCheckout.pending, handlePending)
       .addCase(initializeCheckout.fulfilled, (state, action) => handleFulfilled(state, action, 'initializeCheckout'))
       .addCase(initializeCheckout.rejected, handleRejected);

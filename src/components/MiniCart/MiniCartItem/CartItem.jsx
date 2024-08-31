@@ -14,12 +14,9 @@ const CartItem = ({ item, cartType }) => {
     //     `/stocks?filters[product][id][$eq]=${item.productId}&filters[size][id][$eq]=${item.size.id}&populate=product`
     // );
 
-    const { data, loading, error } = useFetch(
-        `/products?filters[id][$eq]=${item.productId}&populate=img`
-    );
-    const product = data?.[0]?.attributes
+
+
     // console.log('product', product)
-    const productImg = product?.img?.data?.[0]?.attributes?.formats?.thumbnail?.url || product?.img?.data?.[0]?.attributes?.url
 
     // console.log("product", product)
 
@@ -28,7 +25,7 @@ const CartItem = ({ item, cartType }) => {
 
     // useEffect(() => {
     //     // console.log('fetchedAvailableStock', fetchedAvailableStock)
-    //     const validateStock = () => {
+    //     const validateCartItem = () => {
     //         if ((fetchedAvailableStock < item.quantity) && !item.outOfStock) {
     //             callUpdateDispatch(fetchedAvailableStock)
     //         }
@@ -39,7 +36,7 @@ const CartItem = ({ item, cartType }) => {
     //     console.log('product:', product)
 
 
-    //     validateStock()
+    //     validateCartItem()
 
 
     // }, [fetchedAvailableStock]);
@@ -100,7 +97,7 @@ const CartItem = ({ item, cartType }) => {
 
     useEffect(() => {
         // console.log(product?.title, 'availableStock', item.availableStock)
-    }, [item.availableStock, product?.title])
+    }, [item.availableStock])
 
     return (
         <div
@@ -112,7 +109,7 @@ const CartItem = ({ item, cartType }) => {
                     // wrapperClassName='imgWrapper'
                     className={'img'}
                     alt=""
-                    src={import.meta.env.VITE_UPLOAD_URL + productImg}
+                    src={import.meta.env.VITE_UPLOAD_URL + item.img}
                     effect="blur"
                 />
             </div>
@@ -120,7 +117,7 @@ const CartItem = ({ item, cartType }) => {
             <div className="body">
                 <div className="wrapper" onClick={handleRedirect}>
                     <div className="details">
-                        {product?.title ? <h6 className='title'>{product.title}</h6> : <Skeleton className="title" variant="text" sx={{ fontSize: '16px' }} />}
+                        <h6 className='title'>{item.title}</h6>
                         <div className='stock'>
                             <div className="size">
                                 <span>Size:</span> <span className="value">{item?.size?.size}</span>
@@ -139,11 +136,11 @@ const CartItem = ({ item, cartType }) => {
                                 }
                             })()}</div>
                         </div>
-                        <span className='product-price'>${product?.price}</span>
+                        <span className='product-price'>${item?.price}</span>
 
                     </div>
                     <div className="price">
-                        {product?.price ? <span className="total-price-per-item">${product?.price * item.quantity}</span> : <Skeleton className="total-price-per-item" variant="text" sx={{ fontSize: '16px' }} />}
+                        <span className="total-price-per-item">${item?.price * item.quantity}</span>
                     </div>
                 </div>
 

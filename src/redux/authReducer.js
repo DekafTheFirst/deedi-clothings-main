@@ -6,7 +6,7 @@ import Cookies from "universal-cookie"
 import { jwtDecode } from "jwt-decode"
 
 const cookies = new Cookies();
-console.log(cookies)
+// console.log(cookies)
 // Async thunks
 export const registerUser = createAsyncThunk(
     'auth/registerUser',

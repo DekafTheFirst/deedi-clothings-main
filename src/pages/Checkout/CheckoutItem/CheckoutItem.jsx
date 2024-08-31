@@ -10,44 +10,7 @@ import { Skeleton } from '@mui/material';
 import { toast } from 'react-toastify';
 
 const CheckoutItem = ({ item }) => {
-    const { data, loading, error } = useFetch(
-        `/products/${item.productId}?populate=img`
-    );
-    const product = data?.attributes
-    const productImg = product?.img?.data?.[0]?.attributes?.formats?.thumbnail?.url || product?.img?.data?.[0]?.attributes?.url
-    // console.log('product', product)
-
-    // useEffect(() => {
-    //     console.log('product', data)
-    // }, [data]);
-
-
-
-    // const product = stockData?.[0]?.attributes?.product?.data?.attributes
-
-
-    // useEffect(() => {
-    //     // console.log('fetchedAvailableStock', fetchedAvailableStock)
-    //     const validateStock = () => {
-    //         if ((fetchedAvailableStock < item.quantity) && !item.outOfStock) {
-    //             callUpdateDispatch(fetchedAvailableStock)
-    //         }
-
-    //         setAvailableStock(fetchedAvailableStock);
-
-    //     }
-    //     // console.log('product:', product)
-
-
-    //     validateStock()
-
-
-    // }, [fetchedAvailableStock]);
-
-
-
-
-
+    
     const dispatch = useDispatch();
     const navigate = useNavigate()
 
@@ -76,7 +39,7 @@ const CheckoutItem = ({ item }) => {
                         // wrapperClassName='imgWrapper'
                         className={'img'}
                         alt=""
-                        src={import.meta.env.VITE_UPLOAD_URL + productImg}
+                        src={import.meta.env.VITE_UPLOAD_URL + item.img}
                         effect="blur"
                     />
                     <div className="img-quantity">
@@ -87,7 +50,7 @@ const CheckoutItem = ({ item }) => {
                 <div className="wrapper" >
                     <div className="top">
                         <div className="details">
-                            {product?.title ? <h6 className='title'>{product.title}</h6> : <Skeleton className="title" variant="text" sx={{ fontSize: '16px' }} />}
+                          <h6 className='title'>{item.title}</h6>
                             {/* <p>{item.desc.substring(0, 100)}</p> */}
                             <div className='stock'>
                                 <div className="size">
@@ -96,7 +59,7 @@ const CheckoutItem = ({ item }) => {
                             </div>
                         </div>
                         <div className="price">
-                            {product?.price ? <span className="total-price-per-item">${product?.price * item.quantity}</span> : <Skeleton className="total-price-per-item" variant="text" sx={{ fontSize: '16px' }} />}
+                            <span className="total-price-per-item">${item?.price * item.quantity}</span>
                         </div>
                     </div>
 

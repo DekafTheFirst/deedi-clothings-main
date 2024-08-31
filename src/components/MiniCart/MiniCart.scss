@@ -60,17 +60,18 @@
             }
 
 
-            .list-empty {
-                text-align: center;
-                font-size: 14px;
-            }
+           
         }
+        .list-empty {
+            text-align: center;
+            font-size: 14px;
+            padding: 20px;
+        } 
     }
 
 
 
     .navigation {
-        margin-top: 20px;
         display: flex;
         flex-direction: column;
         gap: 10px;

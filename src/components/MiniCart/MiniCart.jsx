@@ -5,8 +5,8 @@ import { Link, useNavigate } from 'react-router-dom'
 import calculateNoOfProducts from '../../utils/calculateNoOfProducts'
 import { CircularProgress } from '@mui/material'
 import CartItem from './MiniCartItem/CartItem'
-import { CART_MODE, setCartMode, setShowCart, validateStock } from '../../redux/cartReducer'
-import useInitializeCheckout from '../../hooks/useInitializeCheckout'
+import { CART_MODE, setCartMode, setShowCart, validateCartItem } from '../../redux/cartReducer'
+import { splitItemsByStock } from '../../utils/cartItemUtils'
 
 
 const Cart = () => {
@@ -15,7 +15,11 @@ const Cart = () => {
 
   const items = useSelector(state => state.cart.items);
 
-  const noOfProducts = useMemo(() => calculateNoOfProducts(items), [items]);
+  const { inStockItems, outOfStockItems } = useMemo(
+    () => splitItemsByStock(items),
+    [items]
+  );
+  const noOfProducts = useMemo(() => calculateNoOfProducts(inStockItems), [inStockItems]);
 
   const subtotal = useSelector(state => state.cart.subtotal)
 
@@ -24,13 +28,17 @@ const Cart = () => {
 
   const dispatch = useDispatch()
 
-
+  const handleProceedToCheckout = () => {
+    if (inStockItems.length > 0) {
+      dispatch(setShowCart(false));
+      navigate('/checkout');
+    }
+  }
 
   useEffect(() => {
-    dispatch(validateStock())
+    dispatch(validateCartItem())
   }, [])
 
-  const initializeCheckout = useInitializeCheckout(null, () => navigate('/cart'));
 
 
   return (
@@ -61,18 +69,20 @@ const Cart = () => {
             </>
 
             :
-            <span className='list-empty'>No Products</span>
+            <span className='list-empty'>Your cart is empty</span>
         ) : <CircularProgress />}
       </div>
 
       <div className="navigation">
         {noOfProducts > 0 ?
-          <button onClick={() => initializeCheckout()} className='btn-1'>PROCEED TO CHECKOUT</button>
+          <>
+            <button onClick={handleProceedToCheckout} className='btn-1'>PROCEED TO CHECKOUT</button>
+            <Link to="/cart" className='view-cart' onClick={() => dispatch(setShowCart(false))}> View Shopping Bag </Link>
+          </>
           :
           <button onClick={() => navigate('/products/women')} className='btn-1'>GO SHOPPING</button>
         }
         {/* <span className="reset" onClick={() => dispatch(resetCart())}>Reset Cart</span> */}
-        <Link to="/cart" className='view-cart' onClick={() => dispatch(setShowCart(false))}> View Shopping Bag </Link>
       </div>
     </div>
   )

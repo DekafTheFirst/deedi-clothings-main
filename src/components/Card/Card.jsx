@@ -14,7 +14,7 @@ const Card = ({ item }) => {
                         // wrapperClassName='imgWrapper'
                         className={'img'}
                         alt=""
-                        src={import.meta.env.VITE_UPLOAD_URL + item.attributes?.img?.data[0]?.attributes?.url}
+                        src={import.meta.env.VITE_UPLOAD_URL + item.attributes?.images?.data[0]?.attributes?.url}
                         effect="blur"
                         height={400}
                         width={"100%"}
@@ -23,7 +23,7 @@ const Card = ({ item }) => {
                         // wrapperClassName='imgWrapper'
                         className={'img secondImg'}
                         alt=""
-                        src={`${import.meta.env.VITE_UPLOAD_URL + item.attributes?.img?.data[1]?.attributes?.url}`}
+                        src={`${import.meta.env.VITE_UPLOAD_URL + item.attributes?.images?.data[1]?.attributes?.url}`}
                         effect="blur"
                         height={400}
                         width={"100%"}

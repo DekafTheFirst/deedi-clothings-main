@@ -1,23 +1,19 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import "./CartPage.scss"
 import { useDispatch, useSelector } from 'react-redux'
-import { CART_MODE, removeItemFromCart, resetCart, validateStock } from '../../redux/cartReducer'
+import { CART_MODE, removeItemFromCart, resetCart, setShowCart, validateCartItem } from '../../redux/cartReducer'
 import { Link, useNavigate } from 'react-router-dom'
 import CartItem from '../../components/MiniCart/MiniCartItem/CartItem'
-import useInitializeCheckout from '../../hooks/useInitializeCheckout'
+import { splitItemsByStock } from '../../utils/cartItemUtils'
 
 
 const CartPage = () => {
   const { items, cartMode } = useSelector(state => state.cart);
 
-  const { outOfStockItems, inStockItems } = items.reduce((acc, item) => {
-    if (!item.outOfStock) {
-      acc.inStockItems.push(item);
-    } else {
-      acc.outOfStockItems.push(item);
-    }
-    return acc;
-  }, { outOfStockItems: [], inStockItems: [] });
+  const { inStockItems, outOfStockItems } = useMemo(
+    () => splitItemsByStock(items),
+    [items]
+  );
 
 
   const stockValidationErrors = useSelector(state => state.cart.stockValidationErrors);
@@ -38,7 +34,7 @@ const CartPage = () => {
 
   const totalPrice = () => {
     let total = 0
-    items.forEach(item => (total += item.price * item.quantity));
+    inStockItems.forEach(item => (total += item.price * item.quantity));
     return total.toFixed(2)
   }
 
@@ -49,7 +45,7 @@ const CartPage = () => {
   useEffect(() => {
     const validateAndSet = () => {
       try {
-        dispatch(validateStock());
+        dispatch(validateCartItem());
         // setValidated(true);
       } catch (error) {
         console.error('Error validating stock:', error);
@@ -62,9 +58,12 @@ const CartPage = () => {
 
 
 
-  const initializeCheckout = useInitializeCheckout(null, () => { });
-
-
+  const handleProceedToCheckout = () => {
+    if (inStockItems.length > 0) {
+      dispatch(setShowCart(false));
+      navigate('/checkout')
+    }
+  }
 
   return (
     <div className="cart-page">
@@ -132,10 +131,10 @@ const CartPage = () => {
                   <h5 className="heading">Order Summary</h5>
                   <div className="summary-items">
                     <div className="summary-item">Subtotal: <span className="value">${totalPrice()}</span></div>
-                    <div className="summary-item">No. of Items: <span className="value">{items.length}</span></div>
+                    <div className="summary-item">No. of Items: <span className="value">{inStockItems.length}</span></div>
                   </div>
                 </div>
-                <button onClick={() => { initializeCheckout() }} className='btn-1'>{cartMode === CART_MODE.NORMAL ? 'PROCEED TO CHECKOUT' : 'CONFIRM CHANGES & CONTINUE'}</button>
+                <button onClick={handleProceedToCheckout} className='btn-1'>{cartMode === CART_MODE.NORMAL ? 'PROCEED TO CHECKOUT' : 'CONFIRM CHANGES & CONTINUE'}</button>
                 {/* <span className="reset" onClick={() => dispatch(resetCart())}>Reset Cart</span> */}
                 <Link to="/cart" className='secondary-action'> Continue Shopping </Link>
               </div>

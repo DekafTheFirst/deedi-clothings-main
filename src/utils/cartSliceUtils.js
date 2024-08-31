@@ -21,6 +21,11 @@ export const processOutOfStockItems = (outOfStockItems, itemsMap, errorsMap, pro
                 ...cartItem,
                 availableStock: 0,
                 outOfStock: true,
+                price: item.price,
+                discountedPrice: item.discountedPrice,
+                title: item.productTitle,
+                img: item.img
+                
             });
             processedItemIds.add(item.localCartItemId);
         }
@@ -36,6 +41,7 @@ export const processSuccessfulItems = (successfulItems, itemsMap, errorsMap) => 
                 ...cartItem,
                 availableStock: item.availableStock,
                 outOfStock: false,
+                price: item.price
             });
 
             // Remove any related error from errorsMap
@@ -47,6 +53,7 @@ export const processSuccessfulItems = (successfulItems, itemsMap, errorsMap) => 
 
                 if (cartItem.quantity < item.availableStock) {
                     cartItem.quantity = item.availableStock;
+                    cartItem.quantity = item.quantity
                 }
             }
         }

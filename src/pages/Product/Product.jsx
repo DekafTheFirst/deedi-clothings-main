@@ -36,7 +36,7 @@ const Product = () => {
   const [quantity, setQuantity] = useState(1)
 
   const dispatch = useDispatch()
-  const { data: product, loading, error } = useFetch(`/products/${id}?populate[img]=*&populate[categories]=*&populate[sub_categories]=*&populate[stocks][populate][size]=*&populate[stocks][populate]=*`)
+  const { data: product, loading, error } = useFetch(`/products/${id}?populate[images]=*&populate[categories]=*&populate[sub_categories]=*&populate[stocks][populate][size]=*&populate[stocks][populate]=*`)
   // console.log('product', product)
   const cartItems = useSelector(state => state.cart.items);
   const cartStatus = useSelector(state => state.cart.status);
@@ -132,7 +132,7 @@ const Product = () => {
           quantity: quantityAddable,
           alreadyExistingQuantity: existingCartItem?.quantity,
           localCartItemId,
-          img: product.attributes.img.data[0].attributes.url,
+          img: product.attributes.images.data[0].attributes.url,
           size: selectedStock.size,
         })).unwrap()
 
@@ -177,13 +177,13 @@ const Product = () => {
                   className={'img'}
                   alt=""
                   src={
-                    import.meta.env.VITE_UPLOAD_URL + product?.attributes.img?.data[selectedImg]?.attributes?.url
+                    import.meta.env.VITE_UPLOAD_URL + product?.attributes.images?.data[selectedImg]?.attributes?.url
                   }
                   effect="blur"
                 />
               </div>
               <div className="thumbnail-images">
-                {product?.attributes?.img?.data.map((image, index) =>
+                {product?.attributes?.images?.data.map((image, index) =>
                   <div className={`thumbnail-wrapper ${index === selectedImg ? 'selected' : ''}`} onClick={() => handleThumbnailClicked(index)} key={index}>
                     <OptimizedImage
                       // wrapperClassName='imgWrapper'

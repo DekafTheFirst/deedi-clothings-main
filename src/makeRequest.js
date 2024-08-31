@@ -18,7 +18,7 @@ makeRequest.interceptors.request.use(
     (config) => {
         const cookies = new Cookies();
         const jwtToken = cookies.get('jwt_authentication') || null;
-        console.log('jwtToken', jwtToken)
+        // console.log('jwtToken', jwtToken)
 
         if (jwtToken) {
             config.headers.Authorization = `Bearer ${jwtToken}`;

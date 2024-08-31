@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import "./CheckoutPage.scss"
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -13,15 +13,26 @@ import { getCurrentStepFromSession, getShippingInfoFromSession } from '../../uti
 import CartItem from '../../components/MiniCart/MiniCartItem/CartItem'
 import { CircularProgress } from '@mui/material'
 import CheckoutItem from './CheckoutItem/CheckoutItem'
+import { endCheckoutSession } from '../../redux/checkoutReducer'
+import { CART_MODE, initializeCheckout, setCartMode, setShowCart } from '../../redux/cartReducer'
+import { ShoppingBagOutlined } from '@mui/icons-material'
+import { toast } from 'react-toastify'
+import { splitItemsByStock } from '../../utils/cartItemUtils'
 
 
 const CheckoutPage = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
-
   // Products
-  const items = useSelector(state => state.cart.items)
+  const items = useSelector(state => state.cart.items);
+
+  const { inStockItems } = useMemo(
+    () => splitItemsByStock(items),
+    [items]
+  );
+
+  console.log('inStockItems', inStockItems)
   const selectedCourier = useSelector(state => state.checkout.selectedCourier);
 
   const currentStep = useSelector(state => state.checkout.currentStep);
@@ -63,12 +74,73 @@ const CheckoutPage = () => {
 
 
   //Checkout Step
+  const isInitialMount = useRef(true);
 
-  const handleChangeCheckoutStep = () => {
-
-  }
+  useEffect(() => {
 
 
+    // Handle SPA navigation
+
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return
+    }
+
+
+    const handleInitializeCheckout = async () => {
+      try {
+        console.log('checkout initiated')
+        const response = await dispatch(initializeCheckout({ reserve: true })).unwrap();
+        const { outOfStockItems, reducedItems, successfulItems } = response;
+
+        console.log('response', response);
+        if (outOfStockItems.length > 0) {
+          navigate('/cart');
+          // toast.warning('Some items are out of stock')
+          return
+        }
+
+
+        if (successfulItems.length <= 0) {
+          navigate('/cart');
+          toast.warning('Your cart is empty, add some items!')
+          return
+        }
+
+        dispatch(setCartMode(CART_MODE.REVIEW));
+      
+      } catch (error) {
+        console.error('Error initializing checkout', error);
+      }
+    };
+    handleInitializeCheckout();
+
+
+
+
+    const handleBeforeUnload = (event) => {
+      // dispatch(endCheckoutSession());
+      event.preventDefault();
+      event.returnValue = '';
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => {
+      console.log('cleanup')
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      // dispatch(endCheckoutSession());
+    };
+
+  }, [dispatch]);
+
+  // useEffect(() => {
+  //   console.log('Component mounted');
+
+  //   return () => {
+  //     console.log('Cleanup triggered');
+  //     // dispatch(endCheckoutSession());
+  //   };
+  // }, [dispatch]);
 
 
   const renderCurrentTab = () => {
@@ -109,14 +181,14 @@ const CheckoutPage = () => {
                 </div> */}
 
                 <div className="items">
-                  {items.length > 0 ?
+                  {inStockItems.length > 0 ?
                     <>
-                      {items ? (
-                        items.length > 0 ?
+                      {inStockItems ? (
+                        inStockItems.length > 0 ?
                           <>
                             {
-                              items.map(item => (
-                                <CheckoutItem key={item.localCartItemId} item={item}  />
+                              inStockItems.map(item => (
+                                <CheckoutItem key={item.localCartItemId} item={item} />
                               ))
                             }
                           </>
