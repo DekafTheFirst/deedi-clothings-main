@@ -22,15 +22,44 @@ import { Provider, useDispatch, useSelector } from 'react-redux';
 import { store } from './redux/store';
 import Login from './pages/Auth/Login/Login';
 import Register from './pages/Auth/Register/Register';
-import { setShowCart, syncCartOnPageRefresh } from './redux/cartReducer';
-import { ToastContainer } from 'react-toastify';
+import { initializeCheckout, setShowCart, syncCartOnPageRefresh } from './redux/cartReducer';
+import { toast, ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 
+const checkoutLoader = async ({ request }) => {
+  try {
+    const response = await store.dispatch(initializeCheckout({ reserve: true })).unwrap();
+    const { validationResults, sessionAlreadyExists } = response;
+
+    if (!sessionAlreadyExists) {
+      const { reducedItems, successfulItems, outOfStockItems } = validationResults;
+
+      if (outOfStockItems?.length > 0) {
+        throw new Response('Some items are out of stock', { status: 302, headers: { Location: '/cart' } });
+      }
+
+      if (successfulItems?.length <= 0) {
+        throw new Response('Your cart is empty, add some items!', { status: 302, headers: { Location: '/cart' } });
+      }
+
+      return { reducedItems };
+
+    } else {
+      toast.info('Checkout session restored');
+      return { reducedItems: [] };
+    }
+
+
+  } catch (error) {
+    console.error('Error initializing checkout', error);
+    return { status: 500, message: 'Failed to initialize checkout' }; // Handle error appropriately
+  }
+};
 
 const Layout = () => {
   const dispatch = useDispatch()
   const showCart = useSelector(state => state.cart.showCart);
-
+  
   useEffect(() => {
     const handleOutsideClick = (event) => {
       if (!event.target.closest('.mini-cart, .cartIcon, .delete')) {
@@ -48,12 +77,7 @@ const Layout = () => {
 
   }, []);
 
-  // const dispatch = useDispatch();
 
-
-  // useEffect(() => {
-  //   dispatch(syncCartOnPageRefresh());
-  // }, [dispatch]);
 
 
 
@@ -61,7 +85,7 @@ const Layout = () => {
   return (
     <div className="app">
       <ScrollToTop />
-      <Navbar  showCart={showCart} />
+      <Navbar showCart={showCart} />
       <div id="content">
         <div className={`darkOverlay ${showCart ? 'show' : ''}`}></div>
         <ToastContainer />
@@ -89,6 +113,7 @@ const router = createBrowserRouter([
       {
         path: "/checkout",
         element: <CheckoutPage />,
+        loader: checkoutLoader,
         // loader: checkCartItemsLoader,
       },
       {

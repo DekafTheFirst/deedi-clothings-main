@@ -65,81 +65,106 @@
             display: flex;
             flex-direction: column;
             flex-grow: 1;
-            gap: 10px;
+            gap: 3px;
 
             .top {
                 display: flex;
                 align-items: center;
-            }
 
-            .details {
-                display: flex;
-                flex-direction: column;
-                gap: 5px;
-                flex: 1;
-                overflow: hidden;
+                
 
-                .title {
-                    margin-top: 0;
-                    font-size: 15px;
-                    // font-weight: 500;
-                    white-space: nowrap;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                    display: block;
-                }
-
-                .stock {
+                .details {
                     display: flex;
-                    align-items: center;
-                    gap: 6px;
+                    flex-direction: column;
+                    gap: 5px;
+                    flex: 1;
+                    overflow: hidden;
 
-                    .size {
-                        font-weight: 400;
-                        font-size: 14px;
+                    .title {
+                        margin-top: 0;
+                        font-size: 15px;
+                        // font-weight: 500;
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        display: block;
+                    }
+
+                    .stock {
                         display: flex;
                         align-items: center;
-                        gap: 4px;
-                        color: $darkGray;
+                        gap: 6px;
 
-
-
-                        .value {
-                            font-weight: 500;
-                            font-size: 15px;
-                        }
-
-
-
-
-                    }
-
-                    .vertical-line {
-                        width: 2px;
-                        height: 13px;
-                        background-color: $lightGray;
-                    }
-
-                    .stock-info {
-                        display: flex;
-
-                        span {
-                            font-weight: 600;
+                        .size {
+                            font-weight: 400;
                             font-size: 14px;
+                            display: flex;
+                            align-items: center;
+                            gap: 4px;
+                            color: $darkGray;
 
-                            &.out-of-stock {
-                                color: red;
+
+
+                            .value {
+                                font-weight: 500;
+                                font-size: 15px;
                             }
 
-                            &.in-stock {
-                                color: green;
-                            }
 
-                            &.low-stock {
-                                color: $brightRed;
-                            }
+
 
                         }
+
+                        .vertical-line {
+                            width: 2px;
+                            height: 13px;
+                            background-color: $lightGray;
+                        }
+
+                        .stock-info {
+                            display: flex;
+
+                            span {
+                                font-weight: 600;
+                                font-size: 14px;
+
+                                &.out-of-stock {
+                                    color: red;
+                                }
+
+                                &.in-stock {
+                                    color: green;
+                                }
+
+                                &.low-stock {
+                                    color: $brightRed;
+                                }
+
+                            }
+
+
+                        }
+
+                    }
+
+
+
+                    .warning {
+                        color: $warningYellow;
+                        font-size: 14px;
+                        font-style: italic;
+                    }
+
+                }
+
+                .price {
+                    display: flex;
+                    gap: 5px;
+
+
+                    .total-price-per-item {
+                        font-size: 16px;
+                        font-weight: 600;
                     }
                 }
 
@@ -148,140 +173,18 @@
 
             }
 
-            .price {
-                display: flex;
-                gap: 5px;
+           
 
-
-                .total-price-per-item {
-                    font-size: 16px;
-                    font-weight: 600;
-                }
+            span {
+                line-height: 1; // Ensures the text is centered
+                font-size: 15px;
+                vertical-align: middle;
             }
 
-
-        }
-
-        span {
-            line-height: 1; // Ensures the text is centered
-            font-size: 15px;
-            vertical-align: middle;
         }
 
     }
 
-    .actions {
-        display: flex;
-        gap: 5px;
-        align-items: center;
-        justify-content: space-between;
-
-
-
-
-
-
-        .quantity {
-            // display: none;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-
-
-
-            .no-of-items {
-                color: black;
-                min-width: 11px;
-                text-align: center;
-            }
-
-
-
-            button {
-                all: unset;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                cursor: pointer;
-                border: none;
-                background-color: transparent;
-                border: 2px solid $lightGray;
-                color: $darkGray;
-                border-radius: 3px;
-                height: 30px !important;
-                width: 30px !important;
-                min-width: 0 !important;
-                appearance: none;
-                -webkit-appearance: none;
-                -moz-appearance: none;
-                box-sizing: border-box;
-                transform: scale(1); // Starting at the default scale
-                transition: transform 0.05s ease-in-out; // Transition for smooth scaling
-                box-sizing: border-box;
-                /* Ensures padding and border are included in width/height */
-
-
-                span {
-                    font-size: 16px;
-                    font-weight: 600;
-                    text-align: center;
-                }
-
-                &.disabled {
-                    background-color: transparent;
-                    border: 2px solid $lightGray;
-                    color: $darkGray;
-                }
-
-
-                &:active:not(.disabled) {
-                    transform: scale(0.9);
-                    transition: transform;
-                }
-
-            }
-
-            .calc {
-                font-weight: 500;
-                font-size: 12px;
-                color: $darkGray;
-            }
-
-        }
-
-
-
-
-
-
-        .action {
-            color: #007BFF;
-            cursor: pointer;
-            transform: all .3s ease;
-
-            &:hover {
-                color: darken(#007BFF, 10%);
-                text-decoration: underline;
-            }
-
-
-        }
-
-
-
-
-
-
-
-
-
-    }
-
-    .notify-me {
-        background-color: transparent;
-        border-radius: 7px;
-        padding: 8px;
-    }
 
 
 

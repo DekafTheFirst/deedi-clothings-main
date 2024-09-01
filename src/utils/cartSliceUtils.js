@@ -25,7 +25,7 @@ export const processOutOfStockItems = (outOfStockItems, itemsMap, errorsMap, pro
                 discountedPrice: item.discountedPrice,
                 title: item.productTitle,
                 img: item.img
-                
+
             });
             processedItemIds.add(item.localCartItemId);
         }
@@ -39,9 +39,12 @@ export const processSuccessfulItems = (successfulItems, itemsMap, errorsMap) => 
         if (cartItem) {
             itemsMap.set(item.localCartItemId, {
                 ...cartItem,
-                availableStock: item.availableStock,
+                price: item.price,
+                title: item.productTitle,
+                reduced: false,
+                reducedBy: null,
                 outOfStock: false,
-                price: item.price
+                availableStock: item.availableStock,
             });
 
             // Remove any related error from errorsMap
@@ -51,9 +54,8 @@ export const processSuccessfulItems = (successfulItems, itemsMap, errorsMap) => 
             if (cartItem.availableStock === 0 && item.availableStock > 0) {
                 toast.success(`${item.productTitle} (${cartItem.size.size}) is back in stock 🎉.`);
 
-                if (cartItem.quantity < item.availableStock) {
+                if (cartItem.quantity > item.availableStock) {
                     cartItem.quantity = item.availableStock;
-                    cartItem.quantity = item.quantity
                 }
             }
         }
@@ -87,6 +89,8 @@ export const processReducedItems = (reducedItems, itemsMap, errorsMap, processed
                 ...cartItem,
                 quantity: item.newQuantity,
                 availableStock: item.availableStock,
+                reduced: true,
+                reducedBy: item.reducedBy,
                 outOfStock: false,
             });
             processedItemIds.add(item.localCartItemId);

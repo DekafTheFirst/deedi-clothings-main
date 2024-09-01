@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef } from 'react'
 import "./MiniCart.scss"
 import { useDispatch, useSelector } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
@@ -35,7 +35,19 @@ const Cart = () => {
     }
   }
 
+
+  const isInitialMount = useRef(true);
+  // Handle SPA navigation
+
+
   useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return
+    }
+
+    
+
     dispatch(validateCartItem())
   }, [])
 

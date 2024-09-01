@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import "./CheckoutPage.scss"
 import { useDispatch, useSelector } from 'react-redux'
 
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLoaderData, useNavigate } from 'react-router-dom'
 import OptimizedImage from '../../components/OptimizedImage/OptimizedImage'
 import CourierOptions from '../../components/CourierOptions/CourierOptions'
 import StepWizard from './StepWizard/StepWizard'
@@ -23,6 +23,7 @@ import { splitItemsByStock } from '../../utils/cartItemUtils'
 const CheckoutPage = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
+  const { reducedItems } = useLoaderData();
 
   // Products
   const items = useSelector(state => state.cart.items);
@@ -32,7 +33,14 @@ const CheckoutPage = () => {
     [items]
   );
 
-  console.log('inStockItems', inStockItems)
+
+
+
+  useEffect(() => {
+    console.log('reducedItems', reducedItems)
+  }, [reducedItems]);
+
+  // console.log('inStockItems', inStockItems)
   const selectedCourier = useSelector(state => state.checkout.selectedCourier);
 
   const currentStep = useSelector(state => state.checkout.currentStep);
@@ -72,13 +80,13 @@ const CheckoutPage = () => {
 
 
 
-
-  //Checkout Step
   const isInitialMount = useRef(true);
 
+  //Checkout Step
+  
   useEffect(() => {
-
-
+    
+    
     // Handle SPA navigation
 
     if (isInitialMount.current) {
@@ -87,49 +95,61 @@ const CheckoutPage = () => {
     }
 
 
-    const handleInitializeCheckout = async () => {
-      try {
-        console.log('checkout initiated')
-        const response = await dispatch(initializeCheckout({ reserve: true })).unwrap();
-        const { outOfStockItems, reducedItems, successfulItems } = response;
+    // const handleInitializeCheckout = async () => {
+    //   try {
+    //     console.log('checkout initiated')
+    //     const response = await dispatch(initializeCheckout({ reserve: true })).unwrap();
+    //     console.log('response', response);
 
-        console.log('response', response);
-        if (outOfStockItems.length > 0) {
-          navigate('/cart');
-          // toast.warning('Some items are out of stock')
-          return
-        }
+    //     const { validationResults, sessionAlreadyExists } = response;
 
-
-        if (successfulItems.length <= 0) {
-          navigate('/cart');
-          toast.warning('Your cart is empty, add some items!')
-          return
-        }
-
-        dispatch(setCartMode(CART_MODE.REVIEW));
-      
-      } catch (error) {
-        console.error('Error initializing checkout', error);
-      }
-    };
-    handleInitializeCheckout();
+    //     if (!sessionAlreadyExists) {
+    //       const { reducedItems, successfulItems, outOfStockItems } = validationResults
+    //       if (reducedItems.length <= 0) {
+    //         setReducedItems(reducedItems?.map((reducedItem) => ({ localCartItemId: reducedItem.localCartItemId, newQuantity: reducedItem.newQuantity, reducedBy: reducedItem.reducedBy })));
+    //       }
 
 
+    //       console.log('response', response);
+    //       if (outOfStockItems?.length > 0) {
+    //         navigate('/cart');
+    //         // toast.warning('Some items are out of stock')
+    //         return
+    //       }
 
 
-    const handleBeforeUnload = (event) => {
-      // dispatch(endCheckoutSession());
-      event.preventDefault();
-      event.returnValue = '';
-    };
+    //       if (successfulItems?.length <= 0) {
+    //         navigate('/cart');
+    //         toast.warning('Your cart is empty, add some items!')
+    //         return
+    //       }
 
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    return () => {
-      console.log('cleanup')
-      window.removeEventListener('beforeunload', handleBeforeUnload);
-      // dispatch(endCheckoutSession());
-    };
+    //       dispatch(setCartMode(CART_MODE.REVIEW));
+    //     }
+    //     else {
+    //       toast.info('Checkout session restored')
+    //     }
+    //   } catch (error) {
+    //     console.error('Error initializing checkout', error);
+    //   }
+    // };
+    // handleInitializeCheckout();
+
+
+
+
+    // const handleBeforeUnload = (event) => {
+    //   // dispatch(endCheckoutSession());
+    //   event.preventDefault();
+    //   event.returnValue = '';
+    // };
+
+    // window.addEventListener('beforeunload', handleBeforeUnload);
+    // return () => {
+    //   console.log('cleanup')
+    //   window.removeEventListener('beforeunload', handleBeforeUnload);
+    //   // dispatch(endCheckoutSession());
+    // };
 
   }, [dispatch]);
 

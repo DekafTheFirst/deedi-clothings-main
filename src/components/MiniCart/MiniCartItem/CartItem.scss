@@ -129,7 +129,7 @@
                 align-items: flex-end;
                 flex-direction: column;
 
-                
+
                 .total-price-per-item {
                     font-size: 18px;
                     font-weight: 600;
@@ -217,12 +217,11 @@
 
                 }
 
-                
+
 
             }
 
-
-
+            
 
             .others {
                 display: flex;
@@ -236,7 +235,7 @@
                     cursor: pointer;
                     flex-shrink: 0;
 
-                    
+
                     /* Prevents the sibling from shrinking */
 
                     // margin-left: auto;
@@ -271,11 +270,11 @@
                             display: inline-flex;
                         }
 
-                        
+
                     }
 
                     &.delete {
-                        
+
                         span {
                             @include md {
                                 display: none;
@@ -284,9 +283,9 @@
                             @include min-breakpoint(850px) {
                                 display: inline-flex;
                             }
-                    
+
                         }
-                        
+
                     }
 
 
@@ -301,6 +300,13 @@
 
 
         }
+
+        .warning {
+            color: $warningYellow;
+            font-size: 14px;
+            font-style: italic;
+        }
+
 
         .notify-me {
             background-color: transparent;

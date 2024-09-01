@@ -249,10 +249,9 @@ export const validateCartItem = createAsyncThunk(
     try {
       // console.log('reached here')
       const { cart } = getState();
-      const items = cart.items;
       const cartId = cart.cartId;
-
-
+      const items = cart.items;
+     
       // Merge local items with the Strapi cart items and get the updated cart
       const validatedResponse = await makeRequest.patch(`/carts/validate-stock`,
         { items, cartId },
@@ -262,13 +261,11 @@ export const validateCartItem = createAsyncThunk(
 
 
 
-      const reducedItems = validatedResponse?.data?.reduced;
-      const outOfStockItems = validatedResponse?.data?.outOfStock;
-      const successfulItems = validatedResponse?.data?.success;
+      const validationResults = validatedResponse?.data?.validationResults
 
 
       // console.log('mergedCart', mergedCart);
-      return { cartId, reducedItems: reducedItems, outOfStockItems: outOfStockItems, successfulItems: successfulItems };
+      return { cartId, validationResults };
     } catch (error) {
       console.error(error)
       return rejectWithValue(error.response?.data?.error?.message || 'Failed to validate stock');
@@ -285,7 +282,7 @@ export const initializeCheckout = createAsyncThunk(
       const { cart } = getState();
       const items = cart.items;
 
-      const { inStockItems } = splitItemsByStock(items);
+      const { inStockItems, reducedItems } = splitItemsByStock(items);
       console.log('inStockItems', inStockItems)
       const cartId = cart.cartId;
 
@@ -298,15 +295,11 @@ export const initializeCheckout = createAsyncThunk(
 
       console.log('checkout response', validatedResponse);
       const validationResults = validatedResponse?.data?.validationResults;
-      const sessionId = validatedResponse?.data?.sessionId;
-
-      const reducedItems = validationResults?.reduced;
-      const outOfStockItems = validationResults?.outOfStock;
-      const successfulItems = validationResults?.success;
+      const sessionAlreadyExists = validatedResponse?.data.sessionAlreadyExists;
 
 
       // console.log('mergedCart', mergedCart);
-      return { cartId, reducedItems: reducedItems, outOfStockItems: outOfStockItems, successfulItems: successfulItems };
+      return { cartId, validationResults, sessionAlreadyExists };
     } catch (error) {
       console.error(error)
       return rejectWithValue(error.response?.data?.error?.message || 'Failed to initialize checkout');
@@ -557,20 +550,32 @@ export const cartSlice = createSlice({
 
     }
     const handleFulfilled = (state, action, actionType) => {
-      const { outOfStockItems, reducedItems, successfulItems } = action.payload;
+      const { validationResults, sessionAlreadyExists } = action.payload;
+      console.log('validationResults', validationResults)
+
+
       // Convert state items and errors to Maps for efficient access
-      const itemsMap = new Map(state.items.map(item => [item.localCartItemId, item]));
-      const errorsMap = new Map(state.stockValidationErrors.map(error => [error.itemId, error]));
-      const processedItemIds = new Set();
+      if (!sessionAlreadyExists) {
+        const itemsMap = new Map(state.items.map(item => [item.localCartItemId, item]));
+        const errorsMap = new Map(state.stockValidationErrors.map(error => [error.itemId, error]));
+        const processedItemIds = new Set();
 
-      // Process each type of item
-      processOutOfStockItems(outOfStockItems, itemsMap, errorsMap, processedItemIds);
-      processSuccessfulItems(successfulItems, itemsMap, errorsMap);
-      processReducedItems(reducedItems, itemsMap, errorsMap, processedItemIds);
+        // Process each type of item
+        if (validationResults) {
+          const reducedItems = validationResults?.reduced;
+          const outOfStockItems = validationResults?.outOfStock;
+          const successfulItems = validationResults?.success;
 
-      // Convert the Map back to arrays
-      state.items = Array.from(itemsMap.values());
-      state.stockValidationErrors = Array.from(errorsMap.values());
+          processOutOfStockItems(outOfStockItems, itemsMap, errorsMap, processedItemIds);
+          processSuccessfulItems(successfulItems, itemsMap, errorsMap);
+          processReducedItems(reducedItems, itemsMap, errorsMap, processedItemIds);
+
+          // Convert the Map back to arrays
+          state.items = Array.from(itemsMap.values());
+          state.stockValidationErrors = Array.from(errorsMap.values());
+
+        }
+      }
 
       // Update the state status based on the action type
       state.status = actionType === 'validateCartItem' ? 'validated' : 'checkoutInitialized';

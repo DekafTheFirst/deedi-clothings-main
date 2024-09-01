@@ -185,6 +185,11 @@ const CartItem = ({ item, cartType }) => {
 
                 </div>
 
+                {item.reduced &&
+                    <div className="warning">
+                        Quantity reduced to {item.quantity} due to availability.
+                    </div>
+                }
             </div>
 
 

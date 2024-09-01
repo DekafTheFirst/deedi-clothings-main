@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import "./CartPage.scss"
 import { useDispatch, useSelector } from 'react-redux'
 import { CART_MODE, removeItemFromCart, resetCart, setShowCart, validateCartItem } from '../../redux/cartReducer'
@@ -14,6 +14,11 @@ const CartPage = () => {
     () => splitItemsByStock(items),
     [items]
   );
+
+  useEffect(() => {
+    console.log('inStockItems', inStockItems)
+  }, [inStockItems]);
+
 
 
   const stockValidationErrors = useSelector(state => state.cart.stockValidationErrors);
@@ -41,8 +46,18 @@ const CartPage = () => {
   const dispatch = useDispatch()
 
 
+  const isInitialMount = useRef(true);
+  // Handle SPA navigation
+
+
 
   useEffect(() => {
+    
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return
+    }
+
     const validateAndSet = () => {
       try {
         dispatch(validateCartItem());

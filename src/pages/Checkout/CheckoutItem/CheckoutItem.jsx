@@ -10,7 +10,7 @@ import { Skeleton } from '@mui/material';
 import { toast } from 'react-toastify';
 
 const CheckoutItem = ({ item }) => {
-    
+
     const dispatch = useDispatch();
     const navigate = useNavigate()
 
@@ -50,13 +50,16 @@ const CheckoutItem = ({ item }) => {
                 <div className="wrapper" >
                     <div className="top">
                         <div className="details">
-                          <h6 className='title'>{item.title}</h6>
+                            <h6 className='title'>{item.title}</h6>
                             {/* <p>{item.desc.substring(0, 100)}</p> */}
                             <div className='stock'>
                                 <div className="size">
                                     <span>Size:</span> <span className="value">{item?.size?.size}</span>
                                 </div>
                             </div>
+                            {item.reduced && <div className="warning">
+                                Quantity reduced to {item.quantity} due to availability.
+                            </div>}
                         </div>
                         <div className="price">
                             <span className="total-price-per-item">${item?.price * item.quantity}</span>
@@ -65,10 +68,6 @@ const CheckoutItem = ({ item }) => {
 
 
                 </div>
-
-
-
-                {item.outOfStock && <button className='notify-me'>Notify me</button>}
             </div>
 
 
