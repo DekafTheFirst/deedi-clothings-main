@@ -288,7 +288,7 @@ export const initializeCheckout = createAsyncThunk(
 
 
       // Merge local items with the Strapi cart items and get the updated cart
-      const validatedResponse = await makeRequest.patch(`/orders/initialize-checkout`,
+      const validatedResponse = await makeRequest.patch(`/checkout/initialize`,
         { items: inStockItems, cartId, customerEmail: 'dekeji1@gmail.com' },
 
       );
@@ -311,25 +311,6 @@ export const initializeCheckout = createAsyncThunk(
 
 
 // Async thunk to synchronize the cart with the backend
-export const syncCart = createAsyncThunk('cart/syncCart', async (_, { getState }) => {
-  const { cart } = getState();
-  const response = await makeRequest.put(`/carts/${cart.id}/update`, { items: cart.items });
-  return response.data;
-});
-
-
-export const syncCartOnPageRefresh = createAsyncThunk(
-  'cart/syncCartOnPageRefresh',
-  async (_, { getState, dispatch }) => {
-    const state = getState();
-    const { cartId } = state.cart;
-
-    if (cartId) {
-      // Dispatch the syncCart action if items exist
-      await dispatch(fetchCartItems(cartId));
-    }
-  }
-);
 
 export const cartSlice = createSlice({
   name: 'cart',
@@ -573,7 +554,6 @@ export const cartSlice = createSlice({
           // Convert the Map back to arrays
           state.items = Array.from(itemsMap.values());
           state.stockValidationErrors = Array.from(errorsMap.values());
-
         }
       }
 
@@ -620,17 +600,7 @@ export const cartSlice = createSlice({
         updateTotals(state);
       })
 
-    builder
-      .addCase(syncCartOnPageRefresh.pending, (state) => {
-        state.status = 'syncing';
-      })
-      .addCase(syncCartOnPageRefresh.fulfilled, (state) => {
-        state.status = 'succeeded';
-      })
-      .addCase(syncCartOnPageRefresh.rejected, (state, action) => {
-        state.status = 'failed';
-        state.error = action.error.message;
-      });
+   
   },
 })
 

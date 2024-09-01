@@ -22,7 +22,7 @@ import { Provider, useDispatch, useSelector } from 'react-redux';
 import { store } from './redux/store';
 import Login from './pages/Auth/Login/Login';
 import Register from './pages/Auth/Register/Register';
-import { initializeCheckout, setShowCart, syncCartOnPageRefresh } from './redux/cartReducer';
+import { initializeCheckout, setShowCart } from './redux/cartReducer';
 import { toast, ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 
