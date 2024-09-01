@@ -3,6 +3,7 @@ import { makeRequest } from '../makeRequest';
 import { transformCartItems, transformCartItemsOnLogin } from '../utils/transformCartItems';
 import { toast } from 'react-toastify';
 import { processOutOfStockItems, processReducedItems, processSuccessfulItems } from '../utils/cartSliceUtils';
+import { splitItemsByStock } from '../utils/cartItemUtils';
 
 const STATUS = {
   PENDING: 'pending',
@@ -283,13 +284,16 @@ export const initializeCheckout = createAsyncThunk(
       // console.log('reached here')
       const { cart } = getState();
       const items = cart.items;
+
+      const { inStockItems } = splitItemsByStock(items);
+      console.log('inStockItems', inStockItems)
       const cartId = cart.cartId;
 
 
       // Merge local items with the Strapi cart items and get the updated cart
       const validatedResponse = await makeRequest.patch(`/orders/initialize-checkout`,
-        { items, cartId, customerEmail: 'dekeji1@gmail.com' },
-      
+        { items: inStockItems, cartId, customerEmail: 'dekeji1@gmail.com' },
+
       );
 
       console.log('checkout response', validatedResponse);
