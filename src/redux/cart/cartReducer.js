@@ -2,7 +2,7 @@ import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
 import { makeRequest } from '../../makeRequest';
 import { transformCartItemsOnLogin } from './helpers/transformCartItems';
 import { toast } from 'react-toastify';
-import { handleFulfilled, handlePending, handleRejected } from '../shared/helpers/caseHandlers';
+import { ActionTypes, handleFulfilled, handlePending, handleRejected } from '../shared/helpers/caseHandlers';
 import { initializeCheckout } from '../checkout/checkoutReducer';
 
 const STATUS = {
@@ -227,8 +227,8 @@ export const fetchCartItems = createAsyncThunk(
 );
 
 
-export const validateCartItem = createAsyncThunk(
-  'cart/validateCartItem',
+export const validateCartItems = createAsyncThunk(
+  ActionTypes.VALIDATE_CART_ITEMS,
   async (_, { getState, rejectWithValue }) => {
     try {
       // console.log('reached here')
@@ -476,12 +476,10 @@ export const cartSlice = createSlice({
 
 
     builder
-      .addCase(validateCartItem.pending, handlePending)
-      .addCase(validateCartItem.fulfilled, (state, action) => handleFulfilled(state, action, 'validateCartItem'))
-      .addCase(validateCartItem.rejected, handleRejected)
-      .addCase(initializeCheckout.pending, handlePending)
-      .addCase(initializeCheckout.fulfilled, (state, action) => handleFulfilled(state, action, 'initializeCheckout'))
-      .addCase(initializeCheckout.rejected, handleRejected);
+      .addCase(validateCartItems.pending, handlePending)
+      .addCase(validateCartItems.fulfilled, (state, action) => handleFulfilled(state, action, ActionTypes.VALIDATE_CART_ITEMS))
+      .addCase(validateCartItems.rejected, handleRejected)
+      
 
     builder
       .addCase(removeItemFromCart.pending, (state, action) => {

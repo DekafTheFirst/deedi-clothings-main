@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
 import { CircularProgress } from '@mui/material'
 import CartItem from './MiniCartItem/CartItem'
-import {  selectCartTotals, selectItemsByStock, setCartMode, setShowCart, validateCartItem } from '../../redux/cart/cartReducer'
+import {  selectCartTotals, selectItemsByStock, setCartMode, setShowCart, validateCartItems } from '../../redux/cart/cartReducer'
 
 
 const Cart = () => {
@@ -41,7 +41,7 @@ const Cart = () => {
 
 
 
-    dispatch(validateCartItem())
+    dispatch(validateCartItems())
   }, [])
 
 

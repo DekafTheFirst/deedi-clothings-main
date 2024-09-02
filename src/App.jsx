@@ -31,7 +31,7 @@ const checkoutLoader = async ({ request }) => {
   console.log('checkout loader')
   try {
     const response = await store.dispatch(initializeCheckout({ reserve: true })).unwrap();
-    const { validationResults, sessionAlreadyExists } = response;
+    const { validationResults, sessionAlreadyExists, checkoutSessionDuration } = response;
 
     if (!sessionAlreadyExists) {
       const { reducedItems, successfulItems, outOfStockItems } = validationResults;
@@ -44,11 +44,12 @@ const checkoutLoader = async ({ request }) => {
         throw new Response('Your cart is empty, add some items!', { status: 302, headers: { Location: '/cart' } });
       }
 
-      return { reducedItems };
+      
 
+      return checkoutSessionDuration
     } else {
       toast.info('Checkout session restored');
-      return { reducedItems: [] };
+      return null
     }
 
 
@@ -62,7 +63,7 @@ const checkoutLoader = async ({ request }) => {
 const Layout = () => {
   const dispatch = useDispatch()
   const showCart = useSelector(state => state.cart.showCart);
-  
+
   useEffect(() => {
     const handleOutsideClick = (event) => {
       if (!event.target.closest('.mini-cart, .cartIcon, .delete')) {

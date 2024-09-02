@@ -2,17 +2,17 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import "./CheckoutPage.scss"
 import { useDispatch, useSelector } from 'react-redux'
 
-import { useNavigate } from 'react-router-dom'
+import { useLoaderData, useNavigate } from 'react-router-dom'
 import CourierOptions from '../../components/CourierOptions/CourierOptions'
 import StepWizard from './StepWizard/StepWizard'
 import ShippingTab from './ShippingTab/ShippingTab'
 import BillingTab from './BillingTab/BillingTab'
 import { CircularProgress } from '@mui/material'
 import CheckoutItem from './CheckoutItem/CheckoutItem'
-import { endCheckoutSession } from '../../redux/checkout/checkoutReducer'
+import { endCheckoutSession, sessionExpired } from '../../redux/checkout/checkoutReducer'
 import { ShoppingBagOutlined } from '@mui/icons-material'
-import { splitItemsByStock } from '../../redux/shared/utils/splitItemsByStock.js'
-import { selectCartTotals } from '../../redux/cart/cartReducer.js'
+import { selectCartTotals, selectItemsByStock } from '../../redux/cart/cartReducer.js'
+import { toast } from 'react-toastify'
 
 
 const CheckoutPage = () => {
@@ -22,10 +22,7 @@ const CheckoutPage = () => {
   // Products
   const items = useSelector(state => state.cart.items);
 
-  const { inStockItems } = useMemo(
-    () => splitItemsByStock(items),
-    [items]
-  );
+  const { inStockItems } = useSelector(selectItemsByStock)
 
 
 
@@ -74,10 +71,13 @@ const CheckoutPage = () => {
   const isInitialMount = useRef(true);
 
   //Checkout Step
+  const checkoutSessionDuration = useLoaderData();
+  const sessionTimeoutIdRef = useRef(null);
+  const warningTimeoutIdRef = useRef(null);
+
+  let sessionTimeoutId, warningTimeoutId
 
   useEffect(() => {
-
-
     // Handle SPA navigation
 
     if (isInitialMount.current) {
@@ -124,20 +124,57 @@ const CheckoutPage = () => {
     // };
     // handleInitializeCheckout();
 
+
+    if (checkoutSessionDuration) {
+      sessionTimeoutId = setTimeout(() => {
+        console.log('cleared');
+        toast.error('Your checkout session has expired')
+        navigate('/cart')
+        // dispatch(sessionExpired());
+      }, checkoutSessionDuration);
+
+      // warningTimeoutIdRef.current = setTimeout(() => {
+      //   dispatch({ type: 'checkout/warningAboutToExpire' }); // Replace with your action
+      // }, checkoutSessionDuration - 5 * 60 * 1000); // Warn 5 minutes before expiration
+    }
+
     const handleBeforeUnload = (event) => {
       // dispatch(endCheckoutSession());
       event.preventDefault();
-      event.returnValue = '';
+      event.returnValue = 'You';
     };
 
-    window.addEventListener('beforeunload', handleBeforeUnload);
+    // window.addEventListener('beforeunload', handleBeforeUnload);
     return () => {
       console.log('cleanup')
-      window.removeEventListener('beforeunload', handleBeforeUnload);
+      // window.removeEventListener('beforeunload', handleBeforeUnload);
       dispatch(endCheckoutSession());
+      console.log('sessionTimeoutId', sessionTimeoutId)
+      clearTimeout(sessionTimeoutId);
+      clearTimeout(warningTimeoutIdRef.current);
     };
 
   }, [dispatch]);
+
+
+  // useEffect(() => {
+  //   // Set up event listener for route changes
+  //   const handleRouteChange = () => {
+  //     // Clear session state when navigating away from the checkout route
+  //     if (location.pathname !== '/checkout') {
+  //       sessionStorage.removeItem('checkoutState');
+  //     }
+  //   };
+
+  //   // Listen for route changes
+  //   handleRouteChange();
+
+  //   // Clean up listener
+  //   return () => {
+  //     // Remove session state on component unmount if necessary
+  //     sessionStorage.removeItem('checkoutState');
+  //   };
+  // }, [location.pathname]);
 
   // useEffect(() => {
   //   console.log('Component mounted');

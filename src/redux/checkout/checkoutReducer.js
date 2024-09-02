@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
 import { makeRequest } from '../../makeRequest';
 import { selectItemsByStock } from '../cart/cartReducer';
+import { ActionTypes, handleFulfilled, handlePending, handleRejected } from '../shared/helpers/caseHandlers';
 
 
 export const steps = [
@@ -38,10 +39,13 @@ const initialState = {
   billingInfo: null,
   rates: null,
   selectedCourierId: null,
+  timeoutIds: null,
+  sessionExpired: false,
+  timeoutIds: {}
 };
 
 export const initializeCheckout = createAsyncThunk(
-  'checkout/initialize',
+  ActionTypes.INITIALIZE_CHECKOUT,
   async (_, { getState, rejectWithValue }) => {
     try {
       // console.log('reached here')
@@ -62,11 +66,11 @@ export const initializeCheckout = createAsyncThunk(
 
       console.log('checkout response', validatedResponse);
       const validationResults = validatedResponse?.data?.validationResults;
-      const sessionAlreadyExists = validatedResponse?.data.sessionAlreadyExists;
+      const checkoutSessionDuration = validatedResponse?.data?.checkoutSessionDuration
 
 
       // console.log('mergedCart', mergedCart);
-      return { cartId, validationResults, sessionAlreadyExists };
+      return { cartId, validationResults, checkoutSessionDuration };
     } catch (error) {
       console.error(error)
       return rejectWithValue(error.response?.data?.error?.message || 'Failed to initialize checkout');
@@ -91,8 +95,19 @@ const checkoutSlice = createSlice({
   name: 'checkout',
   initialState,
   reducers: {
-    setCheckoutItems: (state) => {
-
+    setTimeoutIds(state, action) {
+      state.timeoutIds = action.payload;
+    },
+    sessionExpired: (state) => {
+      state.sessionExpired = true;
+    },
+    clearTimeouts(state) {
+      state.timeoutIds && clearTimeout(state.timeoutIds.sessionTimeoutId);
+      state.timeoutIds && clearTimeout(state.timeoutIds.warningTimeoutId);
+      state.timeoutIds = null;
+    },
+    cancelCheckout: (state) => {
+      // Handle checkout cancellation
     },
     setShippingInfo: (state, action) => {
       state.shippingInfo = action.payload;
@@ -162,6 +177,11 @@ const checkoutSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      .addCase(initializeCheckout.pending, handlePending)
+      .addCase(initializeCheckout.fulfilled, (state, action) => handleFulfilled(state, action, ActionTypes.INITIALIZE_CHECKOUT))
+      .addCase(initializeCheckout.rejected, handleRejected);
+
+    builder
       .addCase(endCheckoutSession.pending, (state) => {
         state.status = 'loading';
       })
@@ -188,6 +208,7 @@ export const {
   clearPreviewedStep,
   setRates,
   resetCheckout,
+  sessionExpired,
 } = checkoutSlice.actions;
 
 export default checkoutSlice.reducer;

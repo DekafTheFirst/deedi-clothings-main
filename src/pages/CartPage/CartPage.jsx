@@ -1,10 +1,9 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import "./CartPage.scss"
 import { useDispatch, useSelector } from 'react-redux'
-import { CART_MODE, removeItemFromCart, resetCart, selectItemsByStock, setShowCart, validateCartItem } from '../../redux/cart/cartReducer.js'
+import { CART_MODE, removeItemFromCart, resetCart, selectItemsByStock, setShowCart, validateCartItems } from '../../redux/cart/cartReducer.js'
 import { Link, useNavigate } from 'react-router-dom'
 import CartItem from '../../components/MiniCart/MiniCartItem/CartItem'
-import { splitItemsByStock } from '../../redux/shared/utils/splitItemsByStock.js'
 
 
 const CartPage = () => {
@@ -58,7 +57,7 @@ const CartPage = () => {
 
     const validateAndSet = () => {
       try {
-        dispatch(validateCartItem());
+        dispatch(validateCartItems());
         // setValidated(true);
       } catch (error) {
         console.error('Error validating stock:', error);
