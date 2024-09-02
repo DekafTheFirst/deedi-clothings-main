@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './StepWizard.scss';
 import StepWizardItem from './StepWizardItem/StepWizardItem';
 import { useSelector } from 'react-redux';
-import { steps } from '../../../redux/checkoutReducer';
+import { steps } from '../../../redux/checkout/checkoutReducer';
 
 
 

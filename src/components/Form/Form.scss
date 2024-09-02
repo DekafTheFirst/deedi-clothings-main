@@ -54,6 +54,7 @@
     color: red;
     font-size: 13px;
     cursor: pointer;
+    margin-right: auto;
 
     &:hover {
       color: darken(red, 5%);

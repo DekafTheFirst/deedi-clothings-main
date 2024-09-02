@@ -1,8 +1,5 @@
-// utils/cartSliceUtils.js
-
 import { toast } from "react-toastify";
 
-// Utility function for processing out-of-stock items
 export const processOutOfStockItems = (outOfStockItems, itemsMap, errorsMap, processedItemIds) => {
     outOfStockItems.forEach(item => {
         const cartItem = itemsMap.get(item.localCartItemId);

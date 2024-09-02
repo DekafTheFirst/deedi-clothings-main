@@ -1,12 +1,10 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, {  useState } from 'react'
 import './ShippingTab.scss'
 import FormComponent from '../../../components/Form/Form'
 import { useDispatch, useSelector } from 'react-redux';
-import axios from 'axios';
 import _ from 'lodash';
-import { nextStep, setRates, setShippingInfo } from '../../../redux/checkoutReducer';
+import { nextStep, setRates, setShippingInfo } from '../../../redux/checkout/checkoutReducer';
 import { makeRequest } from '../../../makeRequest';
-import { getShippingInfoFromSession } from '../../../utils/session';
 
 const ShippingTab = () => {
     const dispatch = useDispatch()

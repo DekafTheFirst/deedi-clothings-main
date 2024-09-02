@@ -4,11 +4,10 @@ import FormComponent from '../../../components/Form/Form'
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 import _ from 'lodash';
-import { nextStep, setBillingInfo, setRates } from '../../../redux/checkoutReducer';
+import { nextStep, setBillingInfo, setRates } from '../../../redux/checkout/checkoutReducer';
 import { makeRequest } from '../../../makeRequest';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked';
-import { getBilingInfoFromSession, getShippingInfoFromSession } from '../../../utils/session';
 import { CircularProgress } from '@mui/material';
 import { loadStripe } from '@stripe/stripe-js';
 
@@ -16,12 +15,10 @@ const BillingTab = ({ totalAmount }) => {
 
     const dispatch = useDispatch()
     const reduxStoredShippingInfo = useSelector(state => state.checkout.shippingInfo);
-    const sessionStoredShippingInfo = getShippingInfoFromSession();
     const shippingInfo = reduxStoredShippingInfo || sessionStoredShippingInfo;
 
 
     const reduxStoredBillingInfo = useSelector(state => state.checkout.billingInfo);
-    const sessionStoredBillingInfo = getBilingInfoFromSession();
 
 
     const products = useSelector(state => state.cart.items);

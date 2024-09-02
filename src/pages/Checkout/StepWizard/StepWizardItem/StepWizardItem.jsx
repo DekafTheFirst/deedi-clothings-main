@@ -1,7 +1,6 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { clearPreviewedStep, setCurrentStep, setPreviewedStep } from '../../../../redux/checkoutReducer'
-import { getCompletedStepsFromSession, getCurrentStepFromSession } from '../../../../utils/session';
+import { clearPreviewedStep, setCurrentStep, setPreviewedStep } from '../../../../redux/checkout/checkoutReducer'
 
 const StepWizardItem = ({ stepItem }) => {
     const dispatch = useDispatch()

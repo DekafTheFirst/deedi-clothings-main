@@ -1,7 +1,7 @@
 // authSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { makeRequest } from '../makeRequest';
-import { fetchCartItems, resetCart } from './cartReducer';
+import { makeRequest } from '../../makeRequest';
+import { fetchCartItems, resetCart } from '../cart/cartReducer';
 import Cookies from "universal-cookie"
 import { jwtDecode } from "jwt-decode"
 

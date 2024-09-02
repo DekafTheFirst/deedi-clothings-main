@@ -1,9 +1,9 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { makeRequest } from '../makeRequest';
-import { transformCartItems, transformCartItemsOnLogin } from '../utils/transformCartItems';
+import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
+import { makeRequest } from '../../makeRequest';
+import { transformCartItemsOnLogin } from './helpers/transformCartItems';
 import { toast } from 'react-toastify';
-import { processOutOfStockItems, processReducedItems, processSuccessfulItems } from '../utils/cartSliceUtils';
-import { splitItemsByStock } from '../utils/cartItemUtils';
+import { handleFulfilled, handlePending, handleRejected } from '../shared/helpers/caseHandlers';
+import { initializeCheckout } from '../checkout/checkoutReducer';
 
 const STATUS = {
   PENDING: 'pending',
@@ -30,21 +30,7 @@ const initialState = {
   cartMode: CART_MODE.NORMAL
 }
 
-const calculateTotals = (items) => {
-  // const noOfProdcts = items.reduce
-  const subtotal = items.reduce((acc, item) => acc + item.price * item.quantity, 0).toFixed(2);
-  const vat = (subtotal * 0.2).toFixed(2);
-  const totalAmount = (parseFloat(subtotal) + parseFloat(vat)).toFixed(2);
 
-  return { subtotal, vat, totalAmount };
-};
-
-const updateTotals = (state) => {
-  const totals = calculateTotals(state.items);
-  state.subtotal = totals.subtotal;
-  state.vat = totals.vat;
-  state.totalAmount = totals.totalAmount;
-};
 
 // Thunk for adding or updating a single cart item
 export const addItemToCart = createAsyncThunk(
@@ -128,8 +114,6 @@ export const updateCartItem = createAsyncThunk(
       console.error(error)
       if (error?.response?.status === 400) {
         const errorData = error?.response?.data;
-
-
         // toast.error(`Unable to add item to cart: ${errorData.message}`)
 
       }
@@ -251,13 +235,13 @@ export const validateCartItem = createAsyncThunk(
       const { cart } = getState();
       const cartId = cart.cartId;
       const items = cart.items;
-     
+
       // Merge local items with the Strapi cart items and get the updated cart
       const validatedResponse = await makeRequest.patch(`/carts/validate-stock`,
         { items, cartId },
       );
 
-      console.log('validatedResponse', validatedResponse);
+      // console.log('validatedResponse', validatedResponse);
 
 
 
@@ -274,38 +258,7 @@ export const validateCartItem = createAsyncThunk(
 );
 
 
-export const initializeCheckout = createAsyncThunk(
-  'checkout/initialize',
-  async (_, { getState, rejectWithValue }) => {
-    try {
-      // console.log('reached here')
-      const { cart } = getState();
-      const items = cart.items;
 
-      const { inStockItems, reducedItems } = splitItemsByStock(items);
-      console.log('inStockItems', inStockItems)
-      const cartId = cart.cartId;
-
-
-      // Merge local items with the Strapi cart items and get the updated cart
-      const validatedResponse = await makeRequest.patch(`/checkout/initialize`,
-        { items: inStockItems, cartId, customerEmail: 'dekeji1@gmail.com' },
-
-      );
-
-      console.log('checkout response', validatedResponse);
-      const validationResults = validatedResponse?.data?.validationResults;
-      const sessionAlreadyExists = validatedResponse?.data.sessionAlreadyExists;
-
-
-      // console.log('mergedCart', mergedCart);
-      return { cartId, validationResults, sessionAlreadyExists };
-    } catch (error) {
-      console.error(error)
-      return rejectWithValue(error.response?.data?.error?.message || 'Failed to initialize checkout');
-    }
-  }
-)
 
 
 
@@ -351,7 +304,7 @@ export const cartSlice = createSlice({
         state.cartId = action.payload.cartId;
         state.items = action.payload.items;
         state.error = null
-        updateTotals(state);
+        
       })
       .addCase(fetchCartItems.rejected, (state, action) => {
         state.status = 'failed';
@@ -381,7 +334,7 @@ export const cartSlice = createSlice({
         state.previousItems = state.items;
         state.items = updatedItems;
         state.status = 'pending';
-        updateTotals(state);
+        
       })
       .addCase(addItemToCart.fulfilled, (state, action) => {
         // state.items = action.payload;
@@ -445,7 +398,7 @@ export const cartSlice = createSlice({
           if (existingItem) existingItem.outOfStock = true;
         }
 
-        updateTotals(state);
+        
         state.error = error;
         // console.log('rejected', action.payload)
         state.status = 'failed';
@@ -454,7 +407,7 @@ export const cartSlice = createSlice({
     builder
       .addCase(updateCartItem.pending, (state, action) => {
         const cartItems = state.items;
-        // console.log('cartItems', cartItems)
+        console.log('cartItems', cartItems)
         const itemData = action.meta.arg
 
         const itemToUpdate = cartItems.find(
@@ -464,7 +417,7 @@ export const cartSlice = createSlice({
         itemToUpdate.quantity = itemData.requestedQuantity;
         // UpdateItems
         state.status = 'updating';
-        updateTotals(state);
+        
       })
 
       .addCase(updateCartItem.fulfilled, (state, action) => {
@@ -517,59 +470,10 @@ export const cartSlice = createSlice({
           itemToUpdate.outOfStock = true;
           itemToUpdate.latestStockData = 0;
         }
-
-        updateTotals(state);
         state.status = 'failed';
       })
 
-    const handlePending = (state) => {
-      state.status = 'validating';
-      updateTotals(state);
-    };
 
-    const ACTION_TYPES = {
-
-    }
-    const handleFulfilled = (state, action, actionType) => {
-      const { validationResults, sessionAlreadyExists } = action.payload;
-      console.log('validationResults', validationResults)
-
-
-      // Convert state items and errors to Maps for efficient access
-      if (!sessionAlreadyExists) {
-        const itemsMap = new Map(state.items.map(item => [item.localCartItemId, item]));
-        const errorsMap = new Map(state.stockValidationErrors.map(error => [error.itemId, error]));
-        const processedItemIds = new Set();
-
-        // Process each type of item
-        if (validationResults) {
-          const reducedItems = validationResults?.reduced;
-          const outOfStockItems = validationResults?.outOfStock;
-          const successfulItems = validationResults?.success;
-
-          processOutOfStockItems(outOfStockItems, itemsMap, errorsMap, processedItemIds);
-          processSuccessfulItems(successfulItems, itemsMap, errorsMap);
-          processReducedItems(reducedItems, itemsMap, errorsMap, processedItemIds);
-
-          // Convert the Map back to arrays
-          state.items = Array.from(itemsMap.values());
-          state.stockValidationErrors = Array.from(errorsMap.values());
-        }
-      }
-
-      // Update the state status based on the action type
-      state.status = actionType === 'validateCartItem' ? 'validated' : 'checkoutInitialized';
-    };
-
-
-
-    const handleRejected = (state, action) => {
-      updateTotals(state);
-      console.log(action.payload)
-      toast.error(action.payload || action.error.message)
-
-      state.status = 'failed';
-    };
 
     builder
       .addCase(validateCartItem.pending, handlePending)
@@ -585,7 +489,7 @@ export const cartSlice = createSlice({
         state.previousItems = [...state.items];
         // state.items = action.payload
         state.items = state.items.filter(item => item.localCartItemId !== action.meta.arg.localCartItemId);
-        updateTotals(state);
+        
       })
       .addCase(removeItemFromCart.fulfilled, (state, action) => {
         // Calculate totals after successful removal
@@ -597,12 +501,65 @@ export const cartSlice = createSlice({
         state.items = [...state.previousItems]; // Rollback to previous state
         state.previousItems = []
         state.error = action.payload;
-        updateTotals(state);
+        
       })
 
-   
+
   },
 })
+
+
+
+export const selectCartItems = (state) => state.cart.items;
+
+export const selectItemsByStock = createSelector(
+  [selectCartItems],
+  (items) => {
+    const inStockItems = [];
+    const outOfStockItems = [];
+    const reducedItems = [];
+
+    items.forEach(item => {
+      if (item.outOfStock) {
+        outOfStockItems.push(item);
+      } else if (item.reduced) {
+        reducedItems.push(item);
+      } else {
+        inStockItems.push(item);
+      }
+    });
+
+    return { inStockItems: [...reducedItems, ...inStockItems], outOfStockItems, reducedItems };
+  }
+);
+
+const calculateTotals = (items) => {
+  // const noOfProdcts = items.reduce
+  const subtotal = items.reduce((acc, item) => acc + item.price * item.quantity, 0).toFixed(2);
+  const vat = (subtotal * 0.2).toFixed(2);
+  const totalAmount = (parseFloat(subtotal) + parseFloat(vat)).toFixed(2);
+
+  return { subtotal, vat, totalAmount };
+};
+
+export const selectCartTotals = createSelector(
+  [selectCartItems],
+  (items) => {
+    const totals = calculateTotals(items);
+
+    const noOfItems = (items) => {
+      const noOfItems = items.reduce((acc, item) => acc + item.quantity, 0);
+      return (noOfItems > 0 ? `${noOfItems}` : '0')
+    }
+
+    return {
+      subtotal: totals.subtotal,
+      vat: totals.vat,
+      totalAmount: totals.totalAmount,
+      noOfItems: noOfItems(items)
+    };
+  }
+);
 
 // Action creators are generated for each case reducer function
 export const { resetCart, setShowCart, setOutOfStock, setCheckoutError, setCartMode } = cartSlice.actions

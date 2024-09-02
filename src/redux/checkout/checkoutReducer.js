@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
-import { makeRequest } from '../makeRequest';
+import { makeRequest } from '../../makeRequest';
+import { selectItemsByStock } from '../cart/cartReducer';
 
 
 export const steps = [
@@ -39,14 +40,46 @@ const initialState = {
   selectedCourierId: null,
 };
 
+export const initializeCheckout = createAsyncThunk(
+  'checkout/initialize',
+  async (_, { getState, rejectWithValue }) => {
+    try {
+      // console.log('reached here')
+      const state = getState();
+      const { cart } = state
+      const items = cart.items;
 
+      const { inStockItems } = selectItemsByStock(state);
+      console.log('inStockItems', inStockItems)
+      const cartId = cart.cartId;
+
+
+      // Merge local items with the Strapi cart items and get the updated cart
+      const validatedResponse = await makeRequest.patch(`/checkout/initialize`,
+        { items: inStockItems, cartId, customerEmail: 'dekeji1@gmail.com' },
+
+      );
+
+      console.log('checkout response', validatedResponse);
+      const validationResults = validatedResponse?.data?.validationResults;
+      const sessionAlreadyExists = validatedResponse?.data.sessionAlreadyExists;
+
+
+      // console.log('mergedCart', mergedCart);
+      return { cartId, validationResults, sessionAlreadyExists };
+    } catch (error) {
+      console.error(error)
+      return rejectWithValue(error.response?.data?.error?.message || 'Failed to initialize checkout');
+    }
+  }
+)
 
 export const endCheckoutSession = createAsyncThunk(
   'checkout/endCheckoutSession',
   async (_, { rejectWithValue }) => {
     // console.log('triggered')
     try {
-      await makeRequest.post(`/orders/checkout/end`);
+      await makeRequest.post(`/checkout/end`);
       return { message: 'Checkout session ended successfully' };
     } catch (error) {
       return rejectWithValue(error.response.data);

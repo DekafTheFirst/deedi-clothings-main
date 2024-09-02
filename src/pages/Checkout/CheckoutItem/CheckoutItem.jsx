@@ -4,7 +4,7 @@ import OptimizedImage from '../../../components/OptimizedImage/OptimizedImage';
 import { Close, Delete, DeleteForeverOutlined, DeleteOutline, FavoriteBorder } from '@mui/icons-material';
 import './CheckoutItem.scss';
 import { useDispatch } from 'react-redux';
-import { removeItemFromCart, setOutOfStock, setShowCart, updateCartItem } from '../../../redux/cartReducer';
+import { removeItemFromCart, setOutOfStock, setShowCart, updateCartItem } from '../../../redux/cart/cartReducer';
 import useFetch from '../../../hooks/useFetch';
 import { Skeleton } from '@mui/material';
 import { toast } from 'react-toastify';

@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { resetCart } from '../../../redux/cartReducer';
-import { resetCheckout } from '../../../redux/checkoutReducer';
+import { resetCart } from '../../../redux/cart/cartReducer';
+import { resetCheckout } from '../../../redux/checkout/checkoutReducer';
 
 const CheckoutSuccess = () => {
     const location = useLocation();

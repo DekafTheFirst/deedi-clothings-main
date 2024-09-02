@@ -7,7 +7,7 @@ import countryList from 'react-select-country-list';
 import axios from 'axios'; // Import axios for making HTTP requests
 import { useDispatch, useSelector } from 'react-redux';
 import * as yup from "yup";
-import { nextStep, setCurrentStep, setShippingInfo } from '../../redux/checkoutReducer';
+import { nextStep, setCurrentStep, setShippingInfo } from '../../redux/checkout/checkoutReducer';
 import CircularProgress from '@mui/material/CircularProgress';
 import { GetCity, GetCountries, GetState } from 'react-country-state-city/dist/cjs';
 import { Close } from '@mui/icons-material';

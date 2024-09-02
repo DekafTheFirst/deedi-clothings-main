@@ -22,11 +22,13 @@ import { Provider, useDispatch, useSelector } from 'react-redux';
 import { store } from './redux/store';
 import Login from './pages/Auth/Login/Login';
 import Register from './pages/Auth/Register/Register';
-import { initializeCheckout, setShowCart } from './redux/cartReducer';
+import { setShowCart } from './redux/cart/cartReducer';
 import { toast, ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
+import { initializeCheckout } from './redux/checkout/checkoutReducer';
 
 const checkoutLoader = async ({ request }) => {
+  console.log('checkout loader')
   try {
     const response = await store.dispatch(initializeCheckout({ reserve: true })).unwrap();
     const { validationResults, sessionAlreadyExists } = response;
@@ -55,6 +57,7 @@ const checkoutLoader = async ({ request }) => {
     return { status: 500, message: 'Failed to initialize checkout' }; // Handle error appropriately
   }
 };
+
 
 const Layout = () => {
   const dispatch = useDispatch()
@@ -85,7 +88,7 @@ const Layout = () => {
   return (
     <div className="app">
       <ScrollToTop />
-      <Navbar showCart={showCart} />
+      <Navbar />
       <div id="content">
         <div className={`darkOverlay ${showCart ? 'show' : ''}`}></div>
         <ToastContainer />
@@ -114,7 +117,6 @@ const router = createBrowserRouter([
         path: "/checkout",
         element: <CheckoutPage />,
         loader: checkoutLoader,
-        // loader: checkCartItemsLoader,
       },
       {
         path: "/checkout-success",

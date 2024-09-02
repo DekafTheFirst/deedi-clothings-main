@@ -1,19 +1,17 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import "./CartPage.scss"
 import { useDispatch, useSelector } from 'react-redux'
-import { CART_MODE, removeItemFromCart, resetCart, setShowCart, validateCartItem } from '../../redux/cartReducer'
+import { CART_MODE, removeItemFromCart, resetCart, selectItemsByStock, setShowCart, validateCartItem } from '../../redux/cart/cartReducer.js'
 import { Link, useNavigate } from 'react-router-dom'
 import CartItem from '../../components/MiniCart/MiniCartItem/CartItem'
-import { splitItemsByStock } from '../../utils/cartItemUtils'
+import { splitItemsByStock } from '../../redux/shared/utils/splitItemsByStock.js'
 
 
 const CartPage = () => {
   const { items, cartMode } = useSelector(state => state.cart);
 
-  const { inStockItems, outOfStockItems } = useMemo(
-    () => splitItemsByStock(items),
-    [items]
-  );
+  const { inStockItems, outOfStockItems, reducedItems } = useSelector(selectItemsByStock);
+
 
   useEffect(() => {
     console.log('inStockItems', inStockItems)

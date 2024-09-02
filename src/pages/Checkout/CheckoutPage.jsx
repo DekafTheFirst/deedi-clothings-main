@@ -2,28 +2,22 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import "./CheckoutPage.scss"
 import { useDispatch, useSelector } from 'react-redux'
 
-import { Link, useLoaderData, useNavigate } from 'react-router-dom'
-import OptimizedImage from '../../components/OptimizedImage/OptimizedImage'
+import { useNavigate } from 'react-router-dom'
 import CourierOptions from '../../components/CourierOptions/CourierOptions'
 import StepWizard from './StepWizard/StepWizard'
 import ShippingTab from './ShippingTab/ShippingTab'
-import calculateNoOfProducts from '../../utils/calculateNoOfProducts'
 import BillingTab from './BillingTab/BillingTab'
-import { getCurrentStepFromSession, getShippingInfoFromSession } from '../../utils/session'
-import CartItem from '../../components/MiniCart/MiniCartItem/CartItem'
 import { CircularProgress } from '@mui/material'
 import CheckoutItem from './CheckoutItem/CheckoutItem'
-import { endCheckoutSession } from '../../redux/checkoutReducer'
-import { CART_MODE, initializeCheckout, setCartMode, setShowCart } from '../../redux/cartReducer'
+import { endCheckoutSession } from '../../redux/checkout/checkoutReducer'
 import { ShoppingBagOutlined } from '@mui/icons-material'
-import { toast } from 'react-toastify'
-import { splitItemsByStock } from '../../utils/cartItemUtils'
+import { splitItemsByStock } from '../../redux/shared/utils/splitItemsByStock.js'
+import { selectCartTotals } from '../../redux/cart/cartReducer.js'
 
 
 const CheckoutPage = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
-  const { reducedItems } = useLoaderData();
 
   // Products
   const items = useSelector(state => state.cart.items);
@@ -36,16 +30,13 @@ const CheckoutPage = () => {
 
 
 
-  useEffect(() => {
-    console.log('reducedItems', reducedItems)
-  }, [reducedItems]);
+
 
   // console.log('inStockItems', inStockItems)
   const selectedCourier = useSelector(state => state.checkout.selectedCourier);
 
   const currentStep = useSelector(state => state.checkout.currentStep);
   const previewedStep = useSelector(state => state.checkout.previewedStep);
-  const currentStepFromSession = getCurrentStepFromSession();
 
 
   // const billingInfo = useSelector(state => state.checkout.billingInfo);
@@ -83,10 +74,10 @@ const CheckoutPage = () => {
   const isInitialMount = useRef(true);
 
   //Checkout Step
-  
+
   useEffect(() => {
-    
-    
+
+
     // Handle SPA navigation
 
     if (isInitialMount.current) {
@@ -97,20 +88,18 @@ const CheckoutPage = () => {
 
     // const handleInitializeCheckout = async () => {
     //   try {
-    //     console.log('checkout initiated')
+    //     // console.log('checkout initiated')
     //     const response = await dispatch(initializeCheckout({ reserve: true })).unwrap();
     //     console.log('response', response);
 
     //     const { validationResults, sessionAlreadyExists } = response;
 
     //     if (!sessionAlreadyExists) {
-    //       const { reducedItems, successfulItems, outOfStockItems } = validationResults
-    //       if (reducedItems.length <= 0) {
-    //         setReducedItems(reducedItems?.map((reducedItem) => ({ localCartItemId: reducedItem.localCartItemId, newQuantity: reducedItem.newQuantity, reducedBy: reducedItem.reducedBy })));
-    //       }
+    //       const { successfulItems, outOfStockItems } = validationResults
 
 
-    //       console.log('response', response);
+
+    //       // console.log('response', response);
     //       if (outOfStockItems?.length > 0) {
     //         navigate('/cart');
     //         // toast.warning('Some items are out of stock')
@@ -135,21 +124,18 @@ const CheckoutPage = () => {
     // };
     // handleInitializeCheckout();
 
+    const handleBeforeUnload = (event) => {
+      // dispatch(endCheckoutSession());
+      event.preventDefault();
+      event.returnValue = '';
+    };
 
-
-
-    // const handleBeforeUnload = (event) => {
-    //   // dispatch(endCheckoutSession());
-    //   event.preventDefault();
-    //   event.returnValue = '';
-    // };
-
-    // window.addEventListener('beforeunload', handleBeforeUnload);
-    // return () => {
-    //   console.log('cleanup')
-    //   window.removeEventListener('beforeunload', handleBeforeUnload);
-    //   // dispatch(endCheckoutSession());
-    // };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => {
+      console.log('cleanup')
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      dispatch(endCheckoutSession());
+    };
 
   }, [dispatch]);
 
@@ -161,7 +147,7 @@ const CheckoutPage = () => {
   //     // dispatch(endCheckoutSession());
   //   };
   // }, [dispatch]);
-
+  const { noOfItems } = useSelector(selectCartTotals)
 
   const renderCurrentTab = () => {
     switch (previewedStep?.id || currentStep?.id) {
@@ -227,7 +213,7 @@ const CheckoutPage = () => {
               <div className="totals">
                 <div className="order-total">
                   <div className="summary-items">
-                    <div className="summary-item">No. of Items: <span className="value">{calculateNoOfProducts(items)}</span></div>
+                    <div className="summary-item">No. of Items: <span className="value">{noOfItems}</span></div>
                     <div className="summary-item">Subtotal: <span className="value">${subtotal}</span></div>
                     <div className="summary-item">VAT(20%): <span className="value">${vat}</span></div>
                     {selectedCourier && <div className="summary-item">Shipping: <span className="value">${selectedCourier.total_charge}</span></div>}

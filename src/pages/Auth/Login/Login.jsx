@@ -4,8 +4,7 @@ import React, { useState } from 'react';
 import './Login.scss'
 
 import { useDispatch, useSelector } from 'react-redux';
-import { loginUser, logoutUser, updateUser } from '../../../redux/authReducer';
-import { mergeCartItems } from '../../../utils/mergeCartItems';
+import { loginUser, logoutUser, updateUser } from '../../../redux/auth/authReducer';
 
 
 const Login = () => {

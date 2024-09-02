@@ -4,28 +4,33 @@ import SearchIcon from '@mui/icons-material/Search';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import "./Navbar.scss"
 import Cart from '../MiniCart/MiniCart';
 import { useDispatch, useSelector } from 'react-redux';
 import { Close, Menu, MenuOpen } from '@mui/icons-material';
-import calculateNoOfProducts from '../../utils/calculateNoOfProducts';
-import { setShowCart } from '../../redux/cartReducer';
+import { selectCartTotals, setShowCart } from '../../redux/cart/cartReducer';
+import LockIcon from '@mui/icons-material/Lock';
+
+
+const excludedPaths = ['/checkout', '/checkout-success']; // Paths to exclude Navbar
 
 const Navbar = () => {
-  const [toggle, setToggle] = useState(false);
+  const [showMobileMenu, toggleShowMobileMenu] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [noOfProducts, setNoOfProducts] = useState(0)
-  const { items: products, showCart } = useSelector(state => state.cart)
+  const { noOfItems } = useSelector(selectCartTotals);
+
+  const { items: products, showCart } = useSelector(state => state.cart);
   const user = useSelector(state => state.auth.user);
 
-  const { pathname, state } = useLocation()
-
+  const { pathname, state } = useLocation();
   const dispatch = useDispatch()
-  useEffect(() => {
-    const noOfProducts = calculateNoOfProducts(products);
-    setNoOfProducts(noOfProducts);
-  }, [products])
+  const navigate = useNavigate()
+
+  const inCheckoutPage = excludedPaths.includes(location.pathname);
+  // console.log('inCheckoutPage', inCheckoutPage)
+
+
 
 
 
@@ -56,7 +61,7 @@ const Navbar = () => {
   useEffect(() => {
     const handleOutsideClick = (event) => {
       if (!event.target.closest('.navbar')) {
-        setToggle(false); // Close the navbar if clicked outside
+        toggleShowMobileMenu(false); // Close the navbar if clicked outside
       }
     };
 
@@ -71,15 +76,18 @@ const Navbar = () => {
   }, []);
 
   return (
-    <div className={`navbar ${scrolled ? 'scrolled' : ''} ${toggle ? 'toggeled' : ''}`}>
+    <div className={`navbar ${scrolled ? 'scrolled' : ''} ${showMobileMenu ? 'toggled' : ''} ${inCheckoutPage ? 'in-checkout-page' : ''}`}>
       <div className="container-fluid">
+
         <div className="left">
 
-          <Menu className='toggle' onClick={() => setToggle(!toggle)} />
-          <div className={`nav-items ${toggle ? 'show' : ''}`}>
+          <Menu className='toggle' onClick={() => toggleShowMobileMenu(!showMobileMenu)} />
+          <div className={`nav-items ${showMobileMenu ? 'show' : ''}`}>
             <div className="top">
-              <Link className="brand collapse-menu-brand" to='/'><img src='/img/deedi-logo.png' /></Link>
-              <Close className='close' onClick={() => setToggle(!toggle)} />
+              <div className="brand collapse-menu-brand" >
+                <Link className="brand" to='/'><img src='/img/deedi-logo.png' /></Link>
+              </div>
+              <Close className='close' onClick={() => toggleShowMobileMenu(!showMobileMenu)} />
             </div>
             <div className="item">
               <Link className="link" to="/products/women">Women</Link>
@@ -99,8 +107,15 @@ const Navbar = () => {
           </div>
         </div>
         <div className="center">
-          <Link className="brand" to='/'><img src='/img/deedi-logo.png' /></Link>
+          <div className="brand collapse-menu-brand" onClick={(e) => {
+            if (!inCheckoutPage) {
+              navigate('/') // Prevents navigation if the link is disabled
+            }
+          }}>
+            <img src='/img/deedi-logo.png' />
+          </div>
         </div>
+
         <div className="right">
           {/* <div className="item">
             <Link className="link" to="/products/3">Stores</Link> 
@@ -125,13 +140,18 @@ const Navbar = () => {
 
             {pathname !== '/checkout' && <div className="cartIcon" onClick={() => dispatch(setShowCart(!showCart))}>
               <ShoppingCartOutlinedIcon className='icon' />
-              <div className='noOfProducts'><span>{noOfProducts}</span></div>
+              <div className='noOfItems'><span>{noOfItems}</span></div>
             </div>}
             {showCart && <Cart />}
 
-
           </div>
+
         </div>
+        {inCheckoutPage &&
+          <div className="secure-checkout">
+            <LockIcon fontSize='medium' className='icon' />
+            <p>SECURE CHECKOUT</p>
+          </div>}
       </div>
 
     </div>

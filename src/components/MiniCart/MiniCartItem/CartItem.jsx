@@ -4,45 +4,10 @@ import OptimizedImage from '../../OptimizedImage/OptimizedImage';
 import { Close, Delete, DeleteForeverOutlined, DeleteOutline, FavoriteBorder } from '@mui/icons-material';
 import './CartItem.scss';
 import { useDispatch } from 'react-redux';
-import { removeItemFromCart, setOutOfStock, setShowCart, updateCartItem } from '../../../redux/cartReducer';
-import useFetch from '../../../hooks/useFetch';
-import { Skeleton } from '@mui/material';
+import { removeItemFromCart, setOutOfStock, setShowCart, updateCartItem } from '../../../redux/cart/cartReducer';
+
 
 const CartItem = ({ item, cartType }) => {
-    // console.log(item)
-    // const { data: stockData, loading, error } = useFetch(
-    //     `/stocks?filters[product][id][$eq]=${item.productId}&filters[size][id][$eq]=${item.size.id}&populate=product`
-    // );
-
-
-
-    // console.log('product', product)
-
-    // console.log("product", product)
-
-
-    // const fetchedAvailableStock = stockData?.[0]?.attributes?.stock
-
-    // useEffect(() => {
-    //     // console.log('fetchedAvailableStock', fetchedAvailableStock)
-    //     const validateCartItem = () => {
-    //         if ((fetchedAvailableStock < item.quantity) && !item.outOfStock) {
-    //             callUpdateDispatch(fetchedAvailableStock)
-    //         }
-
-    //         setAvailableStock(fetchedAvailableStock);
-
-    //     }
-    //     console.log('product:', product)
-
-
-    //     validateCartItem()
-
-
-    // }, [fetchedAvailableStock]);
-
-
-
     const isOutOfStock = item.outOfStock;
 
     const dispatch = useDispatch();
@@ -63,7 +28,6 @@ const CartItem = ({ item, cartType }) => {
     };
 
     const callUpdateDispatch = async (requestedQuantity) => {
-        // console.log('reqested quantity', requestedQuantity)
         try {
             // Dispatch the update action and unwrap the result
             const response = await dispatch(updateCartItem({

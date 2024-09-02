@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import './CourierOptions.scss'
 import { useDispatch, useSelector } from 'react-redux'
 import CourierOptionItem from './CourierOption/CourierOptionItem'
-import { nextStep, setSelectedCourierId } from '../../redux/checkoutReducer'
+import { nextStep, setSelectedCourierId } from '../../redux/checkout/checkoutReducer'
 
 
 
