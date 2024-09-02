@@ -211,17 +211,23 @@
                 display: none;
             }
 
-            .secure-checkout {
+            .visible-in-checkout-page {
                 display: flex;
+                gap: 10px;
                 align-items: center;
-                gap: 4px;
 
-                p {
-                    margin-top: 2.5px;
-                    line-height: 24px;
-                    font-size: 15px;
-                    font-weight: 600;
-                    vertical-align: middle;
+                .secure-checkout {
+                    display: flex;
+                    align-items: center;
+                    gap: 4px;
+
+                    p {
+                        margin-top: 2.5px;
+                        line-height: 24px;
+                        font-size: 15px;
+                        font-weight: 600;
+                        vertical-align: middle;
+                    }
                 }
             }
 

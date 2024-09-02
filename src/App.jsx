@@ -31,10 +31,12 @@ const checkoutLoader = async ({ request }) => {
   console.log('checkout loader')
   try {
     const response = await store.dispatch(initializeCheckout({ reserve: true })).unwrap();
-    const { validationResults, sessionAlreadyExists, checkoutSessionDuration } = response;
+    console.log('response in loader', response)
+    const { validationResults, checkoutSessionAlreadyExists, checkoutSessionDuration } = response;
+    
 
-    if (!sessionAlreadyExists) {
-      const { reducedItems, successfulItems, outOfStockItems } = validationResults;
+    if (!checkoutSessionAlreadyExists) {
+      const { successfulItems, outOfStockItems } = validationResults;
 
       if (outOfStockItems?.length > 0) {
         throw new Response('Some items are out of stock', { status: 302, headers: { Location: '/cart' } });
@@ -44,12 +46,10 @@ const checkoutLoader = async ({ request }) => {
         throw new Response('Your cart is empty, add some items!', { status: 302, headers: { Location: '/cart' } });
       }
 
-      
-
-      return checkoutSessionDuration
+      return { checkoutSessionDuration, checkoutSessionAlreadyExists }
     } else {
-      toast.info('Checkout session restored');
-      return null
+      console.log('checkoutSessionAlreadyExists', checkoutSessionAlreadyExists);
+      return { checkoutSessionAlreadyExists }
     }
 
 

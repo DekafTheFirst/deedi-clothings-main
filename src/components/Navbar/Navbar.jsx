@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Close, Menu, MenuOpen } from '@mui/icons-material';
 import { selectCartTotals, setShowCart } from '../../redux/cart/cartReducer';
 import LockIcon from '@mui/icons-material/Lock';
+import Countdown from '../Countdown/Countdown';
 
 
 const excludedPaths = ['/checkout', '/checkout-success']; // Paths to exclude Navbar
@@ -21,6 +22,8 @@ const Navbar = () => {
   const { noOfItems } = useSelector(selectCartTotals);
 
   const { items: products, showCart } = useSelector(state => state.cart);
+  const { checkoutSessionExpiresAt, showCountdown } = useSelector(state => state.checkout);
+  
   const user = useSelector(state => state.auth.user);
 
   const { pathname, state } = useLocation();
@@ -148,10 +151,14 @@ const Navbar = () => {
 
         </div>
         {inCheckoutPage &&
-          <div className="secure-checkout">
-            <LockIcon fontSize='medium' className='icon' />
-            <p>SECURE CHECKOUT</p>
-          </div>}
+          <div className="visible-in-checkout-page">
+            {showCountdown && <Countdown time={checkoutSessionExpiresAt} />}
+            <div className="secure-checkout">
+              <LockIcon fontSize='medium' className='icon' />
+              <p>SECURE CHECKOUT</p>
+            </div>
+          </div>
+        }
       </div>
 
     </div>

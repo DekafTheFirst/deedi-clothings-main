@@ -248,27 +248,19 @@ const BillingTab = ({ totalAmount }) => {
                 console.log('res', res)
                 dispatch(setBillingInfo(billingInfo))
 
-                // if (res.data && res.data.stripeSession) {
-                //     const result = await stripe.redirectToCheckout({
-                //         sessionId: res.data.stripeSession.id,
-                //     });
+                if (res.data && res.data.stripeId) {
+                    const result = await stripe.redirectToCheckout({
+                        sessionId: res.data.stripeId,
+                    });
 
-                //     console.log(result)
+                    console.log(result)
+                }
 
-
-                //     if (error) {
-                //         console.error('Stripe redirect error:', error.message);
-                //         alert('Payment processing error. Please try disabling your ad blocker and try again.');
-                //         setErrorSubmittingForm(error)
-                //     }
-                // }
-                // else {
-                //     setErrorSubmittingForm(error)
-                //     throw new Error('Failed to create Stripe session');
-                // }
+                else {
+                    throw new Error('Failed to create Stripe session');
+                }
                 setLoading(false)
             } catch (err) {
-
                 setLoading(false)
                 setErrorSubmittingForm({ response: { status: 'no-items' } });
 

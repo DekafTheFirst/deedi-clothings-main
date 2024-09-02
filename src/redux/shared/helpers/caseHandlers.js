@@ -13,30 +13,33 @@ export const handlePending = (state) => {
 
 
 export const handleFulfilled = (state, action, actionType) => {
-    const { validationResults } = action.payload;
-    // console.log('actionType', actionType);
+    const { validationResults, checkoutSessionAlreadyExists, checkoutSessionExpiresAt } = action.payload;
+    console.log('checkoutSessionExpiresAt', checkoutSessionExpiresAt);
 
     // console.log('validationResults', validationResults)
     // Convert state items and errors to Maps for efficient access
+    if (!checkoutSessionAlreadyExists && validationResults) {
+        const itemsMap = new Map(state.items?.map(item => [item.localCartItemId, item]));
+        const errorsMap = new Map(state.stockValidationErrors?.map(error => [error.itemId, error]));
+        const processedItemIds = new Set();
 
-    const itemsMap = new Map(state.items?.map(item => [item.localCartItemId, item]));
-    const errorsMap = new Map(state.stockValidationErrors?.map(error => [error.itemId, error]));
-    const processedItemIds = new Set();
+        // Process each type of item
+        const reducedItems = validationResults?.reduced;
+        const outOfStockItems = validationResults?.outOfStock;
+        const successfulItems = validationResults?.success;
 
-    // Process each type of item
-    const reducedItems = validationResults?.reduced;
-    const outOfStockItems = validationResults?.outOfStock;
-    const successfulItems = validationResults?.success;
+        outOfStockItems && processOutOfStockItems(outOfStockItems, itemsMap, errorsMap, processedItemIds);
+        successfulItems && processSuccessfulItems(successfulItems, itemsMap, errorsMap);
+        reducedItems && processReducedItems(reducedItems, itemsMap, errorsMap, processedItemIds);
 
-    processOutOfStockItems(outOfStockItems, itemsMap, errorsMap, processedItemIds);
-    processSuccessfulItems(successfulItems, itemsMap, errorsMap);
-    processReducedItems(reducedItems, itemsMap, errorsMap, processedItemIds);
+        state.checkoutSessionExpiresAt = checkoutSessionExpiresAt
+        // Convert the Map back to arrays
+        state.items = Array.from(itemsMap.values());
+        state.stockValidationErrors = Array.from(errorsMap.values());
+    }
 
-    // Convert the Map back to arrays
-    state.items = Array.from(itemsMap.values());
-    state.stockValidationErrors = Array.from(errorsMap.values());
 
-    
+
     // Update the state status based on the action type
     state.status = actionType === 'validateCartItems' ? 'validated' : 'checkoutInitialized';
 };

@@ -39,9 +39,9 @@ const initialState = {
   billingInfo: null,
   rates: null,
   selectedCourierId: null,
-  timeoutIds: null,
-  sessionExpired: false,
-  timeoutIds: {}
+  checkoutSessionDuration: null,
+  checkoutSessionExpiresAt: null,
+  showCountdown: false,
 };
 
 export const initializeCheckout = createAsyncThunk(
@@ -67,10 +67,11 @@ export const initializeCheckout = createAsyncThunk(
       console.log('checkout response', validatedResponse);
       const validationResults = validatedResponse?.data?.validationResults;
       const checkoutSessionDuration = validatedResponse?.data?.checkoutSessionDuration
+      const checkoutSessionAlreadyExists = validatedResponse?.data?.checkoutSessionAlreadyExists
+      const checkoutSessionExpiresAt = validatedResponse?.data?.checkoutSessionExpiresAt
 
-
-      // console.log('mergedCart', mergedCart);
-      return { cartId, validationResults, checkoutSessionDuration };
+      console.log('checkoutSessionExpiresAt', checkoutSessionExpiresAt);
+      return { cartId, validationResults, checkoutSessionDuration, checkoutSessionAlreadyExists, checkoutSessionExpiresAt };
     } catch (error) {
       console.error(error)
       return rejectWithValue(error.response?.data?.error?.message || 'Failed to initialize checkout');
@@ -95,20 +96,14 @@ const checkoutSlice = createSlice({
   name: 'checkout',
   initialState,
   reducers: {
-    setTimeoutIds(state, action) {
-      state.timeoutIds = action.payload;
-    },
-    sessionExpired: (state) => {
-      state.sessionExpired = true;
-    },
-    clearTimeouts(state) {
-      state.timeoutIds && clearTimeout(state.timeoutIds.sessionTimeoutId);
-      state.timeoutIds && clearTimeout(state.timeoutIds.warningTimeoutId);
-      state.timeoutIds = null;
-    },
     cancelCheckout: (state) => {
       // Handle checkout cancellation
+      state.showCountdown = false
     },
+    setShowCountdown: (state, action) => {
+      state.showCountdown = action.payload
+    },
+
     setShippingInfo: (state, action) => {
       state.shippingInfo = action.payload;
       // storeShippingInfoInSession(action.payload);
@@ -209,6 +204,7 @@ export const {
   setRates,
   resetCheckout,
   sessionExpired,
+  setShowCountdown,
 } = checkoutSlice.actions;
 
 export default checkoutSlice.reducer;

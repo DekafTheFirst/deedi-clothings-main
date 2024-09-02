@@ -9,7 +9,7 @@ import ShippingTab from './ShippingTab/ShippingTab'
 import BillingTab from './BillingTab/BillingTab'
 import { CircularProgress } from '@mui/material'
 import CheckoutItem from './CheckoutItem/CheckoutItem'
-import { endCheckoutSession, sessionExpired } from '../../redux/checkout/checkoutReducer'
+import { endCheckoutSession, setShowCountdown } from '../../redux/checkout/checkoutReducer'
 import { ShoppingBagOutlined } from '@mui/icons-material'
 import { selectCartTotals, selectItemsByStock } from '../../redux/cart/cartReducer.js'
 import { toast } from 'react-toastify'
@@ -68,10 +68,13 @@ const CheckoutPage = () => {
 
 
 
+  const { checkoutSessionDuration, checkoutSessionAlreadyExists } = useLoaderData();
+  console.log('checkoutSessionAlreadyExists', checkoutSessionAlreadyExists)
+  console.log('checkoutSessionDuration', checkoutSessionDuration)
   const isInitialMount = useRef(true);
+  const isReloadingRef = useRef(false);
 
   //Checkout Step
-  const checkoutSessionDuration = useLoaderData();
   const sessionTimeoutIdRef = useRef(null);
   const warningTimeoutIdRef = useRef(null);
 
@@ -92,9 +95,9 @@ const CheckoutPage = () => {
     //     const response = await dispatch(initializeCheckout({ reserve: true })).unwrap();
     //     console.log('response', response);
 
-    //     const { validationResults, sessionAlreadyExists } = response;
+    //     const { validationResults, checkoutSessionAlreadyExists } = response;
 
-    //     if (!sessionAlreadyExists) {
+    //     if (!checkoutSessionAlreadyExists) {
     //       const { successfulItems, outOfStockItems } = validationResults
 
 
@@ -125,32 +128,39 @@ const CheckoutPage = () => {
     // handleInitializeCheckout();
 
 
-    if (checkoutSessionDuration) {
-      sessionTimeoutId = setTimeout(() => {
+    if (!checkoutSessionAlreadyExists && checkoutSessionDuration) {
+      sessionTimeoutIdRef.current = setTimeout(() => {
         console.log('cleared');
         toast.error('Your checkout session has expired')
         navigate('/cart')
-        // dispatch(sessionExpired());
+        dispatch(setShowCountdown(false));// Replace with your action
       }, checkoutSessionDuration);
 
-      // warningTimeoutIdRef.current = setTimeout(() => {
-      //   dispatch({ type: 'checkout/warningAboutToExpire' }); // Replace with your action
-      // }, checkoutSessionDuration - 5 * 60 * 1000); // Warn 5 minutes before expiration
+      warningTimeoutIdRef.current = setTimeout(() => {
+        // toast.warning('Your checkout session will end soon')
+        dispatch(setShowCountdown(true));// Replace with your action
+      }, checkoutSessionDuration - 5 * 1000); // Warn 5 minutes before expiration
+    } else {
+      // toast.info('Checkout session restored')
     }
 
     const handleBeforeUnload = (event) => {
-      // dispatch(endCheckoutSession());
+      isReloadingRef.current = true;  // Set the flag to true on reload
       event.preventDefault();
-      event.returnValue = 'You';
+      event.returnValue = '';
     };
 
-    // window.addEventListener('beforeunload', handleBeforeUnload);
+    window.addEventListener('beforeunload', handleBeforeUnload);
     return () => {
       console.log('cleanup')
-      // window.removeEventListener('beforeunload', handleBeforeUnload);
-      dispatch(endCheckoutSession());
-      console.log('sessionTimeoutId', sessionTimeoutId)
-      clearTimeout(sessionTimeoutId);
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      console.log('isReloadingRef.current', !isReloadingRef.current)
+      if (!isReloadingRef.current) {
+        // Only end the session if it's not a reload
+        dispatch(endCheckoutSession());
+      }
+      console.log('sessionTimeoutId', sessionTimeoutIdRef.current)
+      clearTimeout(sessionTimeoutIdRef.current);
       clearTimeout(warningTimeoutIdRef.current);
     };
 
