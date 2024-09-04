@@ -40,8 +40,10 @@ const initialState = {
   rates: null,
   selectedCourierId: null,
   checkoutSessionDuration: null,
+  sessionIsValid: false,
   checkoutSessionExpiresAt: null,
   showCountdown: false,
+  paymentAlreadyInitiated: false,
 };
 
 export const initializeCheckout = createAsyncThunk(
@@ -70,7 +72,7 @@ export const initializeCheckout = createAsyncThunk(
       const checkoutSessionAlreadyExists = validatedResponse?.data?.checkoutSessionAlreadyExists
       const checkoutSessionExpiresAt = validatedResponse?.data?.checkoutSessionExpiresAt
 
-      console.log('checkoutSessionExpiresAt', checkoutSessionExpiresAt);
+      // console.log('checkoutSessionExpiresAt', checkoutSessionExpiresAt);
       return { cartId, validationResults, checkoutSessionDuration, checkoutSessionAlreadyExists, checkoutSessionExpiresAt };
     } catch (error) {
       console.error(error)
@@ -100,8 +102,13 @@ const checkoutSlice = createSlice({
       // Handle checkout cancellation
       state.showCountdown = false
     },
-    setShowCountdown: (state, action) => {
-      state.showCountdown = action.payload
+
+    setCheckoutSessionExpiryDate: (state, action) => {
+      state.checkoutSessionExpiresAt = action.payload
+    },
+
+    setPaymentAlreadyInitiated: (state, action) => {
+      state.paymentAlreadyInitiated = action
     },
 
     setShippingInfo: (state, action) => {
@@ -182,6 +189,7 @@ const checkoutSlice = createSlice({
       })
       .addCase(endCheckoutSession.fulfilled, (state, action) => {
         state.status = 'succeeded';
+        state.checkoutSessionExpiresAt = null;
       })
       .addCase(endCheckoutSession.rejected, (state, action) => {
         state.status = 'failed';
@@ -204,7 +212,8 @@ export const {
   setRates,
   resetCheckout,
   sessionExpired,
-  setShowCountdown,
+  setCheckoutSessionExpiryDate,
+  setPaymentAlreadyInitiated,
 } = checkoutSlice.actions;
 
 export default checkoutSlice.reducer;

@@ -10,32 +10,29 @@ import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked';
 import { CircularProgress } from '@mui/material';
 import { loadStripe } from '@stripe/stripe-js';
+import { selectItemsByStock } from '../../../redux/cart/cartReducer';
 
 const BillingTab = ({ totalAmount }) => {
 
     const dispatch = useDispatch()
-    const reduxStoredShippingInfo = useSelector(state => state.checkout.shippingInfo);
-    const shippingInfo = reduxStoredShippingInfo || sessionStoredShippingInfo;
+    const { shippingInfo, billingInfo, selectedCourierId, checkoutSessionExpiresAt } = useSelector(state => state.checkout);
 
 
-    const reduxStoredBillingInfo = useSelector(state => state.checkout.billingInfo);
 
 
-    const products = useSelector(state => state.cart.items);
+    const { inStockItems } = useSelector(selectItemsByStock);
     // const items = useSelector(state => state.cart.items);
 
-    const currentStep = useSelector(state => state.cart.currentStep);
-    const previewedStep = useSelector(state => state.checkout.previewedStep);
 
 
-    // console.log('fetched session storage shipping info', sessionStoredBillingInfo)
+
 
     const [sameAsShippingAddress, setSameAsShippingAddress] = useState(true);
     const [errorWhileSubmittingForm, setErrorSubmittingForm] = useState(null);
     const [orderingWithShippingInfo, setOrderingWithShippingInfo] = useState(false);
 
 
-    // console.log(reduxStoredBillingInfo)
+    // console.log(billingInfo)
 
 
 
@@ -45,14 +42,14 @@ const BillingTab = ({ totalAmount }) => {
             label: 'First Name',
             type: 'text',
             placeholder: '',
-            initialValue: reduxStoredBillingInfo?.firstName || '',
+            initialValue: billingInfo?.firstName || '',
         },
         {
             name: 'lastName',
             label: 'Last Name',
             type: 'text',
             placeholder: '',
-            initialValue: reduxStoredBillingInfo?.lastName || '',
+            initialValue: billingInfo?.lastName || '',
 
         },
 
@@ -63,7 +60,7 @@ const BillingTab = ({ totalAmount }) => {
             as: 'custom',
             customInputName: 'addressLine',
             placeholder: '',
-            initialValue: reduxStoredBillingInfo?.addressLine1 || '',
+            initialValue: billingInfo?.addressLine1 || '',
         },
 
 
@@ -74,7 +71,7 @@ const BillingTab = ({ totalAmount }) => {
             as: 'custom',
             customInputName: 'addressLine',
             placeholder: '',
-            initialValue: reduxStoredBillingInfo?.addressLine2 || '',
+            initialValue: billingInfo?.addressLine2 || '',
         },
         {
             name: 'country',
@@ -82,7 +79,7 @@ const BillingTab = ({ totalAmount }) => {
             as: 'country-selector',
             type: 'text',
             placeholder: '',
-            initialValue: reduxStoredBillingInfo?.country || '',
+            initialValue: billingInfo?.country || '',
         },
 
         {
@@ -91,7 +88,7 @@ const BillingTab = ({ totalAmount }) => {
             as: 'state-selector',
             type: 'text',
             placeholder: '',
-            initialValue: reduxStoredBillingInfo?.state || '',
+            initialValue: billingInfo?.state || '',
         },
         {
             name: 'city',
@@ -99,94 +96,42 @@ const BillingTab = ({ totalAmount }) => {
             as: 'city-selector',
             type: 'text',
             placeholder: '',
-            initialValue: reduxStoredBillingInfo?.city || '',
+            initialValue: billingInfo?.city || '',
         },
         {
             name: 'postalCode',
             label: 'Postal Code',
             type: 'text',
             placeholder: '',
-            initialValue: reduxStoredBillingInfo?.postalCode || '',
+            initialValue: billingInfo?.postalCode || '',
         },
         {
             name: 'phoneNumber',
             label: 'Phone Number',
             type: 'tel',
             placeholder: '',
-            initialValue: reduxStoredBillingInfo?.phoneNumber || '',
+            initialValue: billingInfo?.phoneNumber || '',
         },
         {
             name: 'email',
             label: 'Email',
             type: 'email',
             placeholder: '',
-            initialValue: reduxStoredBillingInfo?.email || '',
+            initialValue: billingInfo?.email || '',
         },
     ];
 
-    const countryData = reduxStoredBillingInfo?.countryData;
-    const stateData = reduxStoredBillingInfo?.stateData;
-    const cityData = reduxStoredBillingInfo?.cityData;
+    const countryData = billingInfo?.countryData;
+    const stateData = billingInfo?.stateData;
+    const cityData = billingInfo?.cityData;
 
     console.log()
     const arraysEqual = (arr1, arr2) => _.isEqual(arr1, arr2);
     // console.log(items)
 
 
-
-
-
-
-
-
-    // const handleOrderWithShippingInfo = async (filledBillingInfo) => {
-    //     if (previewedStep) {
-    //         // console.log('currently previewing')
-    //         const infoIsChanged = !arraysEqual(filledBillingInfo, reduxStoredBillingInfo);
-    //         // console.log('is info changed?', infoIsChanged)
-    //         // console.log('filledBillingInfo', filledBillingInfo)
-    //         // console.log('initialValues ', reduxStoredBillingInfo)
-
-    //         // if (infoIsChanged) {
-    //         setOrderingWithShippingInfo(true)
-    //         setOrderingWithShippingInfo(false)
-    //         // }
-    //         // else {
-    //         //     // dispatch(nextStep())
-    //         // }
-    //     }
-    //     else {
-    //         await requestRates(filledBillingInfo, setSubmitting)
-    //         setSubmitting(false)
-    //     }
-
-    // };
-
-    // const handleOrderWithBillingInfo = async (filledBillingInfo, { setSubmitting }) => {
-    //     if (previewedStep) {
-    //         // console.log('currently previewing')
-    //         const infoIsChanged = !arraysEqual(filledBillingInfo, reduxStoredBillingInfo);
-    //         // console.log('is info changed?', infoIsChanged)
-    //         // console.log('filledBillingInfo', filledBillingInfo)
-    //         // console.log('initialValues ', reduxStoredBillingInfo)
-
-    //         if (infoIsChanged) {
-    //             await requestRates(filledBillingInfo)
-    //         }
-    //         else {
-    //             dispatch(nextStep())
-    //             setSubmitting(false);
-    //         }
-    //     }
-    //     else {
-    //         await requestRates(filledBillingInfo)
-    //         setSubmitting(false)
-    //     }
-
-    // };
-
     const handleReset = (resetForm) => {
-        if (reduxStoredBillingInfo) {
+        if (billingInfo) {
             dispatch(setBillingInfo(null))
         }
 
@@ -224,23 +169,24 @@ const BillingTab = ({ totalAmount }) => {
 
     const [loading, setLoading] = useState(false)
 
-    const selectedCourierId = useSelector(state => state.checkout.selectedCourierId)
 
 
     const handlePlaceOrder = async (billingInfo) => {
         const stripePromise = loadStripe('pk_test_51OzQqiP8nMwtf7KwjeDBvSrJh0QU2AMmJncITWpVrXW9Cm8XesZc1MqofLogMUrphlOB0exTEsHSQ91mJoA5V94u00JrVmVkWL');
 
-        if (products.length > 0) {
+        if (inStockItems.length > 0) {
             try {
                 setLoading(true)
                 const stripe = await stripePromise;
 
                 const res = await makeRequest.post('/orders', {
-                    items: products,
+                    items: inStockItems,
                     shippingInfo,
                     billingInfo,
                     selectedCourierId,
                     totalAmount,
+                    customerEmail: billingInfo.email,
+                    checkoutSessionExpiresAt
                 }).catch((error) => {
                     setErrorSubmittingForm(error)
                 });
@@ -248,18 +194,13 @@ const BillingTab = ({ totalAmount }) => {
                 console.log('res', res)
                 dispatch(setBillingInfo(billingInfo))
 
-                if (res.data && res.data.stripeId) {
-                    const result = await stripe.redirectToCheckout({
-                        sessionId: res.data.stripeId,
-                    });
+                const result = await stripe.redirectToCheckout({
+                    sessionId: res.data.sessionId,
+                });
 
-                    console.log(result)
-                }
-
-                else {
-                    throw new Error('Failed to create Stripe session');
-                }
+                console.log(result)
                 setLoading(false)
+
             } catch (err) {
                 setLoading(false)
                 setErrorSubmittingForm({ response: { status: 'no-items' } });

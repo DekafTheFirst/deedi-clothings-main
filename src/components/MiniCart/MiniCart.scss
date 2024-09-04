@@ -10,7 +10,7 @@
     z-index: 9;
     width: 360px;
     background-color: white;
-    padding: 0 10px 10px;
+    padding: 0 10px 10px 10px;
     border-radius: 3px;
     -webkit-box-shadow: 0px 0px 7px -5px rgba(0, 0, 0, 0.5);
     box-shadow: 0px 0px 7px -5px rgba(0, 0, 0, 0.8);
@@ -27,38 +27,41 @@
     .items {
         display: flex;
         flex-direction: column;
+        max-height: 300px;
+        max-width: 100%;
+        overflow-y: auto;
+        padding-right: 7px;
 
+        -ms-overflow-style: none;
+        /* IE and Edge */
+
+        /* For WebKit browsers */
+        &::-webkit-scrollbar {
+            width: 3px;
+            background: transparent;
+            /* Hide the track */
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background-color: $mediumGray;
+            /* Scrollbar color */
+            border-radius: 10px;
+            /* Rounded corners for scrollbar */
+        }
+
+        &::-webkit-scrollbar-track {
+            background: transparent;
+            /* Hide the track */
+        }
+
+        
         .cart-items-list {
             display: flex;
             flex-direction: column;
-            max-height: 300px;
-            max-width: 100%;
-
-            overflow-y: auto;
+            
             // overflow-x: hidden;
             /* Firefox */
-            -ms-overflow-style: none;
-            /* IE and Edge */
-
-            /* For WebKit browsers */
-            &::-webkit-scrollbar {
-                width: 3px;
-                background: transparent;
-                /* Hide the track */
-            }
-
-            &::-webkit-scrollbar-thumb {
-                background-color: $mediumGray;
-                /* Scrollbar color */
-                border-radius: 4px;
-                /* Rounded corners for scrollbar */
-            }
-
-            &::-webkit-scrollbar-track {
-                background: transparent;
-                /* Hide the track */
-            }
-
+           
 
            
         }

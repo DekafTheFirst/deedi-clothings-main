@@ -49,7 +49,7 @@ const Cart = () => {
   return (
     <div className="mini-cart">
       <div className="total">
-        <span>{`SUBTOTAL(${noOfItems})`}</span>
+        <span>{`SUBTOTAL(${inStockItems.length})`}</span>
         <span>${subtotal}</span>
       </div>
 

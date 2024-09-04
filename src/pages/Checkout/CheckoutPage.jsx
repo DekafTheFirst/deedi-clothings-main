@@ -2,14 +2,14 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import "./CheckoutPage.scss"
 import { useDispatch, useSelector } from 'react-redux'
 
-import { useLoaderData, useNavigate } from 'react-router-dom'
+import { useBeforeUnload, useLoaderData, useLocation, useNavigate } from 'react-router-dom'
 import CourierOptions from '../../components/CourierOptions/CourierOptions'
 import StepWizard from './StepWizard/StepWizard'
 import ShippingTab from './ShippingTab/ShippingTab'
 import BillingTab from './BillingTab/BillingTab'
 import { CircularProgress } from '@mui/material'
 import CheckoutItem from './CheckoutItem/CheckoutItem'
-import { endCheckoutSession, setShowCountdown } from '../../redux/checkout/checkoutReducer'
+import { endCheckoutSession, setCheckoutSessionExpiryDate } from '../../redux/checkout/checkoutReducer'
 import { ShoppingBagOutlined } from '@mui/icons-material'
 import { selectCartTotals, selectItemsByStock } from '../../redux/cart/cartReducer.js'
 import { toast } from 'react-toastify'
@@ -18,15 +18,14 @@ import { toast } from 'react-toastify'
 const CheckoutPage = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
-
+  const location = useLocation()
   // Products
   const items = useSelector(state => state.cart.items);
 
   const { inStockItems } = useSelector(selectItemsByStock)
 
 
-
-
+  const { vat, totalAmount, subtotal, noOfItems } = useSelector(selectCartTotals)
 
 
   // console.log('inStockItems', inStockItems)
@@ -41,23 +40,7 @@ const CheckoutPage = () => {
 
   // console.log('previewedStep', previewedStep, '\n\n' + 'currentStep', currentStep)
   // Calculate totals
-  const subtotal = useMemo(() => {
-    let total = 0;
-    items.forEach(item => {
-      total += item.price * item.quantity;
-    });
-    return total.toFixed(2);
-  }, [items]);
 
-  const vat = useMemo(() => (subtotal * 0.2).toFixed(2), [subtotal]);
-
-  const totalAmount = useMemo(() => {
-    let total = parseFloat(subtotal) + parseFloat(vat);
-    if (selectedCourier) {
-      total += selectedCourier.total_charge;
-    }
-    return total.toFixed(2);
-  }, [subtotal, vat, selectedCourier]);
   // console.log(products);
 
   // Price
@@ -69,16 +52,13 @@ const CheckoutPage = () => {
 
 
   const { checkoutSessionDuration, checkoutSessionAlreadyExists } = useLoaderData();
-  console.log('checkoutSessionAlreadyExists', checkoutSessionAlreadyExists)
-  console.log('checkoutSessionDuration', checkoutSessionDuration)
+  // console.log('checkoutSessionAlreadyExists', checkoutSessionAlreadyExists)
+  // console.log('checkoutSessionDuration', checkoutSessionDuration)
   const isInitialMount = useRef(true);
-  const isReloadingRef = useRef(false);
 
   //Checkout Step
   const sessionTimeoutIdRef = useRef(null);
   const warningTimeoutIdRef = useRef(null);
-
-  let sessionTimeoutId, warningTimeoutId
 
   useEffect(() => {
     // Handle SPA navigation
@@ -127,38 +107,14 @@ const CheckoutPage = () => {
     // };
     // handleInitializeCheckout();
 
-
-    if (!checkoutSessionAlreadyExists && checkoutSessionDuration) {
-      sessionTimeoutIdRef.current = setTimeout(() => {
-        console.log('cleared');
-        toast.error('Your checkout session has expired')
-        navigate('/cart')
-        dispatch(setShowCountdown(false));// Replace with your action
-      }, checkoutSessionDuration);
-
-      warningTimeoutIdRef.current = setTimeout(() => {
-        // toast.warning('Your checkout session will end soon')
-        dispatch(setShowCountdown(true));// Replace with your action
-      }, checkoutSessionDuration - 5 * 1000); // Warn 5 minutes before expiration
-    } else {
-      // toast.info('Checkout session restored')
-    }
-
-    const handleBeforeUnload = (event) => {
-      isReloadingRef.current = true;  // Set the flag to true on reload
-      event.preventDefault();
-      event.returnValue = '';
-    };
-
-    window.addEventListener('beforeunload', handleBeforeUnload);
     return () => {
       console.log('cleanup')
-      window.removeEventListener('beforeunload', handleBeforeUnload);
-      console.log('isReloadingRef.current', !isReloadingRef.current)
-      if (!isReloadingRef.current) {
-        // Only end the session if it's not a reload
-        dispatch(endCheckoutSession());
-      }
+      // if (!isReloadingRef.current) {
+      // Only end the session if it's not a reload
+      dispatch(setCheckoutSessionExpiryDate(null))
+
+      dispatch(endCheckoutSession());
+      // }
       console.log('sessionTimeoutId', sessionTimeoutIdRef.current)
       clearTimeout(sessionTimeoutIdRef.current);
       clearTimeout(warningTimeoutIdRef.current);
@@ -194,7 +150,6 @@ const CheckoutPage = () => {
   //     // dispatch(endCheckoutSession());
   //   };
   // }, [dispatch]);
-  const { noOfItems } = useSelector(selectCartTotals)
 
   const renderCurrentTab = () => {
     switch (previewedStep?.id || currentStep?.id) {

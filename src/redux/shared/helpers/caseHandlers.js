@@ -14,11 +14,11 @@ export const handlePending = (state) => {
 
 export const handleFulfilled = (state, action, actionType) => {
     const { validationResults, checkoutSessionAlreadyExists, checkoutSessionExpiresAt } = action.payload;
-    console.log('checkoutSessionExpiresAt', checkoutSessionExpiresAt);
+    // console.log('checkoutSessionExpiresAt', checkoutSessionExpiresAt);
 
     // console.log('validationResults', validationResults)
     // Convert state items and errors to Maps for efficient access
-    if (!checkoutSessionAlreadyExists && validationResults) {
+    if (validationResults) {
         const itemsMap = new Map(state.items?.map(item => [item.localCartItemId, item]));
         const errorsMap = new Map(state.stockValidationErrors?.map(error => [error.itemId, error]));
         const processedItemIds = new Set();
@@ -32,14 +32,17 @@ export const handleFulfilled = (state, action, actionType) => {
         successfulItems && processSuccessfulItems(successfulItems, itemsMap, errorsMap);
         reducedItems && processReducedItems(reducedItems, itemsMap, errorsMap, processedItemIds);
 
-        state.checkoutSessionExpiresAt = checkoutSessionExpiresAt
         // Convert the Map back to arrays
         state.items = Array.from(itemsMap.values());
         state.stockValidationErrors = Array.from(errorsMap.values());
     }
 
-
-
+    if (actionType === ActionTypes.INITIALIZE_CHECKOUT) {
+        if (checkoutSessionExpiresAt) {
+            state.checkoutSessionExpiresAt = checkoutSessionExpiresAt
+        }
+        console.log('checkoutSessionExpiryDate', checkoutSessionExpiresAt)
+    }
     // Update the state status based on the action type
     state.status = actionType === 'validateCartItems' ? 'validated' : 'checkoutInitialized';
 };

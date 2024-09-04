@@ -541,12 +541,12 @@ const calculateTotals = (items) => {
 };
 
 export const selectCartTotals = createSelector(
-  [selectCartItems],
-  (items) => {
-    const totals = calculateTotals(items);
+  [selectItemsByStock],
+  ({inStockItems}) => {
+    const totals = calculateTotals(inStockItems);
 
-    const noOfItems = (items) => {
-      const noOfItems = items.reduce((acc, item) => acc + item.quantity, 0);
+    const noOfItems = (inStockItems) => {
+      const noOfItems = inStockItems.reduce((acc, item) => acc + item.quantity, 0);
       return (noOfItems > 0 ? `${noOfItems}` : '0')
     }
 
@@ -554,7 +554,7 @@ export const selectCartTotals = createSelector(
       subtotal: totals.subtotal,
       vat: totals.vat,
       totalAmount: totals.totalAmount,
-      noOfItems: noOfItems(items)
+      noOfItems: noOfItems(inStockItems)
     };
   }
 );

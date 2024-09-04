@@ -1352,17 +1352,17 @@
   resolved "https://registry.yarnpkg.com/@strapi/blocks-react-renderer/-/blocks-react-renderer-1.0.1.tgz#51b17b094203c5d820bba2a330b32a8d5f80de2f"
   integrity sha512-oHQNYstM/361oJIKrj6wDFZhDWHg8M8sF7SszqWr8zH2EaoL36ccLq7F2XFWShYQshuKgY+V6axurDaxWo4jQA==
 
-"@stripe/react-stripe-js@^2.6.2":
-  version "2.6.2"
-  resolved "https://registry.yarnpkg.com/@stripe/react-stripe-js/-/react-stripe-js-2.6.2.tgz#0b0c81d0c4174b44fdd1b5c7fa58754dd4f86bca"
-  integrity sha512-FSjNg4v7BiCfojvx25PQ8DugOa09cGk1t816R/DLI/lT+1bgRAYpMvoPirLT4ZQ3ev/0VDtPdWNaabPsLDTOMA==
+"@stripe/react-stripe-js@^2.8.0":
+  version "2.8.0"
+  resolved "https://registry.yarnpkg.com/@stripe/react-stripe-js/-/react-stripe-js-2.8.0.tgz#ffb6c13ed8dca45fbc234890c8ccfcf94a28893a"
+  integrity sha512-Vf1gNEuBxA9EtxiLghm2ZWmgbADNMJw4HW6eolUu0DON/6mZvWZgk0KHolN0sozNJwYp0i/8hBsDBcBUWcvnbw==
   dependencies:
     prop-types "^15.7.2"
 
-"@stripe/stripe-js@^3.1.0":
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/@stripe/stripe-js/-/stripe-js-3.1.0.tgz#bb0458c5cb5e9a835c18f8d353e8980cc66b9959"
-  integrity sha512-7+ciE35i8NZ6l4FiO1qFkBoZ64ul6B2ZhBVyygB+e/2EZa2WLUyjoxrP53SagnUW7+/q25nDyDLzQq5F0ebOEw==
+"@stripe/stripe-js@^4.4.0":
+  version "4.4.0"
+  resolved "https://registry.yarnpkg.com/@stripe/stripe-js/-/stripe-js-4.4.0.tgz#7b5b84c1366ef4916df7ac2c95c80cf79613f83e"
+  integrity sha512-p1WeTOwnAyXQ9I5/YC3+JXoUB6NKMR4qGjBobie2+rgYa3ftUTRS2L5qRluw/tGACty5SxqnfORCdsaymD1XjQ==
 
 "@testing-library/dom@^8.5.0":
   version "8.20.1"

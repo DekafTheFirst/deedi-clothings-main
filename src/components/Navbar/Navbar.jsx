@@ -12,6 +12,8 @@ import { Close, Menu, MenuOpen } from '@mui/icons-material';
 import { selectCartTotals, setShowCart } from '../../redux/cart/cartReducer';
 import LockIcon from '@mui/icons-material/Lock';
 import Countdown from '../Countdown/Countdown';
+import { toast } from 'react-toastify';
+import { endCheckoutSession, setCheckoutSessionExpiryDate } from '../../redux/checkout/checkoutReducer';
 
 
 const excludedPaths = ['/checkout', '/checkout-success']; // Paths to exclude Navbar
@@ -22,8 +24,7 @@ const Navbar = () => {
   const { noOfItems } = useSelector(selectCartTotals);
 
   const { items: products, showCart } = useSelector(state => state.cart);
-  const { checkoutSessionExpiresAt, showCountdown } = useSelector(state => state.checkout);
-  
+  const { checkoutSessionExpiresAt } = useSelector(state => state.checkout);
   const user = useSelector(state => state.auth.user);
 
   const { pathname, state } = useLocation();
@@ -35,7 +36,41 @@ const Navbar = () => {
 
 
 
+  const [timeRemaining, setTimeRemaining] = useState(null);
+  const [showCountdown, setShowCountdown] = useState(false);
 
+
+  useEffect(() => {
+    // Parse the target date string into a Date object
+    const targetDateLocal = new Date(checkoutSessionExpiresAt);
+    // Update the countdown timer every second
+    // Update every second
+    console.log('showCountdown', showCountdown)
+    if (inCheckoutPage) {
+      const intervalId = setInterval(() => {
+        const currentTime = new Date();
+        const difference = targetDateLocal - currentTime;
+        const timeRemaining = difference > 0 ? difference : 0;
+        // console.log('timeRemaining', timeRemaining)
+        setShowCountdown(true)
+
+        if (timeRemaining <= 0) {
+          clearInterval(intervalId);
+          setShowCountdown(false);
+          dispatch(endCheckoutSession())
+          navigate('/cart');
+        } else {
+          const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+          const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+          setTimeRemaining({ minutes, seconds });
+        }
+      }, 1000);
+
+
+      return () => clearInterval(intervalId);
+    }
+
+  }, [inCheckoutPage]);
 
 
   useEffect(() => {
@@ -152,7 +187,7 @@ const Navbar = () => {
         </div>
         {inCheckoutPage &&
           <div className="visible-in-checkout-page">
-            {showCountdown && <Countdown time={checkoutSessionExpiresAt} />}
+            {showCountdown && <Countdown timeRemaining={timeRemaining} />}
             <div className="secure-checkout">
               <LockIcon fontSize='medium' className='icon' />
               <p>SECURE CHECKOUT</p>
