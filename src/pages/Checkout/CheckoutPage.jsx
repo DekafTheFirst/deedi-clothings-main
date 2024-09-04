@@ -20,7 +20,6 @@ const CheckoutPage = () => {
   const dispatch = useDispatch()
   const location = useLocation()
   // Products
-  const items = useSelector(state => state.cart.items);
 
   const { inStockItems } = useSelector(selectItemsByStock)
 
@@ -154,7 +153,7 @@ const CheckoutPage = () => {
   const renderCurrentTab = () => {
     switch (previewedStep?.id || currentStep?.id) {
       case 1:
-        return <ShippingTab subtotal={subtotal} totalAmount={totalAmount} vat={vat} quantity={items.length} />
+        return <ShippingTab subtotal={subtotal} totalAmount={totalAmount} vat={vat} quantity={inStockItems.length} />
       case 2:
         return <CourierOptions />
       case 3:

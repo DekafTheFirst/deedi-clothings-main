@@ -40,37 +40,37 @@ const Navbar = () => {
   const [showCountdown, setShowCountdown] = useState(false);
 
 
-  useEffect(() => {
-    // Parse the target date string into a Date object
-    const targetDateLocal = new Date(checkoutSessionExpiresAt);
-    // Update the countdown timer every second
-    // Update every second
-    console.log('showCountdown', showCountdown)
-    if (inCheckoutPage) {
-      const intervalId = setInterval(() => {
-        const currentTime = new Date();
-        const difference = targetDateLocal - currentTime;
-        const timeRemaining = difference > 0 ? difference : 0;
-        // console.log('timeRemaining', timeRemaining)
-        setShowCountdown(true)
+  // useEffect(() => {
+  //   // Parse the target date string into a Date object
+  //   const targetDateLocal = new Date(checkoutSessionExpiresAt);
+  //   // Update the countdown timer every second
+  //   // Update every second
+  //   console.log('showCountdown', showCountdown)
+  //   if (inCheckoutPage) {
+  //     const intervalId = setInterval(() => {
+  //       const currentTime = new Date();
+  //       const difference = targetDateLocal - currentTime;
+  //       const timeRemaining = difference > 0 ? difference : 0;
+  //       // console.log('timeRemaining', timeRemaining)
+  //       setShowCountdown(true)
 
-        if (timeRemaining <= 0) {
-          clearInterval(intervalId);
-          setShowCountdown(false);
-          dispatch(endCheckoutSession())
-          navigate('/cart');
-        } else {
-          const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
-          const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
-          setTimeRemaining({ minutes, seconds });
-        }
-      }, 1000);
+  //       if (timeRemaining <= 0) {
+  //         clearInterval(intervalId);
+  //         setShowCountdown(false);
+  //         dispatch(endCheckoutSession())
+  //         navigate('/cart');
+  //       } else {
+  //         const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+  //         const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+  //         setTimeRemaining({ minutes, seconds });
+  //       }
+  //     }, 1000);
 
 
-      return () => clearInterval(intervalId);
-    }
+  //     return () => clearInterval(intervalId);
+  //   }
 
-  }, [inCheckoutPage]);
+  // }, [inCheckoutPage]);
 
 
   useEffect(() => {
@@ -187,7 +187,7 @@ const Navbar = () => {
         </div>
         {inCheckoutPage &&
           <div className="visible-in-checkout-page">
-            {showCountdown && <Countdown timeRemaining={timeRemaining} />}
+            {/* {showCountdown && <Countdown timeRemaining={timeRemaining} />} */}
             <div className="secure-checkout">
               <LockIcon fontSize='medium' className='icon' />
               <p>SECURE CHECKOUT</p>

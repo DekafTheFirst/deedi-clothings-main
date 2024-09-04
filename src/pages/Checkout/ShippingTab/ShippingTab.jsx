@@ -1,10 +1,11 @@
-import React, {  useState } from 'react'
+import React, { useState } from 'react'
 import './ShippingTab.scss'
 import FormComponent from '../../../components/Form/Form'
 import { useDispatch, useSelector } from 'react-redux';
 import _ from 'lodash';
 import { nextStep, setRates, setShippingInfo } from '../../../redux/checkout/checkoutReducer';
 import { makeRequest } from '../../../makeRequest';
+import { selectItemsByStock } from '../../../redux/cart/cartReducer';
 
 const ShippingTab = () => {
     const dispatch = useDispatch()
@@ -120,8 +121,8 @@ const ShippingTab = () => {
 
 
     const arraysEqual = (arr1, arr2) => _.isEqual(arr1, arr2);
-    const items = useSelector(state => state.cart.items);
-    // console.log(items)
+    const { inStockItems } = useSelector(selectItemsByStock);
+    // console.log(inStockItems)
     const currentStep = useSelector(state => state.cart.currentStep);
     const previewedStep = useSelector(state => state.checkout.previewedStep);
 
@@ -132,7 +133,7 @@ const ShippingTab = () => {
         try {
             window.scrollTo(0, 0);
 
-            const itemsWithDimensions = items.map(item => ({
+            const itemsWithDimensions = inStockItems.map(item => ({
                 ...item,
                 length: 40, // Replace with actual value from item
                 width: 14, // Replace with actual value from item
@@ -156,7 +157,7 @@ const ShippingTab = () => {
     }
 
     const handleShippingSubmit = async (filledShippingInfo, { setSubmitting }) => {
-        if (items.length > 0) {
+        if (inStockItems.length > 0) {
             if (previewedStep) {
                 console.log('currently previewing')
                 const infoIsChanged = !arraysEqual(filledShippingInfo, reduxStoredShippingInfo);

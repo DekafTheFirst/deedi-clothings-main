@@ -32,9 +32,10 @@ const checkoutLoader = async ({ request }) => {
   try {
     const response = await store.dispatch(initializeCheckout({ reserve: true })).unwrap();
     console.log('response in loader', response)
-    const { validationResults, checkoutSessionAlreadyExists, checkoutSessionDuration } = response;
-    
+    const { validationResults, checkoutSessionAlreadyExists, checkoutSessionDuration, checkoutSessionExpiresAt } = response;
 
+    const sessionHasExpired = new Date() > new Date(checkoutSessionExpiresAt)
+    console.log('sessionHasExpired', sessionHasExpired)
     if (!checkoutSessionAlreadyExists) {
       const { successfulItems, outOfStockItems } = validationResults;
 
