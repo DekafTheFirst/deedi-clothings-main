@@ -27,7 +27,7 @@ import Register from './pages/Auth/Register/Register';
 import { setShowCart } from './redux/cart/cartReducer';
 import { toast, ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
-import { initializeCheckout, resetCheckout } from './redux/checkout/checkoutReducer';
+import { endCheckoutSession, initializeCheckout, resetCheckout } from './redux/checkout/checkoutReducer';
 import { loadStripe } from '@stripe/stripe-js';
 
 const dispatch = store.dispatch
@@ -61,9 +61,9 @@ const checkoutLoader = async ({ request }) => {
 
       if (status === 'completed') {
         dispatch(resetCheckout())
-
+        
         // toast.info('Checkout sessoon complete already. Check your orders page.')
-        return redirect("/products/women")
+        // return redirect("/products/women")
 
       }
 

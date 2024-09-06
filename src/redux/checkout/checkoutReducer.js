@@ -179,7 +179,7 @@ const checkoutSlice = createSlice({
 
 
     resetCheckout: () => {
-      return initialState;
+      // return initialState;
     },
   },
   extraReducers: (builder) => {

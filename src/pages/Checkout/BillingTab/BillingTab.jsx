@@ -205,13 +205,16 @@ const BillingTab = ({ totalAmount }) => {
                         billingInfo,
                         totalAmount,
                         // customerEmail: billingInfo.email,
-                    }).catch((error) => {
-                        // setErrorSubmittingForm(error)
-                        toast.error('Checkout session expired, please try again')
-                        navigate('/cart')
-                        console.log('Error creating payment intent', error)
-                        return
-                    });
+                    })
+                    // .catch((error) => {
+                    //     // setErrorSubmittingForm(error)
+                    //     toast.error('Checkout session expired, please try again')
+                    //     navigate('/cart')
+                    //     console.log('Error creating payment intent', error)
+                    //     return
+                    // });
+                    console.log(res)
+                    
 
                     console.log('res', res);
                     
