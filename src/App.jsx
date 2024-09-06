@@ -2,7 +2,9 @@ import {
   RouterProvider,
   createBrowserRouter,
   Outlet,
-  useLocation
+  useLocation,
+  useNavigate,
+  redirect
 } from 'react-router-dom';
 import Home from './pages/Home/Home';
 import Products from './pages/Products/Products';
@@ -25,18 +27,22 @@ import Register from './pages/Auth/Register/Register';
 import { setShowCart } from './redux/cart/cartReducer';
 import { toast, ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
-import { initializeCheckout } from './redux/checkout/checkoutReducer';
+import { initializeCheckout, resetCheckout } from './redux/checkout/checkoutReducer';
+import { loadStripe } from '@stripe/stripe-js';
 
+const dispatch = store.dispatch
 const checkoutLoader = async ({ request }) => {
   console.log('checkout loader')
   try {
+
     const response = await store.dispatch(initializeCheckout({ reserve: true })).unwrap();
     console.log('response in loader', response)
-    const { validationResults, checkoutSessionAlreadyExists, checkoutSessionDuration, checkoutSessionExpiresAt } = response;
+    const { validationResults, checkoutSessionAlreadyExists, checkoutSessionDuration, checkoutSessionExpiresAt, status } = response;
 
     const sessionHasExpired = new Date() > new Date(checkoutSessionExpiresAt)
-    console.log('sessionHasExpired', sessionHasExpired)
-    if (!checkoutSessionAlreadyExists) {
+    console.log('sessionHasExpired', sessionHasExpired);
+
+    if (status === 'initialized') {
       const { successfulItems, outOfStockItems } = validationResults;
 
       if (outOfStockItems?.length > 0) {
@@ -46,11 +52,33 @@ const checkoutLoader = async ({ request }) => {
       if (successfulItems?.length <= 0) {
         throw new Response('Your cart is empty, add some items!', { status: 302, headers: { Location: '/cart' } });
       }
+      
+      dispatch(resetCheckout())
 
       return { checkoutSessionDuration, checkoutSessionAlreadyExists }
     } else {
+      console.log('status', status)
+
+      if (status === 'completed') {
+        dispatch(resetCheckout())
+
+        // toast.info('Checkout sessoon complete already. Check your orders page.')
+        return redirect("/products/women")
+
+      }
+
+      if (status === 'expired') {
+        dispatch(resetCheckout())
+
+        // dispatch(resetCheckout())
+        // toast.info('Checkout sessoon complete already. Check your orders page.')
+        return redirect("/cart")
+
+      }
+
+
       console.log('checkoutSessionAlreadyExists', checkoutSessionAlreadyExists);
-      return { checkoutSessionAlreadyExists }
+      return { checkoutSessionAlreadyExists, status }
     }
 
 
@@ -89,7 +117,7 @@ const Layout = () => {
 
   return (
     <div className="app">
-      <ScrollToTop />
+      {/* <ScrollToTop /> */}
       <Navbar />
       <div id="content">
         <div className={`darkOverlay ${showCart ? 'show' : ''}`}></div>

@@ -90,7 +90,7 @@ const CourierOptions = () => {
           ))}
         </div>
         <button onClick={handleSubmitCourierOtion} className="btn-1 submit-btn" disabled={false} >
-          Save & Continue
+          proceeed to payment
         </button>
       </form>
     </div>

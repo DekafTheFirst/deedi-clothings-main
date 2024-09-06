@@ -9,10 +9,13 @@ import ShippingTab from './ShippingTab/ShippingTab'
 import BillingTab from './BillingTab/BillingTab'
 import { CircularProgress } from '@mui/material'
 import CheckoutItem from './CheckoutItem/CheckoutItem'
-import { endCheckoutSession, setCheckoutSessionExpiryDate } from '../../redux/checkout/checkoutReducer'
+import { endCheckoutSession, setBillingInfo, setCheckoutSessionExpiryDate, setClientSecret } from '../../redux/checkout/checkoutReducer'
 import { ShoppingBagOutlined } from '@mui/icons-material'
 import { selectCartTotals, selectItemsByStock } from '../../redux/cart/cartReducer.js'
 import { toast } from 'react-toastify'
+import { loadStripe } from '@stripe/stripe-js'
+import { Elements } from "@stripe/react-stripe-js";
+import { makeRequest } from '../../makeRequest.js'
 
 
 const CheckoutPage = () => {
@@ -20,18 +23,16 @@ const CheckoutPage = () => {
   const dispatch = useDispatch()
   const location = useLocation()
   // Products
-
   const { inStockItems } = useSelector(selectItemsByStock)
 
 
   const { vat, totalAmount, subtotal, noOfItems } = useSelector(selectCartTotals)
 
+  const [stripePromise, setStripePromise] = useState(null);
 
   // console.log('inStockItems', inStockItems)
-  const selectedCourier = useSelector(state => state.checkout.selectedCourier);
 
-  const currentStep = useSelector(state => state.checkout.currentStep);
-  const previewedStep = useSelector(state => state.checkout.previewedStep);
+  const { previewedStep, currentStep, selectedCourier } = useSelector(state => state.checkout);
 
 
   // const billingInfo = useSelector(state => state.checkout.billingInfo);
@@ -55,6 +56,9 @@ const CheckoutPage = () => {
   // console.log('checkoutSessionDuration', checkoutSessionDuration)
   const isInitialMount = useRef(true);
 
+  useEffect(() => {
+    setStripePromise(loadStripe('pk_test_51OzQqiP8nMwtf7KwjeDBvSrJh0QU2AMmJncITWpVrXW9Cm8XesZc1MqofLogMUrphlOB0exTEsHSQ91mJoA5V94u00JrVmVkWL'))
+  }, [])
   //Checkout Step
   const sessionTimeoutIdRef = useRef(null);
   const warningTimeoutIdRef = useRef(null);
@@ -123,6 +127,9 @@ const CheckoutPage = () => {
 
 
   // useEffect(() => {
+
+  // }, [])
+  // useEffect(() => {
   //   // Set up event listener for route changes
   //   const handleRouteChange = () => {
   //     // Clear session state when navigating away from the checkout route
@@ -162,73 +169,80 @@ const CheckoutPage = () => {
   }
 
   return (
-    <div className="checkout-page">
-      <div className="container">
-        <div className="row">
-          <div className="col-md-6 tabs">
-            <div className="tabs-wrapper">
-              <StepWizard />
-              <div className="current-tab">
-                {renderCurrentTab()}
-              </div>
-            </div>
-          </div>
+    <>
+      {stripePromise &&
+        < Elements stripe={stripePromise} options={{ mode: 'payment', currency: 'usd',  amount: 1099,}}>
+          <div className="checkout-page">
+            <div className="container">
+              <div className="row">
+                <div className="col-md-6 tabs">
+                  <div className="tabs-wrapper">
+                    <StepWizard />
+                    <div className="current-tab">
+                      {renderCurrentTab()}
+                    </div>
+                  </div>
+                </div>
 
-          <div className="col-md-6 order-summary">
-            <div className="summary-wrapper">
+                <div className="col-md-6 order-summary">
+                  <div className="summary-wrapper">
 
-              <div className="header">
-                <h5 className="heading">Order Summary </h5>
-              </div>
+                    <div className="header">
+                      <h5 className="heading">Order Summary </h5>
+                    </div>
 
-              <div className="checkout-items">
-                {/* <div className="top">
+                    <div className="checkout-items">
+                      {/* <div className="top">
                   <span className="heading">Order Items</span>
                   <p >Check your items and confirm them before checking out.</p>
                 </div> */}
 
-                <div className="items">
-                  {inStockItems.length > 0 ?
-                    <>
-                      {inStockItems ? (
-                        inStockItems.length > 0 ?
+                      <div className="items">
+                        {inStockItems.length > 0 ?
                           <>
-                            {
-                              inStockItems.map(item => (
-                                <CheckoutItem key={item.localCartItemId} item={item} />
-                              ))
-                            }
+                            {inStockItems ? (
+                              inStockItems.length > 0 ?
+                                <>
+                                  {
+                                    inStockItems.map(item => (
+                                      <CheckoutItem key={item.localCartItemId} item={item} />
+                                    ))
+                                  }
+                                </>
+                                :
+                                <span className='list-empty'>No Products</span>
+                            ) : <CircularProgress />}
                           </>
                           :
-                          <span className='list-empty'>No Products</span>
-                      ) : <CircularProgress />}
-                    </>
-                    :
 
-                    <div className='list-empty'>
-                      <span>No Products</span>
-                      <button onClick={() => navigate('/products/women')} className='btn-1'><ShoppingBagOutlined fontSize='small' /> Continue Shopping</button>
-                    </div>}
+                          <div className='list-empty'>
+                            <span>No Products</span>
+                            <button onClick={() => navigate('/products/women')} className='btn-1'><ShoppingBagOutlined fontSize='small' /> Continue Shopping</button>
+                          </div>}
+                      </div>
+                    </div>
+                    <div className="totals">
+                      <div className="order-total">
+                        <div className="summary-items">
+                          <div className="summary-item">No. of Items: <span className="value">{noOfItems}</span></div>
+                          <div className="summary-item">Subtotal: <span className="value">${subtotal}</span></div>
+                          <div className="summary-item">VAT(20%): <span className="value">${vat}</span></div>
+                          {selectedCourier && <div className="summary-item">Shipping: <span className="value">${selectedCourier.total_charge}</span></div>}
+                          <div className="summary-item total">Total: <span className="value">${totalAmount}</span></div>
+                        </div></div>
+                    </div>
+
+
+                  </div>
                 </div>
               </div>
-              <div className="totals">
-                <div className="order-total">
-                  <div className="summary-items">
-                    <div className="summary-item">No. of Items: <span className="value">{noOfItems}</span></div>
-                    <div className="summary-item">Subtotal: <span className="value">${subtotal}</span></div>
-                    <div className="summary-item">VAT(20%): <span className="value">${vat}</span></div>
-                    {selectedCourier && <div className="summary-item">Shipping: <span className="value">${selectedCourier.total_charge}</span></div>}
-                    <div className="summary-item total">Total: <span className="value">${totalAmount}</span></div>
-                  </div></div>
-              </div>
-
-
             </div>
-          </div>
-        </div>
-      </div>
 
-    </div>
+          </div>
+        </Elements >
+      }
+    </>
+
   )
 }
 

@@ -51,54 +51,30 @@
 
         @include md {}
 
-        .options {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
+
 
             .option-item {
                 display: flex;
                 align-items: center;
-                gap: 10px;
-                background-color: white;
-                padding: 15px 20px;
-                border-radius: 10px;
-                overflow: hidden;
-                border: 1px solid $mediumGray;
-                cursor: pointer;
-                transition: .2s ease all;
-
-
-                &:hover {
-                    border-color: $charcoal;
+                gap: 5px;
+                
+                .checkbox {
+                    width: 17px;
+                    height: 17px;
                 }
 
-                &.selected {
-                    border-color: $charcoal;
-                }
+                // &:hover {
+                //     color: $brightRed;
+                // }
+
+                
                 
 
                 .text {
                     font-size: 13px;
                 }
 
-                .start {
-                    display: flex;
-                    align-items: center;
-                    gap: 8px;
-
-                    .amount {
-                        font-size: 15px;
-                        font-weight: 600;
-                    }
-
-                    .radio {
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                    }
-                }
-            }
+    
         }
     }
 

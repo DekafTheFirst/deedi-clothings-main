@@ -4,19 +4,23 @@ import FormComponent from '../../../components/Form/Form'
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 import _ from 'lodash';
-import { nextStep, setBillingInfo, setRates } from '../../../redux/checkout/checkoutReducer';
+import { nextStep, setBillingInfo, setClientSecret, setRates } from '../../../redux/checkout/checkoutReducer';
 import { makeRequest } from '../../../makeRequest';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked';
-import { CircularProgress } from '@mui/material';
+import { Checkbox, CircularProgress } from '@mui/material';
 import { loadStripe } from '@stripe/stripe-js';
 import { selectItemsByStock } from '../../../redux/cart/cartReducer';
+import { AddressElement, PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js';
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 const BillingTab = ({ totalAmount }) => {
-
     const dispatch = useDispatch()
     const { shippingInfo, billingInfo, selectedCourierId, checkoutSessionExpiresAt } = useSelector(state => state.checkout);
-
+    const stripe = useStripe();
+    const elements = useElements();
+    const navigate = useNavigate()
 
 
 
@@ -28,8 +32,6 @@ const BillingTab = ({ totalAmount }) => {
 
 
     const [sameAsShippingAddress, setSameAsShippingAddress] = useState(true);
-    const [errorWhileSubmittingForm, setErrorSubmittingForm] = useState(null);
-    const [orderingWithShippingInfo, setOrderingWithShippingInfo] = useState(false);
 
 
     // console.log(billingInfo)
@@ -125,6 +127,8 @@ const BillingTab = ({ totalAmount }) => {
     const stateData = billingInfo?.stateData;
     const cityData = billingInfo?.cityData;
 
+
+
     console.log()
     const arraysEqual = (arr1, arr2) => _.isEqual(arr1, arr2);
     // console.log(items)
@@ -162,128 +166,166 @@ const BillingTab = ({ totalAmount }) => {
 
 
 
-    // const handleToggleSameShippingAddress = () => {
-    //     console.log('changed')
-    // };
+    const handleToggleSameShippingAddress = () => {
+        setSameAsShippingAddress(prev => !prev)
+    }
 
 
-    const [loading, setLoading] = useState(false)
+    const [isProcessing, setIsProcessing] = useState(false);
+    const [errorMessage, setErrorMessage] = useState();
 
 
 
-    const handlePlaceOrder = async (billingInfo) => {
-        const stripePromise = loadStripe('pk_test_51OzQqiP8nMwtf7KwjeDBvSrJh0QU2AMmJncITWpVrXW9Cm8XesZc1MqofLogMUrphlOB0exTEsHSQ91mJoA5V94u00JrVmVkWL');
+    const handleError = (error) => {
+        setIsProcessing(false);
+        setErrorMessage(error.message);
+    }
 
-        if (inStockItems.length > 0) {
-            try {
-                setLoading(true)
-                const stripe = await stripePromise;
+    const handlePlaceOrder = async (e) => {
+        e.preventDefault();
+        const createPaymentIntent = async (billingInfo) => {
 
-                const res = await makeRequest.post('/orders', {
-                    items: inStockItems,
-                    shippingInfo,
-                    billingInfo,
-                    selectedCourierId,
-                    totalAmount,
-                    customerEmail: billingInfo.email,
-                    checkoutSessionExpiresAt
-                }).catch((error) => {
-                    setErrorSubmittingForm(error)
-                });
+            if (inStockItems.length > 0) {
+                if (!stripe) {
+                    // Stripe.js hasn't yet loaded.
+                    // Make sure to disable form submission until Stripe.js has loaded.
+                    return;
+                }
+                try {
+                    setIsProcessing(true)
 
-                console.log('res', res)
-                dispatch(setBillingInfo(billingInfo))
-                // dispatch(payment)
-                const result = await stripe.redirectToCheckout({
-                    sessionId: res.data.sessionId,
-                });
+                    const { error: submitError } = await elements.submit();
+                    if (submitError) {
+                        handleError(submitError);
+                        return;
+                    }
 
-                console.log(result)
-                setLoading(false)
+                    const res = await makeRequest.post('/orders', {
+                        items: inStockItems,
+                        billingInfo,
+                        totalAmount,
+                        // customerEmail: billingInfo.email,
+                    }).catch((error) => {
+                        // setErrorSubmittingForm(error)
+                        toast.error('Checkout session expired, please try again')
+                        navigate('/cart')
+                        console.log('Error creating payment intent', error)
+                        return
+                    });
 
-            } catch (err) {
-                setLoading(false)
-                setErrorSubmittingForm({ response: { status: 'no-items' } });
+                    console.log('res', res);
+                    
+                    if(res?.data?.payemtnAlreadySucceeded === true) {
+                        toast.warning('Duplicate Payment Detected');
+                        return
+                    }
 
-                console.error('Payment processing error:', err);
-                alert('An error occurred during the payment process. Please try again later or disable your ad blocker if it is enabled.');
+                    dispatch(setBillingInfo(billingInfo));
+
+                    // setClientSecret(res.data.clientSecret)
+                    // dispatch(payment)
+                    // const result = await stripe.redirectToCheckout({
+                    //     sessionId: res.data.sessionId,
+                    // });
+
+                    // console.log(result)
+                    const { error } = await stripe.confirmPayment({
+                        clientSecret: res.data.clientSecret,
+                        elements,
+                        confirmParams: {
+                            // Make sure to change this to your payment completion page
+                            return_url: `${window.location.origin}/checkout-success`,
+                        },
+                    });
+
+                    if (error.type === "card_error" || error.type === "validation_error") {
+                        setErrorMessage(error.message);
+                    } else {
+                        setErrorMessage("An unexpected error occured.");
+                    }
+                } catch (err) {
+                    // setLoading(false)
+                    // setErrorSubmittingForm({ response: { status: 'no-items' } });
+
+                    console.error('Payment processing error:', err);
+                    // alert('An error occurred during the payment process. Please try again later or disable your ad blocker if it is enabled.');
+                }
             }
-        }
-        else {
-            setErrorSubmittingForm()
+            else {
+                // setErrorSubmittingForm()
+            }
+
+        };
+
+        createPaymentIntent()
+
+        console.log('Place order')
+
+
+        if (!stripe || !elements) {
+            // Stripe.js has not yet loaded.
+            // Make sure to disable form submission until Stripe.js has loaded.
+            return;
         }
 
-    };
+
+
+
+        setIsProcessing(false);
+    }
+
+
+
 
 
 
 
     return (
-        <div className="billing-tab">
+        <form className="billing-tab" onSubmit={handlePlaceOrder}>
 
             <div className="top">
-                <h6 className="tab-title"> Billing Address</h6>
-                <p>Enter your billing details to complete your purchase.</p>
+                {/* <h6 className="tab-title"> Billing Address</h6> */}
             </div>
 
             <div className="checkout">
                 {/* <CourierOptions /> */}
-                <div className="options">
-                    <div
-                        className={`option-item ${sameAsShippingAddress ? 'selected' : ''}`}
-                        onClick={() => setSameAsShippingAddress(true)}
-                    >
-                        <div className="start">
-                            <div className='radio'>{sameAsShippingAddress ? <RadioButtonCheckedIcon fontSize='small' /> : <RadioButtonUncheckedIcon fontSize='small' />}</div>
-                        </div>
-
-                        <p className="text">Same as shipping address</p>
-
-
-                    </div>
-                    <div
-                        className={`option-item ${!sameAsShippingAddress ? 'selected' : ''}`}
-                        onClick={() => setSameAsShippingAddress(false)}
-                    >
-                        <div className="start">
-                            <div className='radio'>{!sameAsShippingAddress ? <RadioButtonCheckedIcon fontSize='small' /> : <RadioButtonUncheckedIcon fontSize='small' />}</div>
-                        </div>
-
-                        <p className="text">Use a different billing address</p>
-                    </div>
-                </div>
-
-                {
-                    sameAsShippingAddress ?
-                        (
-                            <button className="btn-1 submit-btn" disabled={false} onClick={() => handlePlaceOrder(shippingInfo)} >
-                                {loading ? <CircularProgress size={16} sx={{ color: 'white' }} /> : 'Place Order'}
-                            </button>
-                        )
-                        :
-                        (
-                            <FormComponent
-                                formItems={formItems}
-                                countryData={countryData}
-                                stateData={stateData}
-                                cityData={cityData}
-                                handleSubmit={handlePlaceOrder}
-                                errorWhileSubmittingForm={errorWhileSubmittingForm}
-                                submitBtnText={'Place Order'}
-                                handleReset={handleReset}
-                            >
-                            </FormComponent>
-                        )
+                {<PaymentElement options={{
+                    layout: {
+                        type: 'accordion',
+                        defaultCollapsed: false,
+                        radios: true,
+                        spacedAccordionItems: false
+                    }
+                }} />
                 }
 
+                {stripe && elements &&
+                    <div
+                        className={`option-item`}
+                    >
+                        <input
+                            type="checkbox"
+                            checked={sameAsShippingAddress}
+                            onChange={handleToggleSameShippingAddress}
+                            className='checkbox'
+                        />
 
-
-
+                        <p className="text" onClick={handleToggleSameShippingAddress}>
+                            Same as shipping address
+                        </p>
+                    </div>}
                 {/* <button onClick={handlePayment} className='btn-1'>PROCEED TO CHECKOUT</button> */}
                 {/* <span className="reset" onClick={() => dispatch(resetCart())}>Reset Cart</span> */}
+
+                {/* {!sameAsShippingAddress && <AddressElement options={{ mode: 'billing' }} />} */}
+
+                <button className="btn-1 submit-btn" type='submit' disabled={false}  >
+                    {isProcessing ? <CircularProgress size={16} sx={{ color: 'white' }} /> : 'Place Order'}
+                </button>
+                {errorMessage && <div id="payment-message">{errorMessage}</div>}
             </div>
 
-        </div>
+        </form>
     )
 }
 

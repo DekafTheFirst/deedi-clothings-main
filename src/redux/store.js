@@ -26,7 +26,7 @@ const cartPersistConfig = {
 const checkoutPersistConfig = {
   key: 'checkout',
   version: 1,
-  // storage: sessionStorage,
+  storage: sessionStorage,
 };
 
 const authPersistConfig = {
@@ -36,13 +36,13 @@ const authPersistConfig = {
 };
 
 const persistedCartReducer = persistReducer(cartPersistConfig, cartReducer);
-// const persistedCheckoutReducer = persistReducer(checkoutPersistConfig, checkoutReducer);
+const persistedCheckoutReducer = persistReducer(checkoutPersistConfig, checkoutReducer);
 const persistedAuthReducer = persistReducer(authPersistConfig, authReducer)
 
 export const store = configureStore({
   reducer: {
     cart: persistedCartReducer,
-    checkout: checkoutReducer,
+    checkout: persistedCheckoutReducer,
     auth: persistedAuthReducer,
   },
   middleware: (getDefaultMiddleware) =>

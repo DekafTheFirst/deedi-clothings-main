@@ -44,6 +44,7 @@ const initialState = {
   checkoutSessionExpiresAt: null,
   showCountdown: false,
   paymentAlreadyInitiated: false,
+  clientSecret: "",
 };
 
 export const initializeCheckout = createAsyncThunk(
@@ -63,7 +64,6 @@ export const initializeCheckout = createAsyncThunk(
       // Merge local items with the Strapi cart items and get the updated cart
       const validatedResponse = await makeRequest.patch(`/checkout/initialize`,
         { items: inStockItems, cartId, customerEmail: 'dekeji1@gmail.com' },
-
       );
 
       console.log('checkout response', validatedResponse);
@@ -71,9 +71,10 @@ export const initializeCheckout = createAsyncThunk(
       const checkoutSessionDuration = validatedResponse?.data?.checkoutSessionDuration
       const checkoutSessionAlreadyExists = validatedResponse?.data?.checkoutSessionAlreadyExists
       const checkoutSessionExpiresAt = validatedResponse?.data?.checkoutSessionExpiresAt
-
+      const checkoutAlreadyCompleted = validatedResponse?.data?.checkoutAlreadyCompleted
+      const status = validatedResponse?.data?.status
       // console.log('checkoutSessionExpiresAt', checkoutSessionExpiresAt);
-      return { cartId, validationResults, checkoutSessionDuration, checkoutSessionAlreadyExists, checkoutSessionExpiresAt };
+      return { cartId, status, validationResults, checkoutSessionDuration, checkoutSessionAlreadyExists, checkoutSessionExpiresAt, checkoutAlreadyCompleted };
     } catch (error) {
       console.error(error)
       return rejectWithValue(error.response?.data?.error?.message || 'Failed to initialize checkout');
@@ -83,10 +84,11 @@ export const initializeCheckout = createAsyncThunk(
 
 export const endCheckoutSession = createAsyncThunk(
   'checkout/endCheckoutSession',
-  async (_, { rejectWithValue }) => {
+  async (_, {dispatch, rejectWithValue }) => {
     // console.log('triggered')
     try {
       await makeRequest.post(`/checkout/end`);
+      dispatch(resetCheckout())
       return { message: 'Checkout session ended successfully' };
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -108,9 +110,12 @@ const checkoutSlice = createSlice({
     },
 
     setPaymentAlreadyInitiated: (state, action) => {
-      state.paymentAlreadyInitiated = action
+      state.paymentAlreadyInitiated = action.payload
     },
 
+    setClientSecret: (state, action) => {
+      state.clientSecret = action.payload
+    },
     setShippingInfo: (state, action) => {
       state.shippingInfo = action.payload;
       // storeShippingInfoInSession(action.payload);
@@ -214,6 +219,7 @@ export const {
   sessionExpired,
   setCheckoutSessionExpiryDate,
   setPaymentAlreadyInitiated,
+  setClientSecret,
 } = checkoutSlice.actions;
 
 export default checkoutSlice.reducer;
