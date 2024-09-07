@@ -56,6 +56,12 @@ export const loginUser = createAsyncThunk(
             const response = await makeRequest.post('/auth/local', {
                 identifier: email,
                 password
+            }, {
+                params: {
+                    populate: { user: {
+                        profilePhoto: true 
+                    }}
+                }
             });
 
             const strapiUser = response.data.user;
@@ -77,7 +83,7 @@ export const loginUser = createAsyncThunk(
                     email: strapiUser.email,
                     id: strapiUser.id,
                     username: strapiUser.username,
-                    photoUrl: strapiUser.photoUrl,
+                    // photoUrl: strapiUser.photoUrl,
                 },
             };
         } catch (error) {
@@ -97,10 +103,12 @@ export const updateUser = createAsyncThunk(
                 photoUrl: photoUrl
             });
 
+            console.log('response', response)
+
             return {
                 ...response.data,
                 username,
-                photoUrl
+                // photoUrl: response.data.photoUrl
             };
         } catch (error) {
             console.log(error)

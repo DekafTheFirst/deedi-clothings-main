@@ -181,101 +181,91 @@ const BillingTab = ({ totalAmount }) => {
         setErrorMessage(error.message);
     }
 
-    const handlePlaceOrder = async (e) => {
+
+    const createPaymentIntent = async (e) => {
         e.preventDefault();
-        const createPaymentIntent = async (billingInfo) => {
-
-            if (inStockItems.length > 0) {
-                if (!stripe) {
-                    // Stripe.js hasn't yet loaded.
-                    // Make sure to disable form submission until Stripe.js has loaded.
-                    return;
-                }
-                try {
-                    setIsProcessing(true)
-
-                    const { error: submitError } = await elements.submit();
-                    if (submitError) {
-                        handleError(submitError);
-                        return;
-                    }
-
-                    const res = await makeRequest.post('/orders', {
-                        items: inStockItems,
-                        billingInfo,
-                        totalAmount,
-                        // customerEmail: billingInfo.email,
-                    })
-                    // .catch((error) => {
-                    //     // setErrorSubmittingForm(error)
-                    //     toast.error('Checkout session expired, please try again')
-                    //     navigate('/cart')
-                    //     console.log('Error creating payment intent', error)
-                    //     return
-                    // });
-                    console.log(res)
-                    
-
-                    console.log('res', res);
-                    
-                    if(res?.data?.payemtnAlreadySucceeded === true) {
-                        toast.warning('Duplicate Payment Detected');
-                        return
-                    }
-
-                    dispatch(setBillingInfo(billingInfo));
-
-                    // setClientSecret(res.data.clientSecret)
-                    // dispatch(payment)
-                    // const result = await stripe.redirectToCheckout({
-                    //     sessionId: res.data.sessionId,
-                    // });
-
-                    // console.log(result)
-                    const { error } = await stripe.confirmPayment({
-                        clientSecret: res.data.clientSecret,
-                        elements,
-                        confirmParams: {
-                            // Make sure to change this to your payment completion page
-                            return_url: `${window.location.origin}/checkout-success`,
-                        },
-                    });
-
-                    if (error.type === "card_error" || error.type === "validation_error") {
-                        setErrorMessage(error.message);
-                    } else {
-                        setErrorMessage("An unexpected error occured.");
-                    }
-                } catch (err) {
-                    // setLoading(false)
-                    // setErrorSubmittingForm({ response: { status: 'no-items' } });
-
-                    console.error('Payment processing error:', err);
-                    // alert('An error occurred during the payment process. Please try again later or disable your ad blocker if it is enabled.');
-                }
-            }
-            else {
-                // setErrorSubmittingForm()
-            }
-
-        };
-
-        createPaymentIntent()
-
         console.log('Place order')
 
+        if (inStockItems.length > 0) {
+            if (!stripe) {
+                // Stripe.js hasn't yet loaded.
+                // Make sure to disable form submission until Stripe.js has loaded.
+                return;
+            }
+            try {
+                setIsProcessing(true)
 
-        if (!stripe || !elements) {
-            // Stripe.js has not yet loaded.
-            // Make sure to disable form submission until Stripe.js has loaded.
-            return;
+                const { error: submitError } = await elements.submit();
+                if (submitError) {
+                    handleError(submitError);
+                    return;
+                }
+
+                const res = await makeRequest.post('/orders', {
+                    items: inStockItems,
+                    billingInfo,
+                    totalAmount,
+                    // customerEmail: billingInfo.email,
+                })
+                // .catch((error) => {
+                //     // setErrorSubmittingForm(error)
+                //     toast.error('Checkout session expired, please try again')
+                //     navigate('/cart')
+                //     console.log('Error creating payment intent', error)
+                //     return
+                // });
+                console.log(res)
+
+
+                console.log('res', res);
+
+                if (res?.data?.payemtnAlreadySucceeded === true) {
+                    toast.warning('Duplicate Payment Detected');
+                    return
+                }
+
+                dispatch(setBillingInfo(billingInfo));
+
+                // setClientSecret(res.data.clientSecret)
+                // dispatch(payment)
+                // const result = await stripe.redirectToCheckout({
+                //     sessionId: res.data.sessionId,
+                // });
+
+                // console.log(result)
+                const { error } = await stripe.confirmPayment({
+                    clientSecret: res.data.clientSecret,
+                    elements,
+                    confirmParams: {
+                        // Make sure to change this to your payment completion page
+                        return_url: `${window.location.origin}/checkout-success`,
+                    },
+                });
+
+                if (error.type === "card_error" || error.type === "validation_error") {
+                    setErrorMessage(error.message);
+                } else {
+                    setErrorMessage("An unexpected error occured.");
+                }
+            } catch (err) {
+                // setLoading(false)
+                // setErrorSubmittingForm({ response: { status: 'no-items' } });
+
+                console.error('Payment processing error:', err);
+                // alert('An error occurred during the payment process. Please try again later or disable your ad blocker if it is enabled.');
+            }
         }
-
-
-
+        else {
+            // setErrorSubmittingForm()
+        }
+        createPaymentIntent()
 
         setIsProcessing(false);
-    }
+    };
+
+    useState(() => {
+        console.log('isProcessing', isProcessing)
+    }, [isProcessing])
 
 
 
@@ -284,7 +274,7 @@ const BillingTab = ({ totalAmount }) => {
 
 
     return (
-        <form className="billing-tab" onSubmit={handlePlaceOrder}>
+        <form className="billing-tab" onSubmit={createPaymentIntent}>
 
             <div className="top">
                 {/* <h6 className="tab-title"> Billing Address</h6> */}
@@ -320,9 +310,9 @@ const BillingTab = ({ totalAmount }) => {
                 {/* <button onClick={handlePayment} className='btn-1'>PROCEED TO CHECKOUT</button> */}
                 {/* <span className="reset" onClick={() => dispatch(resetCart())}>Reset Cart</span> */}
 
-                {/* {!sameAsShippingAddress && <AddressElement options={{ mode: 'billing' }} />} */}
+                {!sameAsShippingAddress && <AddressElement options={{ mode: 'billing' }} />}
 
-                <button className="btn-1 submit-btn" type='submit' disabled={false}  >
+                <button className="btn-1 submit-btn" type='submit' disabled={isProcessing}  >
                     {isProcessing ? <CircularProgress size={16} sx={{ color: 'white' }} /> : 'Place Order'}
                 </button>
                 {errorMessage && <div id="payment-message">{errorMessage}</div>}

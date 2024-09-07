@@ -1,0 +1,31 @@
+@import "../../../../mixins.scss";
+@import "../../../../variables.scss";
+
+.order-history {
+    .order-card {
+      display: flex;
+      justify-content: space-between;
+      padding: 1rem;
+      background-color: white;
+      border: 1px solid lightgray;
+      margin-bottom: 1rem;
+      .order-info {
+        .status {
+          &.ordered { color: black; }
+          &.shipped { color: blue; }
+          &.delivered { color: green; }
+        }
+      }
+      .order-actions {
+        button {
+          background-color: black;
+          color: white;
+          border: none;
+          padding: 0.5rem 1rem;
+          &:hover {
+            background-color: darken(black, 10%);
+          }
+        }
+      }
+    }
+  }

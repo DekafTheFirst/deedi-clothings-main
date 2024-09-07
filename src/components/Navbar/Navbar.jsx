@@ -26,7 +26,7 @@ const Navbar = () => {
   const { items: products, showCart } = useSelector(state => state.cart);
   const { checkoutSessionExpiresAt } = useSelector(state => state.checkout);
   const user = useSelector(state => state.auth.user);
-
+  // console.log('user', user)
   const { pathname, state } = useLocation();
   const dispatch = useDispatch()
   const navigate = useNavigate()
@@ -169,7 +169,7 @@ const Navbar = () => {
               <input type="text" name="" id="" />
               <SearchIcon fontSize='small' className='icon search-icon' />
             </div>
-            <div className="user">
+            <div className="user" onClick={()=>navigate('/my-account')}>
               {user?.photoUrl && <img src={user.photoUrl} className='user-image' />
               }
               <span>{user?.username}</span>

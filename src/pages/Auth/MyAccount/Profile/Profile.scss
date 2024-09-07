@@ -1,0 +1,26 @@
+@import "../../../../mixins.scss";
+@import "../../../../variables.scss";
+
+.profile-section {
+    h2 {
+        color: black;
+    }
+
+    input {
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid lightgray;
+        margin-bottom: 1rem;
+    }
+
+    button {
+        background-color: black;
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border: none;
+
+        &:hover {
+            background-color: darken(black, 10%);
+        }
+    }
+}

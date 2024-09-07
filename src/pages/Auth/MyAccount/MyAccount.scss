@@ -1,0 +1,106 @@
+@import "../../../mixins.scss";
+@import "../../../variables.scss";
+
+.account-page {
+  padding: 2rem;
+  min-height: calc(100vh - $navbarHeight);
+  background-color: $lighterGray;
+
+  .container-fluid {
+    display: flex;
+    align-items: start;
+    gap: 20px;
+
+    .dashboard-menu {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      background-color: white;
+      border-radius: 10px;
+      padding: 20px 10px;
+      width: 300px;
+      flex-shrink: 0;
+
+      .welcome {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+
+        .profile-img{
+          width: 100px;
+          aspect-ratio: 1;
+          object-fit: cover;
+          border-radius: 50px;
+        }
+
+        span{
+          font-size: 24px;
+          font-weight: 600;
+        }
+      }
+
+      .tabs {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        // border-bottom: 1px solid lightgray;
+
+        button {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          padding: 10px 15px;
+          cursor: pointer;
+          color: $darkGray;
+          background: none;
+          border: none;
+          border-radius: 5px;
+          font-size: 15px;
+          font-weight: 500;
+
+          span {
+            line-height: 24px;
+            vertical-align: middle;
+          }
+
+          &:hover {
+            background-color: $lighterGray;
+            color: $charcoal;
+          }
+        }
+
+        .active {
+          background: $lighterGray;
+          color: black;
+          font-weight: 600;
+
+          // border-bottom: 3px solid black;
+        }
+      }
+    }
+
+    .tab-content {
+      padding: 30px;
+      background-color: white;
+      border-radius: 8px;
+      flex-grow: 1;
+    }
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .account-page {
+    padding: 1rem;
+  }
+
+  .order-history {
+    .order-card {
+      flex-direction: column;
+
+      .order-info {
+        margin-bottom: 1rem;
+      }
+    }
+  }
+}

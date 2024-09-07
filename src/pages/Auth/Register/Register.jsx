@@ -1,42 +1,42 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { registerUser, updateUser } from '../../../redux/auth/authReducer';
+import { useDispatch, useSelector } from 'react-redux';
+import { registerUser } from '../../../redux/auth/authReducer';
+import FormComponent from '../FormComponent/FormComponent';
+import './Register.scss';
 
 const Register = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [username, setUsername] = useState('');
-  const dispatch = useDispatch();
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [username, setUsername] = useState('');
+    const dispatch = useDispatch();
+    const error = useSelector((state) => state.auth.error);
 
-  const handleRegister = async () => {
-    await dispatch(registerUser({ email, password, username })).unwrap();
-    // dispatch(setCart(userData.cart));
-  };
-  // const handleRegister = async (email, password, username, photoURL) => {
+    const handleRegister = async (e) => {
+        e.preventDefault();
+        await dispatch(registerUser({ email, password, username })).unwrap();
+    };
 
-  //   try {
-  //     // Register user
-  //     const resultAction = dispatch(registerUser({ email, password, username, photoURL }));
-  //     if (registerUser.fulfilled.match(resultAction)) {
-  //       // Profile update is optional and should be done after registration
-  //       dispatch(updateProfileThunk({ username, photoURL }));
-  //     } else {
-  //       // Handle registration error
-  //       console.error('Registration failed:', resultAction.payload);
-  //     }
-  //   } catch (error) {
-  //     console.error('Error handling registration:', error);
-  //   }
-  // };
+    const fields = [
+        { type: 'text', name: 'username', value: username, onChange: (e) => setUsername(e.target.value), placeholder: 'Username' },
+        { type: 'email', name: 'email', value: email, onChange: (e) => setEmail(e.target.value), placeholder: 'Email' },
+        { type: 'password', name: 'password', value: password, onChange: (e) => setPassword(e.target.value), placeholder: 'Password' },
+    ];
 
-  return (
-    <div>
-      <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Display Name" />
-      <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" />
-      <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" />
-      <button onClick={handleRegister}>Register</button>
-    </div>
-  );
+    const footer = (
+        <div className="form-footer-links">
+            <a href="/login">Already have an account? Login</a>
+        </div>
+    );
+
+    return (
+        <FormComponent
+            onSubmit={handleRegister}
+            fields={fields}
+            buttonText="Sign Up"
+            errors={error ? { email: error, password: error, username: error } : {}}
+            footer={footer}
+        />
+    );
 };
 
 export default Register;

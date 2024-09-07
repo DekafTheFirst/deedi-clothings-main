@@ -29,6 +29,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 import { endCheckoutSession, initializeCheckout, resetCheckout } from './redux/checkout/checkoutReducer';
 import { loadStripe } from '@stripe/stripe-js';
+import MyAccount from './pages/Auth/MyAccount/MyAccount';
 
 const dispatch = store.dispatch
 const checkoutLoader = async ({ request }) => {
@@ -63,7 +64,7 @@ const checkoutLoader = async ({ request }) => {
         dispatch(resetCheckout())
         
         // toast.info('Checkout sessoon complete already. Check your orders page.')
-        // return redirect("/products/women")
+        return redirect("/products/women")
 
       }
 
@@ -167,6 +168,10 @@ const router = createBrowserRouter([
       {
         path: '/register',
         element: <Register />
+      },
+      {
+        path: '/my-account',
+        element: <MyAccount />
       },
 
 
