@@ -51,7 +51,6 @@ const CheckoutPage = () => {
 
 
 
-  const { checkoutSessionDuration, checkoutSessionAlreadyExists } = useLoaderData();
   // console.log('checkoutSessionAlreadyExists', checkoutSessionAlreadyExists)
   // console.log('checkoutSessionDuration', checkoutSessionDuration)
   const isInitialMount = useRef(true);

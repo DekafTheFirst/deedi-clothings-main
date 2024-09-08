@@ -2,61 +2,92 @@
 @import "../../../variables.scss";
 
 .account-page {
-  padding: 2rem;
+  padding: 0;
   min-height: calc(100vh - $navbarHeight);
   background-color: $lighterGray;
+  display: block;
+
 
   .container-fluid {
+    padding: 15px;
     display: flex;
     align-items: start;
     gap: 20px;
+    height: 100%;
 
     .dashboard-menu {
+      border-radius: 10px;
+      width: 300px;
+      padding-inline: 15px;
+
+
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      // gap: 20px;
       background-color: white;
-      border-radius: 10px;
-      padding: 20px 10px;
-      width: 300px;
+      height: 100%;
       flex-shrink: 0;
 
-      .welcome {
+      .user-info {
         display: flex;
-        flex-direction: column;
+        // background-color: $lavendar;
+        // flex-direction: column;
+        padding-block: 15px;
         align-items: center;
-        gap: 8px;
+        gap: 15px;
+        flex-direction: column;
+        background-color: none;
 
-        .profile-img{
-          width: 100px;
+        .profile-img {
           aspect-ratio: 1;
           object-fit: cover;
           border-radius: 50px;
+          width: 70px;
         }
 
-        span{
-          font-size: 24px;
-          font-weight: 600;
+        .content {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+
+
+          .name {
+            font-size: 17px;
+            font-weight: 600;
+          }
+
+          .email {
+            color: $darkGray;
+            font-size: 12px;
+          }
         }
+      }
+
+      hr {
+        margin: 0;
+        color: $darkGray;
       }
 
       .tabs {
         display: flex;
         flex-direction: column;
         gap: 5px;
+        padding-block: 15px;
+
+
         // border-bottom: 1px solid lightgray;
 
         button {
           display: flex;
           align-items: center;
-          gap: 10px;
+          gap: 15px;
           padding: 10px 15px;
           cursor: pointer;
           color: $darkGray;
           background: none;
           border: none;
           border-radius: 5px;
-          font-size: 15px;
+          font-size: 14px;
           font-weight: 500;
 
           span {
@@ -66,40 +97,83 @@
 
           &:hover {
             background-color: $lighterGray;
-            color: $charcoal;
           }
         }
 
         .active {
           background: $lighterGray;
-          color: black;
-          font-weight: 600;
-
+          color: #007BFF;
+          font-weight: 500;
           // border-bottom: 3px solid black;
         }
       }
     }
 
     .tab-content {
+      // display: none;
+
+
+      .back-btn {
+        display: none;
+      }
+
+
       padding: 30px;
       background-color: white;
       border-radius: 8px;
       flex-grow: 1;
+      display: flex;
     }
   }
-}
 
-@media only screen and (max-width: 768px) {
-  .account-page {
-    padding: 1rem;
-  }
+  @include max-md {
+    display: contents;
 
-  .order-history {
-    .order-card {
-      flex-direction: column;
+    .container-fluid {
+      padding: 0;
 
-      .order-info {
-        margin-bottom: 1rem;
+      .dashboard-menu {
+        width: 100%;
+        padding: 0;
+
+
+        .user-info {
+          flex-direction: row;
+          padding: 15px;
+
+          .content {}
+
+          // span {
+          //   font-size: 24px;
+          //   font-weight: 600;
+          // }
+        }
+
+        .tabs {
+          padding: 10px;
+        }
+      }
+
+      .tab-content {
+        display: none;
+
+        &.show {
+          display: flex
+        }
+        flex-direction: column;
+        gap: 25px;
+
+        .back-btn {
+          display: flex;
+          align-items: center;
+          font-size: 14px;
+          text-decoration: underline;
+        }
+
+        padding: 15px;
+        width: 100%;
+        height: 100%;
+        position: absolute;
       }
     }
   }

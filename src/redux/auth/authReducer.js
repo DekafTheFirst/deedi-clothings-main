@@ -58,9 +58,7 @@ export const loginUser = createAsyncThunk(
                 password
             }, {
                 params: {
-                    populate: { user: {
-                        profilePhoto: true 
-                    }}
+                  
                 }
             });
 

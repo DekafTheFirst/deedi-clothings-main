@@ -7,18 +7,18 @@ const OrderHistory = memo(() => {
 
   const [orders, setOrders] = useState([]);
 
-  // useEffect(() => {
-  //   const fetchOrders = async () => {
-  //     try {
-  //       const response = await makeRequest.get('/api/orders');
-  //       console.log('response', response)
-  //       setOrders(response.data);
-  //     } catch (error) {
-  //       console.error('Error fetching orders', error);
-  //     }
-  //   };
-  //   fetchOrders();
-  // }, []);
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const response = await makeRequest.get('/orders');
+        console.log('response', response)
+        setOrders(response.data.data);
+      } catch (error) {
+        console.error('Error fetching orders', error);
+      }
+    };
+    fetchOrders();
+  }, []);
 
   const renderOrderStatus = (status) => {
     switch (status) {
