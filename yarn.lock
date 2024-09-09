@@ -1766,6 +1766,11 @@ ci-info@^3.2.0:
   resolved "https://registry.yarnpkg.com/ci-info/-/ci-info-3.9.0.tgz#4279a62028a7b1f262f3473fc9605f5e218c59b4"
   integrity sha512-NIxF55hv4nSqQswkAeiOi1r83xy8JldOFDTWiug55KBu9Jnblncd2U6ViHmYgHf01TPZS77NJBhBMKdWj9HQMQ==
 
+classnames@^2.5.1:
+  version "2.5.1"
+  resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.5.1.tgz#ba774c614be0f016da105c858e7159eae8e7687b"
+  integrity sha512-saHYOzhIQs6wy2sVxTM6bUDsQO4F50V9RQ22qBpEdCW+I+/Wmke2HOl6lS6dTpdxVhb88/I6+Hs+438c3lfUow==
+
 cliui@^8.0.1:
   version "8.0.1"
   resolved "https://registry.yarnpkg.com/cliui/-/cliui-8.0.1.tgz#0c04b075db02cbfe60dc8e6cf2f5486b1a3608aa"
@@ -1774,6 +1779,11 @@ cliui@^8.0.1:
     string-width "^4.2.0"
     strip-ansi "^6.0.1"
     wrap-ansi "^7.0.0"
+
+cloc@^2.2.0-cloc:
+  version "2.2.0-cloc"
+  resolved "https://registry.yarnpkg.com/cloc/-/cloc-2.2.0-cloc.tgz#a235f20abb9437ff7b85784b15e9f98c2610beef"
+  integrity sha512-h2sJRjD8v8fYPez2nGbdQC5DEolV1zOVQT/m3CWJXEhJtBs11wDduHvl+485uPhxnSjmlQCJfxYJruSz2nT38g==
 
 clsx@^2.1.0:
   version "2.1.0"

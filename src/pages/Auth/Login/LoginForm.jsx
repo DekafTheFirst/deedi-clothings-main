@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginUser } from '../../../redux/auth/authReducer';
-import FormComponent from '../FormComponent/FormComponent';
-import './Login.scss';
+import AuthFormComponent from '../AuthFormComponent/AuthFormComponent';
 
-const Login = () => {
+
+
+const LoginForm = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const dispatch = useDispatch();
@@ -28,14 +29,14 @@ const Login = () => {
     );
 
     return (
-        <FormComponent
-            onSubmit={handleLogin}
-            fields={fields}
-            buttonText="Login"
-            errors={error ? { email: error, password: error } : {}}
-            footer={footer}
-        />
+            <AuthFormComponent
+                onSubmit={handleLogin}
+                fields={fields}
+                buttonText="Login"
+                errors={error ? { email: error, password: error } : {}}
+                footer={footer}
+            />
     );
-};
+}
 
-export default Login;
+export default LoginForm

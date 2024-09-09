@@ -13,10 +13,8 @@
     box-shadow: 0 0.5px 3px rgba(0, 0, 0, 0.1); // Soft shadow
 
 
-
-
-
     .container-fluid {
+        align-items: stretch;
 
         .item {
 
@@ -115,6 +113,7 @@
 
             .icons {
                 display: flex;
+                height: 100%;
                 gap: 15px;
                 color: #464545;
                 align-items: center;
@@ -145,26 +144,126 @@
                 }
 
                 .user {
-                    align-items: center;
                     // display: none;
+                    position: relative;
+                    height: 100%;
+                    display: flex;
+                    align-items: center;
 
-                    @include lg {
+
+                    .summary {
                         display: flex;
+                        align-items: center;
+                        gap: 3px;
+
+                        .user-icon {
+                            .user-image {
+                                width: 30px;
+                                height: 30px;
+                                object-fit: cover;
+                                border-radius: 50%;
+                            }
+                        }
+
+                        .user-info {
+                            @include max-md {
+                                display: none;
+                            }
+
+                            span {
+                                font-size: 14px;
+                                overflow: hidden;
+                                text-overflow: ellipsis;
+                                margin-left: 5px;
+                            }
+                        }
                     }
 
-                    .user-image {
-                        width: 30px;
-                        height: 30px;
-                        border-radius: 50%;
+                    .user-dropdown {
+                        display: none;
+                        min-width: 210px;
+                        position: absolute;
+                        left: 50%;
+                        top: 35px;
+                        padding-top: 30px;
+                        transform: translate(-50%);
+
+                        .wrapper {
+                            border-radius: 3px;
+                            background-color: white;
+                            box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+                            flex-direction: column;
+                            display: flex;
+                            overflow: hidden;
+                        }
+
+                        // border-bottom: 1px solid lightgray;
+
+                        .dropdown-item {
+                            display: flex;
+                            align-items: center;
+                            gap: 5px;
+                            padding: 9px 15px;
+                            cursor: pointer;
+                            color: $darkGray;
+                            background: none;
+                            border: none;
+
+
+                            &:not(:last-child) {
+                                border-bottom: 1px solid $lightGray;
+                            }
+
+                            span {
+                                line-height: 24px;
+                                font-size: 13px;
+                                font-weight: 500;
+                                vertical-align: middle;
+                            }
+
+                            &:hover {
+                                background-color: $lighterGray;
+                            }
+
+                            &.active {
+                                color: $azureRadBlue;
+                                background-color: $lighterGray;
+
+                            }
+
+                            
+                        }
+
+                        &.nav-login-form {
+                            min-width: 350px;
+                            left: 0;
+
+                            .wrapper {
+                                padding: 15px;
+
+                            }
+                        }
+
+                        .active {
+                            background: $lighterGray;
+                            color: #007BFF;
+                            font-weight: 500;
+                            // border-bottom: 3px solid black;
+                        }
+
+
                     }
 
-                    span {
-                        font-size: 14px;
-                        overflow: hidden;
-                        text-overflow: ellipsis;
-                        margin-left: 5px;
 
 
+
+
+                    &:hover {
+                        .user-dropdown {
+                            @include md {
+                                display: block;
+                            }
+                        }
                     }
 
 

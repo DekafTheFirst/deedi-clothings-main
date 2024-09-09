@@ -2,15 +2,16 @@ import React, { memo, useEffect, useState } from 'react';
 import axios from 'axios';
 import './OrderHistory.scss';
 import { makeRequest } from '../../../../makeRequest';
+import { useSelector } from 'react-redux';
 
 const OrderHistory = memo(() => {
 
   const [orders, setOrders] = useState([]);
-
+  const user = useSelector(state => state.auth.user);
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await makeRequest.get('/orders');
+        const response = await makeRequest.get(`/orders?filters[user][id][$eq]=${user.id}`);
         console.log('response', response)
         setOrders(response.data.data);
       } catch (error) {

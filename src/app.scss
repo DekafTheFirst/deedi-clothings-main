@@ -66,9 +66,14 @@ p {
     }
 
     #content {
-        margin-top: $navbarHeight;
-        min-height: calc(100vh - $navbarHeight);
+        min-height: 100vh;
         position: relative;
+
+        &.navbar-visible {
+            margin-top: $navbarHeight;
+            min-height: calc(100vh - $navbarHeight);
+        }
+
 
         .darkOverlay {
             // display: none;
@@ -86,6 +91,8 @@ p {
             }
 
         }
+
+
     }
 }
 

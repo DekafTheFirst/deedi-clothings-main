@@ -8,12 +8,14 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import "./Navbar.scss"
 import Cart from '../MiniCart/MiniCart';
 import { useDispatch, useSelector } from 'react-redux';
-import { Close, Menu, MenuOpen } from '@mui/icons-material';
+import { Close, LocalMall, LocalShipping, Logout, Menu, MenuOpen, Person } from '@mui/icons-material';
 import { selectCartTotals, setShowCart } from '../../redux/cart/cartReducer';
 import LockIcon from '@mui/icons-material/Lock';
 import Countdown from '../Countdown/Countdown';
 import { toast } from 'react-toastify';
 import { endCheckoutSession, setCheckoutSessionExpiryDate } from '../../redux/checkout/checkoutReducer';
+import { logoutUser } from '../../redux/auth/authReducer';
+import LoginForm from '../../pages/Auth/Login/LoginForm';
 
 
 const excludedPaths = ['/checkout', '/checkout-success']; // Paths to exclude Navbar
@@ -39,6 +41,10 @@ const Navbar = () => {
   const [timeRemaining, setTimeRemaining] = useState(null);
   const [showCountdown, setShowCountdown] = useState(false);
 
+  const handleLogout = () => {
+    dispatch(logoutUser());
+    navigate('/')
+  }
 
   // useEffect(() => {
   //   // Parse the target date string into a Date object
@@ -113,6 +119,16 @@ const Navbar = () => {
 
   }, []);
 
+  const handleClickUser = () => {
+    if (user) {
+      navigate('/my-account')
+    }
+    else {
+      navigate('/login')
+    }
+  }
+
+
   return (
     <div className={`navbar ${scrolled ? 'scrolled' : ''} ${showMobileMenu ? 'toggled' : ''} ${inCheckoutPage ? 'in-checkout-page' : ''}`}>
       <div className="container-fluid">
@@ -158,29 +174,61 @@ const Navbar = () => {
           {/* <div className="item">
             <Link className="link" to="/products/3">Stores</Link> 
           </div> */}
-          <div className="item">
-            <Link className="link" to="/login">Login</Link>
-          </div>
-          <div className="item">
-            <Link className="link" to="/register">Register</Link>
-          </div>
+
           <div className="icons">
             <div className="searchbar">
               <input type="text" name="" id="" />
               <SearchIcon fontSize='small' className='icon search-icon' />
             </div>
-            <div className="user" onClick={()=>navigate('/my-account')}>
-              {user?.photoUrl && <img src={user.photoUrl} className='user-image' />
+
+            <div className="user">
+              <div className="summary">
+                <div className="user-icon" onClick={handleClickUser}>
+                  {!user ? <Person /> : <img src='http://localhost:1337/uploads/pexels_olly_972804_3fa9e26e5b.jpg' className='user-image' />}
+                </div>
+                <div className="user-info"><span>
+                  {!user ? 'My Account' : `Hello, ${'Destiny'}`}</span>
+                  <KeyboardArrowDownIcon className='icon down-arrow' fontSize="small" />
+                </div>
+
+              </div>
+
+              {user ?
+                <div className="user-dropdown">
+                  <div className="wrapper">
+                    <Link className="dropdown-item" to="/my-account#profile">
+                      <Person fontSize='small' />
+                      <span>Profile</span>
+                    </Link>
+                    <Link className="dropdown-item" to='/my-account#orders'>
+                      <LocalShipping fontSize='small' />
+                      <span>Orders</span>
+                    </Link>
+                    <div className="dropdown-item" onClick={handleLogout}>
+                      <Logout fontSize='small' />
+                      <span>Logout</span>
+                    </div>
+                  </div>
+                </div>
+                :
+                <div className="user-dropdown nav-login-form">
+                  <div className="wrapper">
+                    <h4 className='mb-3 text-center'>LOGIN</h4>
+                    <LoginForm />
+                  </div>
+                </div>
               }
-              <span>{user?.username}</span>
-              <KeyboardArrowDownIcon className='icon down-arrow' fontSize="small" />
+
             </div>
 
-            {pathname !== '/checkout' && <div className="cartIcon" onClick={() => dispatch(setShowCart(!showCart))}>
-              <ShoppingCartOutlinedIcon className='icon' />
-              <div className='noOfItems'><span>{noOfItems}</span></div>
-            </div>}
-            {showCart && <Cart />}
+            {
+              pathname !== '/checkout' && <div className="cartIcon" onClick={() => dispatch(setShowCart(!showCart))}>
+                <ShoppingCartOutlinedIcon className='icon' />
+                <div className='noOfItems'><span>{noOfItems}</span></div>
+              </div>
+            }
+            {showCart && <Cart />
+            }
 
           </div>
 
@@ -196,7 +244,7 @@ const Navbar = () => {
         }
       </div>
 
-    </div>
+    </div >
   )
 }
 

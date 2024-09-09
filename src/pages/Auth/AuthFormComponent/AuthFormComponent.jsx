@@ -1,10 +1,11 @@
 import React from 'react';
-import './FormComponent.scss';
+import './AuthFormComponent.scss';
+import classNames from 'classnames';
 
-const FormComponent = ({ onSubmit, fields, buttonText, errors, footer }) => {
+const AuthFormComponent = ({ onSubmit, fields, buttonText, errors, footer, classNames: myClassNames  }) => {
+
     return (
-        <div className="form-container">
-            <form className="form" onSubmit={onSubmit}>
+            <form className={classNames('form', myClassNames)} onSubmit={onSubmit}>
                 {fields.map((field, index) => (
                     <div key={index} className="form-group">
                         <input
@@ -24,8 +25,8 @@ const FormComponent = ({ onSubmit, fields, buttonText, errors, footer }) => {
                             {footer && <div className="form-footer">{footer}</div>}
 
             </form>
-        </div>
+        
     );
 };
 
-export default FormComponent;
+export default AuthFormComponent;

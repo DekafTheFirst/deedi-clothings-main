@@ -3,7 +3,8 @@ import {
   RouterProvider,
   createBrowserRouter,
   Outlet,
-  redirect
+  redirect,
+  useLocation
 } from 'react-router-dom';
 import Navbar from './components/Navbar/Navbar';
 import { Provider, useDispatch, useSelector } from 'react-redux';
@@ -12,7 +13,7 @@ import { setShowCart } from './redux/cart/cartReducer';
 import { ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 import { CircularProgress, Box } from '@mui/material'; // Import CircularProgress
-import checkoutLoader from './components/checkCartItemsLoader/checkCartItemsLoader';  
+import checkoutLoader from './components/checkCartItemsLoader/checkCartItemsLoader';
 import Home from './pages/Home/Home'; // No lazy loading for the Home page
 import './app.scss';
 
@@ -22,13 +23,19 @@ const Product = lazy(() => import('./pages/Product/Product'));
 const CartPage = lazy(() => import('./pages/CartPage/CartPage'));
 const CheckoutPage = lazy(() => import('./pages/Checkout/CheckoutPage'));
 const CheckoutSuccess = lazy(() => import('./pages/Checkout/CheckoutSuccess/CheckoutSuccess'));
-const Login = lazy(() => import('./pages/Auth/Login/Login'));
-const Register = lazy(() => import('./pages/Auth/Register/Register'));
+const Login = lazy(() => import('./pages/Auth/Login/LoginPage'));
+const Register = lazy(() => import('./pages/Auth/Register/RegisterPage'));
 const MyAccount = lazy(() => import('./pages/Auth/MyAccount/MyAccount'));
 
+const navbarExcludedPaths = ['/login', '/register']
 const Layout = () => {
   const dispatch = useDispatch();
   const showCart = useSelector(state => state.cart.showCart);
+
+  const { pathname } = useLocation();
+  const displayNavbar = !navbarExcludedPaths.includes(pathname)
+  console.log(displayNavbar)
+  console.log('pathname', pathname);
 
   useEffect(() => {
     const handleOutsideClick = (event) => {
@@ -49,8 +56,8 @@ const Layout = () => {
 
   return (
     <div className="app">
-      <Navbar />
-      <div id="content">
+      {displayNavbar && <Navbar />}
+      <div id="content" className={`${displayNavbar ? 'navbar-visible': ''}`}>
         <div className={`darkOverlay ${showCart ? 'show' : ''}`}></div>
         <ToastContainer />
         <Outlet />

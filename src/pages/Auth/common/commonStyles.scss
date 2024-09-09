@@ -1,0 +1,52 @@
+@import "../../../mixins.scss";
+@import "../../../variables.scss";
+
+.auth-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 50px;
+    margin: 0 auto;
+    height: 100vh;
+    scrollbar-width: 0;
+
+    .welcome {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+
+        img {
+            width: 130px;
+            margin-bottom: 15px;
+        }
+        .heading {
+            font-weight: 600;
+            
+        }
+        p {
+            font-size: 15px;
+            color: $darkGray;
+        }
+    }
+   
+
+
+    .form-wrapper {
+        padding: 30px;
+        // border-radius: 2px;
+        width: 100%;
+        max-width: 400px;
+
+        @include sm {
+            padding: 0;
+            // background: #ffffff; // White form
+            // box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); // Soft shadow
+            // border: 1px solid #e0e0e0;
+        }
+    }
+
+
+    // Full height view
+}

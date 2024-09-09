@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { registerUser } from '../../../redux/auth/authReducer';
-import FormComponent from '../FormComponent/FormComponent';
-import './Register.scss';
+import AuthFormComponent from '../AuthFormComponent/AuthFormComponent';
 
-const Register = () => {
+const RegisterForm = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [username, setUsername] = useState('');
+
     const dispatch = useDispatch();
+
     const error = useSelector((state) => state.auth.error);
 
     const handleRegister = async (e) => {
@@ -24,19 +25,20 @@ const Register = () => {
 
     const footer = (
         <div className="form-footer-links">
-            <a href="/login">Already have an account? Login</a>
+            <a href="/login">Already have an account? <span>Login</span></a>
         </div>
     );
 
     return (
-        <FormComponent
-            onSubmit={handleRegister}
-            fields={fields}
-            buttonText="Sign Up"
-            errors={error ? { email: error, password: error, username: error } : {}}
-            footer={footer}
-        />
-    );
-};
+            <AuthFormComponent
+                onSubmit={handleRegister}
+                fields={fields}
+                buttonText="Sign Up"
+                errors={error ? { email: error, password: error, username: error } : {}}
+                footer={footer}
+            />
 
-export default Register;
+    );
+}
+
+export default RegisterForm

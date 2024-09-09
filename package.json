@@ -18,6 +18,8 @@
     "@vitejs/plugin-react": "^4.3.1",
     "axios": "^1.6.8",
     "blurhash": "^2.0.5",
+    "classnames": "^2.5.1",
+    "cloc": "^2.2.0-cloc",
     "firebase": "^10.12.4",
     "formik": "^2.4.6",
     "jwt-decode": "^4.0.0",

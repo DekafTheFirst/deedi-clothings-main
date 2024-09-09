@@ -62,12 +62,10 @@ const MyAccount = () => {
             <div className="content">
               <span className="name">Destiny Kefas</span>
               <span className="email">dekeji1@gmail.com</span>
-
             </div>
           </div>
           <hr></hr>
           <div className="tabs">
-
             {menuItems.map(item => {
               return (
                 <button
@@ -86,7 +84,7 @@ const MyAccount = () => {
             >
               <LogoutIcon />
               <span>Logout</span>
-            </button>
+            *</button>
           </div>
         </div>
 

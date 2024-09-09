@@ -36,9 +36,13 @@ $breakpoints: (
   @media (min-width: map-get($breakpoints, "sm")) {
     @content;
   }
-}
+};
 
-;
+@mixin max-sm {
+  @media (max-width: calc(map-get($breakpoints, "sm") - 1px )) {
+    @content;
+  }
+};
 
 @mixin sm-landscape {
   @media (min-width: map-get($breakpoints, "sm")) and (orientation: landscape) {
