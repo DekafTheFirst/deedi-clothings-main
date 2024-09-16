@@ -96,7 +96,7 @@ const FormComponent = ({ formItems, countryData, stateData, cityData, handleSubm
                 // }, [initialValues]);
 
                 useEffect(() => {
-                    // console.log('values:', values);
+                    console.log('values:', values);
                     // console.log('errors:', errors);
                 }, [values])
 
@@ -171,7 +171,7 @@ const FormComponent = ({ formItems, countryData, stateData, cityData, handleSubm
                                                     error={errors[item.name]}
                                                     customInputName={item.customInputName}
                                                     setFieldValue={setFieldValue}
-                                                    values={values}
+                                                    value={values[item.name]}
                                                     handleBlur={handleBlur}
                                                     countryList={item.as === 'country-selector' && memoizedCountryList}
                                                     stateList={item.as === 'state-selector' && memoizedStateList}

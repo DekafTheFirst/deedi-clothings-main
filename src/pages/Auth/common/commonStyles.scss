@@ -6,16 +6,18 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 50px;
+    gap: 40px;
     margin: 0 auto;
-    height: 100vh;
+    min-height: 100vh;
     scrollbar-width: 0;
+    padding-block: 20px;
 
     .welcome {
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 10px;
+        gap: 5px;
+        width: 90%;
 
         img {
             width: 130px;
@@ -23,20 +25,20 @@
         }
         .heading {
             font-weight: 600;
-            
+            text-align: center;
         }
         p {
             font-size: 15px;
             color: $darkGray;
+            text-align: center;
         }
     }
    
 
 
     .form-wrapper {
-        padding: 30px;
         // border-radius: 2px;
-        width: 100%;
+        width: 90%;
         max-width: 400px;
 
         @include sm {

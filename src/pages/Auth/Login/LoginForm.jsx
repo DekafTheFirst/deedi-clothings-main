@@ -2,41 +2,64 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginUser } from '../../../redux/auth/authReducer';
 import AuthFormComponent from '../AuthFormComponent/AuthFormComponent';
-
-
+import * as Yup from 'yup';
+import { useNavigate } from 'react-router-dom';
 
 const LoginForm = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
     const dispatch = useDispatch();
-    const error = useSelector((state) => state.auth.error);
+    const navigate = useNavigate()
 
-    const handleLogin = async (e) => {
-        e.preventDefault();
-        await dispatch(loginUser({ email, password })).unwrap();
-    };
+    const [error, setError] = useState(null)
 
-    const fields = [
-        { type: 'email', name: 'email', value: email, onChange: (e) => setEmail(e.target.value), placeholder: 'Email' },
-        { type: 'password', name: 'password', value: password, onChange: (e) => setPassword(e.target.value), placeholder: 'Password' },
+    const loginInputConfigs = [
+        {
+            name: 'email',
+            label: 'Email',
+            type: 'email',
+            placeholder: 'Enter your email',
+            as: 'text',
+        },
+        {
+            name: 'password',
+            label: 'Password',
+            type: 'password',
+            placeholder: 'Enter your password',
+            as: 'password',
+        }
     ];
+
+    const loginValidationSchema = Yup.object().shape({
+        email: Yup.string().email('Invalid email address').required('Email is required'),
+        password: Yup.string().required('Password is required'),
+    });
+
+    const handleLogin = async (values) => {
+        try {
+            await dispatch(loginUser(values)).unwrap();
+            setError(null)
+            navigate('/')
+        } catch (error) {
+            setError(error);
+        }
+    };
 
     const footer = (
         <div className="form-footer-links">
             <a href="/forgot-password">Forgot Password?</a>
-            <a href="/register">Sign Up</a>
+            <a href="/register"><span>Sign Up</span></a>
         </div>
     );
 
     return (
-            <AuthFormComponent
-                onSubmit={handleLogin}
-                fields={fields}
-                buttonText="Login"
-                errors={error ? { email: error, password: error } : {}}
-                footer={footer}
-            />
+        <AuthFormComponent
+            onSubmit={handleLogin}
+            buttonText="Login"
+            inputConfigs={loginInputConfigs}
+            validationSchema={loginValidationSchema}
+            submissionError={error}
+            footer={footer}
+        />
     );
-}
+};
 
-export default LoginForm
+export default LoginForm;

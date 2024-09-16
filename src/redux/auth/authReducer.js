@@ -10,12 +10,10 @@ const cookies = new Cookies();
 // Async thunks
 export const registerUser = createAsyncThunk(
     'auth/registerUser',
-    async ({ email, password, username, photoUrl }, { dispatch, thunkAPI }) => {
+    async (values, { dispatch, rejectWithValue }) => {
         try {
             const response = await makeRequest.post('/auth/local/register?populate=*', {
-                username,
-                email,
-                password,
+                ...values,
                 photoUrl: 'https://static01.nyt.com/images/2022/08/22/multimedia/22billboard/22billboard-jumbo.jpg?quality=75&auto=webp'
             });
 
@@ -41,8 +39,8 @@ export const registerUser = createAsyncThunk(
 
             };
         } catch (error) {
-            console.log(error);
-            return thunkAPI.rejectWithValue(error.message);
+            console.error('error', error?.response?.data?.error);
+            return rejectWithValue(error?.response?.data?.error?.message);
         }
     }
 );
@@ -50,7 +48,7 @@ export const registerUser = createAsyncThunk(
 
 export const loginUser = createAsyncThunk(
     'auth/loginUser',
-    async ({ email, password }, { dispatch, thunkAPI }) => {
+    async ({ email, password }, { dispatch, rejectWithValue }) => {
         try {
 
             const response = await makeRequest.post('/auth/local', {
@@ -58,7 +56,7 @@ export const loginUser = createAsyncThunk(
                 password
             }, {
                 params: {
-                  
+
                 }
             });
 
@@ -85,8 +83,13 @@ export const loginUser = createAsyncThunk(
                 },
             };
         } catch (error) {
-            console.log(error);
-            return thunkAPI.rejectWithValue(error.message);
+            console.error(error);
+            if (error?.response.data?.error?.name === "ValidationError") {
+                return rejectWithValue('Invalid email or password');
+            }
+            else {
+                return rejectWithValue('Unable to login');
+            }
         }
     }
 );
@@ -94,22 +97,20 @@ export const loginUser = createAsyncThunk(
 
 export const updateUser = createAsyncThunk(
     'auth/updateProfile',
-    async ({ id, username, photoUrl }, thunkAPI) => {
+    async ({userId, updatedFields}, thunkAPI) => {
+        console.log('updatedFields', updatedFields)
         try {
-            const response = await makeRequest.put(`/users/${id}`, {
-                username: username,
-                photoUrl: photoUrl
+            const response = await makeRequest.put(`/users/${userId}`, {
+                ...updatedFields,
             });
 
             console.log('response', response)
 
             return {
                 ...response.data,
-                username,
-                // photoUrl: response.data.photoUrl
             };
         } catch (error) {
-            console.log(error)
+            console.error(error)
 
             return thunkAPI.rejectWithValue(error.message);
         }
@@ -214,7 +215,6 @@ const authSlice = createSlice({
                 state.error = null;
             })
             .addCase(registerUser.rejected, (state, action) => {
-                state.error = action.error.message;
                 state.loading = false;
             })
             .addCase(logoutUser.fulfilled, (state) => {

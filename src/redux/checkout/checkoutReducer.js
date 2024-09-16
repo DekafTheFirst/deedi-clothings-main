@@ -35,7 +35,9 @@ const initialState = {
   completedSteps: [],
   items: [],
   previewedStep: null,
-  shippingInfo: null,
+  shippingInfo: {
+
+  },
   billingInfo: null,
   rates: null,
   selectedCourierId: null,
@@ -62,17 +64,17 @@ export const initializeCheckout = createAsyncThunk(
 
 
       // Merge local items with the Strapi cart items and get the updated cart
-      const validatedResponse = await makeRequest.patch(`/checkout/initialize`,
+      const checkoutSessionResponse = await makeRequest.patch(`/checkout/initialize`,
         { items: inStockItems, cartId, customerEmail: 'dekeji1@gmail.com' },
       );
 
-      console.log('checkout response', validatedResponse);
-      const validationResults = validatedResponse?.data?.validationResults;
-      const checkoutSessionDuration = validatedResponse?.data?.checkoutSessionDuration
-      const checkoutSessionAlreadyExists = validatedResponse?.data?.checkoutSessionAlreadyExists
-      const checkoutSessionExpiresAt = validatedResponse?.data?.checkoutSessionExpiresAt
-      const checkoutAlreadyCompleted = validatedResponse?.data?.checkoutAlreadyCompleted
-      const status = validatedResponse?.data?.status
+      console.log('checkout response', checkoutSessionResponse);
+      const validationResults = checkoutSessionResponse?.data?.validationResults;
+      const checkoutSessionDuration = checkoutSessionResponse?.data?.checkoutSessionDuration
+      const checkoutSessionAlreadyExists = checkoutSessionResponse?.data?.checkoutSessionAlreadyExists
+      const checkoutSessionExpiresAt = checkoutSessionResponse?.data?.checkoutSessionExpiresAt
+      const checkoutAlreadyCompleted = checkoutSessionResponse?.data?.checkoutAlreadyCompleted
+      const status = checkoutSessionResponse?.data?.status
       // console.log('checkoutSessionExpiresAt', checkoutSessionExpiresAt);
       return { cartId, status, validationResults, checkoutSessionDuration, checkoutSessionAlreadyExists, checkoutSessionExpiresAt, checkoutAlreadyCompleted };
     } catch (error) {
@@ -84,7 +86,7 @@ export const initializeCheckout = createAsyncThunk(
 
 export const endCheckoutSession = createAsyncThunk(
   'checkout/endCheckoutSession',
-  async (_, {dispatch, rejectWithValue }) => {
+  async (_, { dispatch, rejectWithValue }) => {
     // console.log('triggered')
     try {
       await makeRequest.post(`/checkout/end`);

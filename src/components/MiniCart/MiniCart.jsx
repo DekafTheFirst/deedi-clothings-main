@@ -5,6 +5,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { CircularProgress } from '@mui/material'
 import CartItem from './MiniCartItem/CartItem'
 import {  selectCartTotals, selectItemsByStock, setCartMode, setShowCart, validateCartItems } from '../../redux/cart/cartReducer'
+import CTAButton from '../CTAButton/CTAButton'
 
 
 const Cart = () => {
@@ -81,11 +82,12 @@ const Cart = () => {
       <div className="navigation">
         {noOfItems > 0 ?
           <>
-            <button onClick={handleProceedToCheckout} className='btn-1'>PROCEED TO CHECKOUT</button>
+            <CTAButton onClick={handleProceedToCheckout} buttonText={'Proceed To Checkout'}/>
+
             <Link to="/cart" className='view-cart' onClick={() => dispatch(setShowCart(false))}> View Shopping Bag </Link>
           </>
           :
-          <button onClick={() => navigate('/products/women')} className='btn-1'>GO SHOPPING</button>
+          <CTAButton onClick={() => navigate('/products/women')} buttonText={'Go Shopping'}/>
         }
         {/* <span className="reset" onClick={() => dispatch(resetCart())}>Reset Cart</span> */}
       </div>

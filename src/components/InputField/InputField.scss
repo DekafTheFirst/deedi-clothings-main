@@ -6,43 +6,63 @@
     flex-direction: column;
     gap: 5px;
     font-size: 13px;
+    position: relative;
 
 
     .label {
-        font-weight: 600;
+        font-weight: 400;
+        font-size: 12px;
+        position: absolute;
+        top: -11px;
+        left: 5px;
+        background: white;
+        padding-inline: 5px;
+        color: $darkGray;
     }
 
     &.textarea {
         grid-column: 1 / -1;
     }
 
-    .inputField {
-        padding: 10px ;
+    input {
+        &:-webkit-autofill {
+            -webkit-box-shadow: 0 0 0px 1000px white inset !important;
+            /* Set the desired background color */
+            box-shadow: 0 0 0px 1000px white inset !important;
+            /* To support more browsers */
+            -webkit-text-fill-color: #000 !important;
+            /* Set text color */
+        }
+
         font-size: 14px;
         font-weight: 400;
+    }
+
+    .inputField {
+        padding: 8px;
         width: 100%;
         // background-color: $lighterGray;
-        border: 1px solid $lightGray;
-        outline: none;
-        border-radius: 8px;
+        border: none;
+        outline: 1px solid darken($lightGray, 5%);
+        border-radius: 3px;
 
-        &:focus-visible {
-            outline: none;
-            border-color: black;
+
+        &:focus-visible,
+        &:hover {
+            outline: 2px solid black;
         }
 
         &.input-error {
-            outline: none !important;
-            border-color: #fc8181 !important;
+            outline-color: #fc8181 !important;
         }
 
         &.country-input-field {
             padding: 0;
         }
 
-        .placeholder{
+        .placeholder {
             background-color: $lightGray;
-            color: black;
+            color: $charcoal;
 
             &:focus {
                 display: none;
@@ -54,15 +74,21 @@
         }
     }
 
+
+
     &.addressLine {
         grid-column: 1 / -1;
     }
 
     .error-message-container {
-        color: #fc8181;
-        font-size: 12px;
+
         width: 100%;
-        text-align: start;
-        min-height: 18px;
+
+        .error {
+            color: #fc8181;
+            font-size: 13px;
+            text-align: start;
+
+        }
     }
 }

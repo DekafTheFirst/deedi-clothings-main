@@ -45,36 +45,39 @@
     .checkout {
         display: flex;
         flex-direction: column;
-        gap: 25px;
+        gap: 15px;
         padding-bottom: 20px;
         margin-bottom: 20px;
 
         @include md {}
 
+        #error-message{
+            font-size: 14px;
+            color: $brightRed;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+
+            .checkbox {
+                width: 17px;
+                height: 17px;
+            }
+
+            // &:hover {
+            //     color: $brightRed;
+            // }
 
 
-            .option-item {
-                display: flex;
-                align-items: center;
-                gap: 5px;
-                
-                .checkbox {
-                    width: 17px;
-                    height: 17px;
-                }
 
-                // &:hover {
-                //     color: $brightRed;
-                // }
 
-                
-                
+            .text {
+                font-size: 13px;
+            }
 
-                .text {
-                    font-size: 13px;
-                }
 
-    
         }
     }
 
@@ -98,19 +101,7 @@
 
     // }
 
-    button {
-        // padding: 10px;
-        // display: flex;
-        // align-items: center;
-        // justify-content: center;
-        // gap: 20px;
-        // cursor: pointer;
-        // border: none;
-        // background-color: #93703F;
-        // color: white;
-        // font-weight: 500;
-        border-radius: 10px;
-    }
+
 
     .reset {
         color: red;

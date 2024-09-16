@@ -10,12 +10,12 @@ import Navbar from './components/Navbar/Navbar';
 import { Provider, useDispatch, useSelector } from 'react-redux';
 import { store } from './redux/store';
 import { setShowCart } from './redux/cart/cartReducer';
-import { ToastContainer } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 import { CircularProgress, Box } from '@mui/material'; // Import CircularProgress
-import checkoutLoader from './components/checkCartItemsLoader/checkCartItemsLoader';
 import Home from './pages/Home/Home'; // No lazy loading for the Home page
 import './app.scss';
+import { initializeCheckout, resetCheckout } from './redux/checkout/checkoutReducer';
 
 // Lazy load the pages that aren't immediately needed
 const Products = lazy(() => import('./pages/Products/Products'));
@@ -28,14 +28,71 @@ const Register = lazy(() => import('./pages/Auth/Register/RegisterPage'));
 const MyAccount = lazy(() => import('./pages/Auth/MyAccount/MyAccount'));
 
 const navbarExcludedPaths = ['/login', '/register']
+
+const dispatch = store.dispatch
+const checkoutLoader = async ({ request }) => {
+  console.log('checkout loader')
+  try {
+
+    const response = await store.dispatch(initializeCheckout({ reserve: true })).unwrap();
+    console.log('response in loader', response)
+    const { validationResults, checkoutSessionAlreadyExists, checkoutSessionDuration, checkoutSessionExpiresAt, status } = response;
+
+    const sessionHasExpired = new Date() > new Date(checkoutSessionExpiresAt)
+    console.log('sessionHasExpired', sessionHasExpired);
+
+    if (status === 'initialized') {
+      const { successfulItems, outOfStockItems } = validationResults;
+
+      if (outOfStockItems?.length > 0) {
+        throw new Response('Some items are out of stock', { status: 302, headers: { Location: '/cart' } });
+      }
+
+      if (successfulItems?.length <= 0) {
+        throw new Response('Your cart is empty, add some items!', { status: 302, headers: { Location: '/cart' } });
+      }
+      
+      dispatch(resetCheckout())
+
+      return { checkoutSessionDuration, checkoutSessionAlreadyExists }
+    } else {
+      console.log('status', status)
+
+      if (status === 'completed') {
+        dispatch(resetCheckout())
+        
+        toast.info('Checkout sessoon complete already. Check your orders page.')
+        return redirect("/products/women")
+      }
+
+      if (status === 'expired') {
+        dispatch(resetCheckout())
+
+        // dispatch(resetCheckout())
+        // toast.info('Checkout sessoon complete already. Check your orders page.')
+        return redirect("/cart")
+
+      }
+
+
+      console.log('checkoutSessionAlreadyExists', checkoutSessionAlreadyExists);
+      return { checkoutSessionAlreadyExists, status }
+    }
+
+
+  } catch (error) {
+    console.error('Error initializing checkout', error);
+    return { status: 500, message: 'Failed to initialize checkout' }; // Handle error appropriately
+  }
+};
+
 const Layout = () => {
   const dispatch = useDispatch();
   const showCart = useSelector(state => state.cart.showCart);
 
   const { pathname } = useLocation();
   const displayNavbar = !navbarExcludedPaths.includes(pathname)
-  console.log(displayNavbar)
-  console.log('pathname', pathname);
+  // console.log('pathname', pathname);
 
   useEffect(() => {
     const handleOutsideClick = (event) => {

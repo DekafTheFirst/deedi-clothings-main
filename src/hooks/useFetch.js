@@ -5,7 +5,6 @@ import Cookies from "universal-cookie"
 
 const cookies = new Cookies();
 const jwtToken = cookies.get('jwt_authentication') || null;
-console.log('jwtToken', jwtToken);
 
 const useFetch = (url) => {
 

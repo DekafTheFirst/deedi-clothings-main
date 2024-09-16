@@ -14,8 +14,9 @@ import {
 } from "react-country-state-city";
 import "react-country-state-city/dist/react-country-state-city.css";
 import { compose } from 'redux';
+import PasswordField from '../PasswordField/PasswordField';
 
-const InputField = ({ name, label, type, placeholder, as, touched, error, customInputName, values, handleBlur, setFieldValue, countryList, stateList, cityList }) => {
+const InputField = ({ name, label, type, placeholder, as, touched, error, customInputName, value, handleBlur, setFieldValue, countryList, stateList, cityList }) => {
 
     // console.log('cityList', cityList)
 
@@ -78,7 +79,9 @@ const InputField = ({ name, label, type, placeholder, as, touched, error, custom
 
 
 
-
+    if (as === 'country-selector') {
+        console.log(value)
+    }
 
     const renderInput = () => {
         switch (as) {
@@ -88,7 +91,7 @@ const InputField = ({ name, label, type, placeholder, as, touched, error, custom
                         onChange={handleCountryChange}
                         className='inputField'
                         // value={'placeholder'}
-                        value={!values.countryData?.countryIndex && values.countryData?.countryIndex !== 0 ? 'placeholder' : values.countryData.countryIndex}
+                        value={!value?.countryIndex && value?.countryIndex !== 0 ? 'placeholder' : value.countryIndex}
                     >
                         <option
                             value="placeholder"
@@ -108,7 +111,7 @@ const InputField = ({ name, label, type, placeholder, as, touched, error, custom
                     <select
                         onChange={handleStateChange}
                         className='inputField'
-                        value={!values.stateData?.stateIndex && values.stateData?.stateIndex !== 0 ? 'placeholder' : values.stateData.stateIndex}
+                        value={!value?.stateIndex && value?.stateIndex !== 0 ? 'placeholder' : value.stateIndex}
                     >
                         <option
                             value="placeholder"
@@ -128,7 +131,7 @@ const InputField = ({ name, label, type, placeholder, as, touched, error, custom
                     <select
                         onChange={handleCityChange}
                         className='inputField'
-                        value={!values.cityData?.cityIndex && values.cityData?.cityIndex !== 0 ? 'placeholder' : values.cityData.cityIndex}
+                        value={!value?.cityIndex && value?.cityIndex !== 0 ? 'placeholder' : value.cityIndex}
                     >
                         <option
                             value="placeholder"
@@ -151,6 +154,19 @@ const InputField = ({ name, label, type, placeholder, as, touched, error, custom
                         className={`inputField ${touched && error ? 'input-error' : ''}`}
                     />
                 );
+            case 'password':
+                return (
+                    <PasswordField
+                        name={name}
+                        label={label}
+                        onChange={(e) => {
+                            setFieldValue(name, e.target.value)
+                        }}
+                        onBlur={handleBlur}
+                        error={error}
+                        touched={touched}
+                    />
+                )
             case 'custom':
                 return (
                     <div className={`custom-input ${customInputName}`}>
@@ -179,7 +195,7 @@ const InputField = ({ name, label, type, placeholder, as, touched, error, custom
 
     return (
         <div className={`input-item ${as == 'textarea' ? 'textarea' : ''} ${as == 'custom' ? customInputName : ''}`}>
-            <span className='label'>{label}:</span>
+            <span className='label'>{label}</span>
 
             {renderInput()}
 

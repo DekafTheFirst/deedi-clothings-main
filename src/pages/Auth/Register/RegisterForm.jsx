@@ -2,27 +2,86 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { registerUser } from '../../../redux/auth/authReducer';
 import AuthFormComponent from '../AuthFormComponent/AuthFormComponent';
+import * as Yup from 'yup';
+import { useNavigate } from 'react-router-dom';
 
 const RegisterForm = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [username, setUsername] = useState('');
+
 
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
-    const error = useSelector((state) => state.auth.error);
+    const [error, setError] = useState(null)
 
-    const handleRegister = async (e) => {
-        e.preventDefault();
-        await dispatch(registerUser({ email, password, username })).unwrap();
+    const handleRegister = async (values) => {
+        // console.log('values', values)
+        try {
+            await dispatch(registerUser(values)).unwrap();
+            setError(null)
+            navigate('/')
+        }
+        catch (error) {
+            setError(error)
+            console.error('error', error)
+        }
     };
 
-    const fields = [
-        { type: 'text', name: 'username', value: username, onChange: (e) => setUsername(e.target.value), placeholder: 'Username' },
-        { type: 'email', name: 'email', value: email, onChange: (e) => setEmail(e.target.value), placeholder: 'Email' },
-        { type: 'password', name: 'password', value: password, onChange: (e) => setPassword(e.target.value), placeholder: 'Password' },
-    ];
+    const registerValidationSchema = Yup.object().shape({
+        username: Yup.string().required('Username is required'),
+        email: Yup.string().email('Invalid email address').required('Email is required'),
+        password: Yup.string().required('Password is required'),
+        firstName: Yup.string().required('First name is required'),
+        lastName: Yup.string().required('Last name is required'),
 
+        repeatPassword: Yup.string()
+            .oneOf([Yup.ref('password'), null], 'Passwords must match')
+            .required('Repeat Password is required'),
+    });
+
+    const registerInputConfigs = [
+        {
+            name: 'username',
+            label: 'Username',
+            type: 'text',
+            placeholder: 'Enter your username',
+            as: 'text',
+        },
+        {
+            name: 'firstName',
+            label: 'First Name',
+            type: 'text',
+            placeholder: 'Enter your first name',
+            as: 'text',
+        },
+        {
+            name: 'lastName',
+            label: 'Last Name',
+            type: 'text',
+            placeholder: 'Enter your last name',
+            as: 'text',
+        },
+        {
+            name: 'email',
+            label: 'Email',
+            type: 'email',
+            placeholder: 'Enter your email',
+            as: 'text',
+        },
+        {
+            name: 'password',
+            label: 'Password',
+            type: 'password',
+            placeholder: 'Enter your password',
+            as: 'password',
+        },
+        {
+            name: 'repeatPassword',
+            label: 'Repeat Password',
+            type: 'password',
+            placeholder: 'Repeat your password',
+            as: 'password',
+        },
+    ];
     const footer = (
         <div className="form-footer-links">
             <a href="/login">Already have an account? <span>Login</span></a>
@@ -30,13 +89,15 @@ const RegisterForm = () => {
     );
 
     return (
-            <AuthFormComponent
-                onSubmit={handleRegister}
-                fields={fields}
-                buttonText="Sign Up"
-                errors={error ? { email: error, password: error, username: error } : {}}
-                footer={footer}
-            />
+        <AuthFormComponent
+            onSubmit={handleRegister}
+            inputConfigs={registerInputConfigs}
+            validationSchema={registerValidationSchema}
+            buttonText="Sign Up"
+            errors={error ? { email: error, password: error, username: error } : {}}
+            footer={footer}
+            submissionError={error}
+        />
 
     );
 }

@@ -55,7 +55,7 @@ p {
 }
 
 * {
-    font-family: "Poppins", sans-serif;
+    font-family: "Poppins", sans-serif !important;
     font-optical-sizing: auto;
 }
 
@@ -102,7 +102,7 @@ p {
     color: $offWhite;
     padding: 15px 20px;
     border: none;
-    border-radius: 3px;
+    border-radius: 8px;
     cursor: pointer;
     font-size: 14px;
     text-align: center;
@@ -156,3 +156,17 @@ p {
         box-shadow: 0 0 0 2px lighten($deepCharcoal, 40%);
     }
 }
+
+.reset {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    color: red;
+    font-size: 13px;
+    cursor: pointer;
+    margin-right: auto;
+
+    &:hover {
+      color: darken(red, 5%);
+    }
+  }

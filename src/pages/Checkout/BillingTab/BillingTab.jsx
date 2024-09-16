@@ -184,84 +184,123 @@ const BillingTab = ({ totalAmount }) => {
 
     const createPaymentIntent = async (e) => {
         e.preventDefault();
-        console.log('Place order')
 
-        if (inStockItems.length > 0) {
-            if (!stripe) {
-                // Stripe.js hasn't yet loaded.
-                // Make sure to disable form submission until Stripe.js has loaded.
+        // Step 0: Pre-checks
+        if (inStockItems.length === 0) {
+            toast.error('No items in stock.');
+            return;
+        }
+
+        if (!stripe || !elements) {
+            toast.error('Stripe.js or Elements not loaded.');
+            return;
+        }
+
+        setIsProcessing(true);
+
+        // Step 1: Submit form fields through Stripe Elements
+        try {
+            const { error: submitError } = await elements.submit();
+            if (submitError) {
+                console.error('Form validation error:', submitError);
+                toast.error(`Form error: ${submitError.message}`);
+                setIsProcessing(false);
                 return;
             }
-            try {
-                setIsProcessing(true)
+        } catch (err) {
+            console.error('Form submission error:', err);
+            toast.error('Error submitting form. Please try again.');
+            setIsProcessing(false);
+            return;
+        }
 
-                const { error: submitError } = await elements.submit();
-                if (submitError) {
-                    handleError(submitError);
-                    return;
-                }
+        // Step 2: Request PaymentIntent from the server (backend)
+        let clientSecret;
+        try {
+            const { data } = await makeRequest.post('/orders', {
+                items: inStockItems,
+                billingInfo,
+                totalAmount,
+            });
 
-                const res = await makeRequest.post('/orders', {
-                    items: inStockItems,
-                    billingInfo,
-                    totalAmount,
-                    // customerEmail: billingInfo.email,
-                })
-                // .catch((error) => {
-                //     // setErrorSubmittingForm(error)
-                //     toast.error('Checkout session expired, please try again')
-                //     navigate('/cart')
-                //     console.log('Error creating payment intent', error)
-                //     return
-                // });
-                console.log(res)
-
-
-                console.log('res', res);
-
-                if (res?.data?.payemtnAlreadySucceeded === true) {
-                    toast.warning('Duplicate Payment Detected');
-                    return
-                }
-
-                dispatch(setBillingInfo(billingInfo));
-
-                // setClientSecret(res.data.clientSecret)
-                // dispatch(payment)
-                // const result = await stripe.redirectToCheckout({
-                //     sessionId: res.data.sessionId,
-                // });
-
-                // console.log(result)
-                const { error } = await stripe.confirmPayment({
-                    clientSecret: res.data.clientSecret,
-                    elements,
-                    confirmParams: {
-                        // Make sure to change this to your payment completion page
-                        return_url: `${window.location.origin}/checkout-success`,
-                    },
-                });
-
-                if (error.type === "card_error" || error.type === "validation_error") {
-                    setErrorMessage(error.message);
-                } else {
-                    setErrorMessage("An unexpected error occured.");
-                }
-            } catch (err) {
-                // setLoading(false)
-                // setErrorSubmittingForm({ response: { status: 'no-items' } });
-
-                console.error('Payment processing error:', err);
-                // alert('An error occurred during the payment process. Please try again later or disable your ad blocker if it is enabled.');
+            if (data?.paymentAlreadySucceeded) {
+                toast.warning('Duplicate Payment Detected. Payment already succeeded.');
+                navigate('/my-account/orders')
+                setIsProcessing(false);
+                return;
             }
-        }
-        else {
-            // setErrorSubmittingForm()
-        }
-        createPaymentIntent()
 
-        setIsProcessing(false);
+            clientSecret = data.clientSecret; // Save for further use
+            if (!clientSecret) {
+                throw new Error('No clientSecret received from backend.');
+            }
+        } catch (err) {
+            if (err.response?.status === 410 && err.response?.data?.error?.name === 'GoneError') {
+                toast.error('Checkout session has expired. Redirecting to cart...');
+                navigate('/cart');
+            } else {
+                console.error('Error creating payment intent:', err);
+                toast.error('Error creating payment. Please try again.');
+            }
+            setIsProcessing(false);
+            return;
+        }
+
+        // Step 3: Confirm Payment using the clientSecret
+        try {
+            const { error: paymentError, paymentIntent } = await stripe.confirmPayment({
+                clientSecret,
+                elements,
+                confirmParams: {
+                    return_url: `${window.location.origin}/checkout-success`,
+                },
+            });
+
+            if (paymentError) {
+                console.error('Payment confirmation error:', paymentError);
+                setErrorMessage(paymentError.message)
+                // Handle additional authentication (3D Secure, etc.)
+                if (paymentError.payment_intent?.status === 'requires_action') {
+                    try {
+                        const { error: handleError } = await stripe.handleCardAction(paymentError.payment_intent.client_secret);
+
+                        if (handleError) {
+                            console.error('Error handling 3D Secure:', handleError);
+                            toast.error(`3D Secure authentication failed: ${handleError.message}`);
+                            return;
+                        }
+
+                        // Re-check payment intent status after 3D Secure
+                        const { paymentIntent: updatedPaymentIntent } = await stripe.retrievePaymentIntent(clientSecret);
+                        if (updatedPaymentIntent.status === 'succeeded') {
+                            toast.success('Payment succeeded after 3D Secure!');
+                        } else {
+                            console.error('Payment failed after 3D Secure:', updatedPaymentIntent.status);
+                            toast.error(`Payment failed: ${updatedPaymentIntent.status}`);
+                        }
+                    } catch (err) {
+                        console.error('Error handling card action:', err);
+                        toast.error('Error during additional authentication. Please try again.');
+                    }
+                } else {
+                    toast.error(`Payment failed: ${paymentError.message}`);
+                }
+            } else if (paymentIntent.status === 'succeeded') {
+                toast.success('Payment succeeded!');
+                // Redirect to success page or update UI
+            } else {
+                console.error('Unexpected payment status:', paymentIntent.status);
+                toast.error(`Unexpected payment status: ${paymentIntent.status}`);
+            }
+        } catch (err) {
+            console.error('Error confirming payment:', err);
+            toast.error('Payment confirmation error. Please try again.');
+        } finally {
+            setIsProcessing(false);
+        }
     };
+
+
 
     useState(() => {
         console.log('isProcessing', isProcessing)
@@ -288,7 +327,11 @@ const BillingTab = ({ totalAmount }) => {
                         defaultCollapsed: false,
                         radios: true,
                         spacedAccordionItems: false
-                    }
+                    },
+                    fields: {
+                        billingDetails: 'auto'
+                    },
+
                 }} />
                 }
 
@@ -309,13 +352,13 @@ const BillingTab = ({ totalAmount }) => {
                     </div>}
                 {/* <button onClick={handlePayment} className='btn-1'>PROCEED TO CHECKOUT</button> */}
                 {/* <span className="reset" onClick={() => dispatch(resetCart())}>Reset Cart</span> */}
-
-                {!sameAsShippingAddress && <AddressElement options={{ mode: 'billing' }} />}
+                {/* 
+                {!sameAsShippingAddress && <AddressElement options={{ mode: 'billing' }} />} */}
 
                 <button className="btn-1 submit-btn" type='submit' disabled={isProcessing}  >
-                    {isProcessing ? <CircularProgress size={16} sx={{ color: 'white' }} /> : 'Place Order'}
+                    {isProcessing ? <CircularProgress size={16} sx={{ color: 'white' }} /> : errorMessage ? 'Try Again' : 'Place Order'}
                 </button>
-                {errorMessage && <div id="payment-message">{errorMessage}</div>}
+                {errorMessage && <div id="error-message">{errorMessage}</div>}
             </div>
 
         </form>

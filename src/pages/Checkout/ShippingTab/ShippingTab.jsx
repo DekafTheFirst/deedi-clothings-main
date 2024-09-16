@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import './ShippingTab.scss'
 import FormComponent from '../../../components/Form/Form'
 import { useDispatch, useSelector } from 'react-redux';
@@ -6,6 +6,10 @@ import _ from 'lodash';
 import { nextStep, setRates, setShippingInfo } from '../../../redux/checkout/checkoutReducer';
 import { makeRequest } from '../../../makeRequest';
 import { selectItemsByStock } from '../../../redux/cart/cartReducer';
+import { AddressElement } from '@stripe/react-stripe-js';
+import { CircularProgress } from '@mui/material';
+import LoadingButton from '@mui/lab/LoadingButton';
+import { Close } from '@mui/icons-material';
 
 const ShippingTab = () => {
     const dispatch = useDispatch()
@@ -109,7 +113,12 @@ const ShippingTab = () => {
     const stateData = reduxStoredShippingInfo?.stateData || null;
     const cityData = reduxStoredShippingInfo?.cityData || null;
 
+    const [filledShippingInfo, setFilledShippingInfo] = useState(null)
+    useEffect(() => {
+        'filledShippingInfo', filledShippingInfo
+    }, [filledShippingInfo])
 
+    const [isSubmitting, setIsSubmitting] = useState(false)
     // fetch from sessionStorage if available
 
 
@@ -128,7 +137,7 @@ const ShippingTab = () => {
 
 
 
-    const requestRates = async (filledShippingInfo, setSubmitting) => {
+    const requestRates = async () => {
 
         try {
             window.scrollTo(0, 0);
@@ -151,12 +160,11 @@ const ShippingTab = () => {
             console.log('Fetched couriers:', response.data);
         } catch (error) {
             setErrorSubmittingForm(error)
-        } finally {
-            setSubmitting(false);
         }
     }
 
-    const handleShippingSubmit = async (filledShippingInfo, { setSubmitting }) => {
+    const handleShippingSubmit = async () => {
+        setIsSubmitting(true)
         if (inStockItems.length > 0) {
             if (previewedStep) {
                 console.log('currently previewing')
@@ -166,46 +174,33 @@ const ShippingTab = () => {
                 console.log('initialValues ', reduxStoredShippingInfo)
 
                 if (infoIsChanged) {
-                    await requestRates(filledShippingInfo, setSubmitting)
+                    await requestRates(filledShippingInfo)
                 }
+
                 else {
                     dispatch(nextStep())
-                    setSubmitting(false);
+                    setIsSubmitting(false);
                 }
             }
             else {
-                await requestRates(filledShippingInfo, setSubmitting)
+                await requestRates(filledShippingInfo)
             }
+
         }
         else {
             setErrorSubmittingForm({ response: { status: 'no-items' } });
         }
-
+        setIsSubmitting(false)
     };
 
     // Handle Reset
-    const handleReset = (resetForm) => {
+    const handleReset = () => {
+        console.log('clicked')
         if (reduxStoredShippingInfo) {
             dispatch(setShippingInfo(null))
         }
 
-        resetForm({
-            values: {
-                firstName: '',
-                lastName: '',
-                email: '',
-                phoneNumber: '',
-                addressLine1: '',
-                addressLine2: '',
-                city: '',
-                cityData: null,
-                state: '',
-                stateData: null,
-                country: '',
-                countryData: null,
-                postalCode: '',
-            }
-        })
+        setFilledShippingInfo(null)
     }
 
     // Error Handling
@@ -229,7 +224,7 @@ const ShippingTab = () => {
             <div className="checkout">
                 {/* <CourierOptions /> */}
 
-                <FormComponent
+                {/* <FormComponent
                     formItems={formItems}
                     countryData={countryData}
                     stateData={stateData}
@@ -238,8 +233,16 @@ const ShippingTab = () => {
                     errorWhileSubmittingForm={errorWhileSubmittingForm}
                     handleReset={handleReset}
                 >
-                </FormComponent>
+                </FormComponent> */}
 
+                <AddressElement options={{ mode: 'shipping', defaultValues: reduxStoredShippingInfo }} onChange={(event) => {
+                    setFilledShippingInfo(event.value)
+                }} />
+                <div className="reset" onClick={handleReset}><Close fontSize='small' />Reset form</div>
+
+                <button className="btn-1 submit-btn" type='submit' disabled={isSubmitting} onClick={() => handleShippingSubmit()}>
+                    {isSubmitting ? <CircularProgress size={16} sx={{ color: 'white' }} /> : 'Place Order'}
+                </button>
 
                 {/* <button onClick={handlePayment} className='btn-1'>PROCEED TO CHECKOUT</button> */}
                 {/* <span className="reset" onClick={() => dispatch(resetCart())}>Reset Cart</span> */}

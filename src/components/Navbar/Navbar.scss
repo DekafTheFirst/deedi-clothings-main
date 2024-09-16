@@ -117,7 +117,6 @@
                 gap: 15px;
                 color: #464545;
                 align-items: center;
-                cursor: pointer;
 
                 .searchbar {
                     background-color: white;
@@ -140,6 +139,8 @@
                     .search-icon {
                         margin-left: auto;
                         color: $darkGray;
+                        cursor: pointer;
+
                     }
                 }
 
@@ -155,8 +156,10 @@
                         display: flex;
                         align-items: center;
                         gap: 3px;
+                        cursor: pointer;
 
                         .user-icon {
+
                             .user-image {
                                 width: 30px;
                                 height: 30px;
@@ -189,7 +192,7 @@
                         transform: translate(-50%);
 
                         .wrapper {
-                            border-radius: 3px;
+                            border-radius: 5px;
                             background-color: white;
                             box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
                             flex-direction: column;

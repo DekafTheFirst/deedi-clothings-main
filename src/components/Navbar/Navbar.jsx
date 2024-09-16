@@ -16,6 +16,7 @@ import { toast } from 'react-toastify';
 import { endCheckoutSession, setCheckoutSessionExpiryDate } from '../../redux/checkout/checkoutReducer';
 import { logoutUser } from '../../redux/auth/authReducer';
 import LoginForm from '../../pages/Auth/Login/LoginForm';
+import PersonOutline from '@mui/icons-material/PersonOutline';
 
 
 const excludedPaths = ['/checkout', '/checkout-success']; // Paths to exclude Navbar
@@ -162,9 +163,7 @@ const Navbar = () => {
         </div>
         <div className="center">
           <div className="brand collapse-menu-brand" onClick={(e) => {
-            if (!inCheckoutPage) {
-              navigate('/') // Prevents navigation if the link is disabled
-            }
+              navigate('/') 
           }}>
             <img src='/img/deedi-logo.png' />
           </div>
@@ -184,7 +183,7 @@ const Navbar = () => {
             <div className="user">
               <div className="summary">
                 <div className="user-icon" onClick={handleClickUser}>
-                  {!user ? <Person /> : <img src='http://localhost:1337/uploads/pexels_olly_972804_3fa9e26e5b.jpg' className='user-image' />}
+                  {!user ? <PersonOutline /> : <img src='http://localhost:1337/uploads/pexels_olly_972804_3fa9e26e5b.jpg' className='user-image' />}
                 </div>
                 <div className="user-info"><span>
                   {!user ? 'My Account' : `Hello, ${'Destiny'}`}</span>
@@ -213,7 +212,7 @@ const Navbar = () => {
                 :
                 <div className="user-dropdown nav-login-form">
                   <div className="wrapper">
-                    <h4 className='mb-3 text-center'>LOGIN</h4>
+                    <h4 className='mb-3 text-center fw-semibold'>LOGIN</h4>
                     <LoginForm />
                   </div>
                 </div>
