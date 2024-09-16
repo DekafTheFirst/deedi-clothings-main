@@ -16,7 +16,17 @@ import "react-country-state-city/dist/react-country-state-city.css";
 import { compose } from 'redux';
 import PasswordField from '../PasswordField/PasswordField';
 
-const InputField = ({ name, label, type, placeholder, as, touched, error, customInputName, value, handleBlur, setFieldValue, countryList, stateList, cityList }) => {
+
+const CustomInput = ({ field, form, autoComplete, ...props }) => (
+    <input
+      {...field}
+      {...props}
+      autoComplete={autoComplete}
+      className={`inputField ${form.touched[field.name] && form.errors[field.name] ? 'input-error' : ''}`}
+    />
+  );
+
+const InputField = ({ name, label, type, placeholder, as, touched, error, customInputName, value, handleBlur, setFieldValue, countryList, stateList, cityList , autoComplete}) => {
 
     // console.log('cityList', cityList)
 
@@ -176,12 +186,14 @@ const InputField = ({ name, label, type, placeholder, as, touched, error, custom
                             name={name}
                             placeholder={placeholder}
                             className={`inputField ${touched && error ? 'input-error' : ''}`}
+                            aut
                         />
                     </div>
                 );
             default:
                 return (
                     <Field
+                        autoComplete={autoComplete}
                         as='input'
                         type={type}
                         name={name}
@@ -195,7 +207,7 @@ const InputField = ({ name, label, type, placeholder, as, touched, error, custom
 
     return (
         <div className={`input-item ${as == 'textarea' ? 'textarea' : ''} ${as == 'custom' ? customInputName : ''}`}>
-            <span className='label'>{label}</span>
+            {label && <span className='label'>{label}</span>}
 
             {renderInput()}
 
