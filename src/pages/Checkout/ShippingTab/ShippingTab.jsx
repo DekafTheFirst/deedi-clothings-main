@@ -6,18 +6,20 @@ import _ from 'lodash';
 import { nextStep, setRates, setShippingInfo } from '../../../redux/checkout/checkoutReducer';
 import { makeRequest } from '../../../makeRequest';
 import { selectItemsByStock } from '../../../redux/cart/cartReducer';
-import { AddressElement } from '@stripe/react-stripe-js';
+import { AddressElement, useElements, useStripe } from '@stripe/react-stripe-js';
 import { CircularProgress } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
 import { Close } from '@mui/icons-material';
+import CTAButton from '../../../components/CTAButton/CTAButton';
 
 const ShippingTab = () => {
     const dispatch = useDispatch()
     const reduxStoredShippingInfo = useSelector(state => state.checkout.shippingInfo);
-
-
+    const user = useSelector(state => state.auth.user)
+    console.log('reduxStoredShippingInfo', reduxStoredShippingInfo)
+    const [email, setEmail] = useState(user?.email);
     // console.log('fetched session storage shipping info', sessionStoredShippingInfo)
-
+    const elements = useElements()
 
 
     // console.log(reduxStoredShippingInfo)
@@ -108,12 +110,7 @@ const ShippingTab = () => {
             initialValue: reduxStoredShippingInfo?.email || '',
         },
     ];
-
-    const countryData = reduxStoredShippingInfo?.countryData || null;
-    const stateData = reduxStoredShippingInfo?.stateData || null;
-    const cityData = reduxStoredShippingInfo?.cityData || null;
-
-    const [filledShippingInfo, setFilledShippingInfo] = useState(null)
+    const [filledShippingInfo, setFilledShippingInfo] = useState({})
     useEffect(() => {
         'filledShippingInfo', filledShippingInfo
     }, [filledShippingInfo])
@@ -154,7 +151,7 @@ const ShippingTab = () => {
                 items: itemsWithDimensions
             });
             // const couriers = response.data.rates;
-            dispatch(setShippingInfo(filledShippingInfo))
+            dispatch(setShippingInfo({ email, ...filledShippingInfo }))
             dispatch(setRates(response.data.data.rates))
             dispatch(nextStep())
             console.log('Fetched couriers:', response.data);
@@ -194,14 +191,7 @@ const ShippingTab = () => {
     };
 
     // Handle Reset
-    const handleReset = () => {
-        console.log('clicked')
-        if (reduxStoredShippingInfo) {
-            dispatch(setShippingInfo(null))
-        }
 
-        setFilledShippingInfo(null)
-    }
 
     // Error Handling
     const [errorWhileSubmittingForm, setErrorSubmittingForm] = useState(null);
@@ -211,7 +201,16 @@ const ShippingTab = () => {
     // }, [errorWhileSubmittingForm])
 
 
-
+    const handleReset = () => {
+        console.log('clicked')
+        const addressElement = elements.getElement(AddressElement)
+        if (reduxStoredShippingInfo) {
+            dispatch(setShippingInfo({}))
+        }
+        addressElement.clear()
+        setFilledShippingInfo({})
+        setEmail('')
+    }
 
 
     return (
@@ -234,17 +233,22 @@ const ShippingTab = () => {
                     handleReset={handleReset}
                 >
                 </FormComponent> */}
+                <div className="stripe-input-lookalike">
+                    <label htmlFor="email">Email</label>
+                    <input type='text' defaultValue={email} name="email" placeholder="Email" onChange={(e) => setEmail(e.target.value)} />
+                    </div>
+
 
                 <AddressElement options={{ mode: 'shipping', defaultValues: reduxStoredShippingInfo }} onChange={(event) => {
                     setFilledShippingInfo(event.value)
                 }} />
                 <div className="reset" onClick={handleReset}><Close fontSize='small' />Reset form</div>
 
-                <button className="btn-1 submit-btn" type='submit' disabled={isSubmitting} onClick={() => handleShippingSubmit()}>
-                    {isSubmitting ? <CircularProgress size={16} sx={{ color: 'white' }} /> : 'Place Order'}
-                </button>
 
-                {/* <button onClick={handlePayment} className='btn-1'>PROCEED TO CHECKOUT</button> */}
+
+                <CTAButton isSubmitting={isSubmitting} type='submit' disabled={isSubmitting} onClick={() => handleShippingSubmit()} buttonText='Continue' />
+
+                {/* <button onClick={handlePayment} className='cta-button'>PROCEED TO CHECKOUT</button> */}
                 {/* <span className="reset" onClick={() => dispatch(resetCart())}>Reset Cart</span> */}
             </div>
 

@@ -3,6 +3,7 @@ import './CourierOptions.scss'
 import { useDispatch, useSelector } from 'react-redux'
 import CourierOptionItem from './CourierOption/CourierOptionItem'
 import { nextStep, setSelectedCourierId } from '../../redux/checkout/checkoutReducer'
+import CTAButton from '../CTAButton/CTAButton'
 
 
 
@@ -89,9 +90,7 @@ const CourierOptions = () => {
             />
           ))}
         </div>
-        <button onClick={handleSubmitCourierOtion} className="btn-1 submit-btn" disabled={false} >
-          proceeed to payment
-        </button>
+        <CTAButton onClick={handleSubmitCourierOtion} className="" disabled={false} buttonText={'Proceed To Payment'} />
       </form>
     </div>
   )

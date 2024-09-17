@@ -49,8 +49,37 @@
         padding-bottom: 20px;
         margin-bottom: 20px;
 
+
+        .stripe-input-lookalike {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+
+            label {
+                color: $darkGray;
+                font-size: 15px;
+            }
+
+            input {
+                outline: none;
+                border: 1px solid $lightGray;
+                padding: 12px;
+                font-size: 14px;
+                color: $charcoal;
+                border-radius: 5px;
+
+                &:focus {
+                    border: 1px solid hsla(210, 96%, 45%, 50%);
+                    box-shadow: 0 0 0 3px rgba(173, 216, 230, 0.7); /* Light blue shadow */
+                
+                }
+            }
+
+            
+        }
+
         @include md {}
-        
+
     }
 
     // .info {
@@ -73,9 +102,9 @@
 
     // }
 
-   
 
-    
+
+
 
     .secondary-action {
         color: $darkGray;

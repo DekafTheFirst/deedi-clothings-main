@@ -16,10 +16,10 @@
     gap: 20px;
     height: 100%;
     max-width: 1100px;
-    
+
 
     .dashboard-menu {
-      border-radius: 10px;
+      border-radius: 8px;
       width: 300px;
       padding-inline: 15px;
 
@@ -28,9 +28,12 @@
       flex-direction: column;
       // gap: 20px;
       background-color: white;
-      box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
       height: 100%;
       flex-shrink: 0;
+
+      @include md {
+        box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+      }
 
       .user-info {
         display: flex;
@@ -115,14 +118,17 @@
 
     .tab-content {
       min-height: 100%;
+
       // display: none;
-      box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+      @include md {
+        box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+      }
+
       .back-btn {
         display: none;
       }
 
-
-      padding: 30px;
+      overflow: hidden;
       background-color: white;
       border-radius: 8px;
       flex-grow: 1;
@@ -160,7 +166,10 @@
 
       .tab-content {
         display: none;
-
+        padding: 12px;
+        width: 100%;
+        position: absolute;
+        
         &.show {
           display: flex
         }
@@ -175,10 +184,7 @@
           text-decoration: underline;
         }
 
-        padding: 15px;
-        width: 100%;
-        height: 100%;
-        position: absolute;
+        
       }
     }
   }

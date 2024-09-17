@@ -14,6 +14,7 @@ import { selectItemsByStock } from '../../../redux/cart/cartReducer';
 import { AddressElement, PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import CTAButton from '../../../components/CTAButton/CTAButton';
 
 const BillingTab = ({ totalAmount }) => {
     const dispatch = useDispatch()
@@ -136,7 +137,7 @@ const BillingTab = ({ totalAmount }) => {
 
     const handleReset = (resetForm) => {
         if (billingInfo) {
-            dispatch(setBillingInfo(null))
+            dispatch(setBillingInfo({}))
         }
 
         resetForm({
@@ -214,13 +215,24 @@ const BillingTab = ({ totalAmount }) => {
             return;
         }
 
+        const paymentElement = elements.getElement('payment');
+        // const billingDetails = paymentElement.getValue(); // Extract the data from the element
+        console.log('Billing Details:', paymentElement);
+        
+        if (!paymentElement) {
+            toast.error('Payment element not found.');
+            setIsProcessing(false);
+            return;
+        }
+    
+
         // Step 2: Request PaymentIntent from the server (backend)
         let clientSecret;
         try {
             const { data } = await makeRequest.post('/orders', {
                 items: inStockItems,
-                billingInfo,
                 totalAmount,
+                shippingInfo,
             });
 
             if (data?.paymentAlreadySucceeded) {
@@ -252,6 +264,9 @@ const BillingTab = ({ totalAmount }) => {
                 clientSecret,
                 elements,
                 confirmParams: {
+                    payment_method_data: {
+                        
+                    },
                     return_url: `${window.location.origin}/checkout-success`,
                 },
             });
@@ -313,7 +328,7 @@ const BillingTab = ({ totalAmount }) => {
 
 
     return (
-        <form className="billing-tab" onSubmit={createPaymentIntent}>
+        <form className="billing-tab">
 
             <div className="top">
                 {/* <h6 className="tab-title"> Billing Address</h6> */}
@@ -328,14 +343,14 @@ const BillingTab = ({ totalAmount }) => {
                         radios: true,
                         spacedAccordionItems: false
                     },
+                    
                     fields: {
-                        billingDetails: 'auto'
+                        billingDetails: 'auto' 
                     },
-
                 }} />
                 }
 
-                {stripe && elements &&
+                {/* {stripe && elements &&
                     <div
                         className={`option-item`}
                     >
@@ -349,15 +364,14 @@ const BillingTab = ({ totalAmount }) => {
                         <p className="text" onClick={handleToggleSameShippingAddress}>
                             Same as shipping address
                         </p>
-                    </div>}
-                {/* <button onClick={handlePayment} className='btn-1'>PROCEED TO CHECKOUT</button> */}
+                    </div>} */}
+                {/* <button onClick={handlePayment} className='cta-button'>PROCEED TO CHECKOUT</button> */}
                 {/* <span className="reset" onClick={() => dispatch(resetCart())}>Reset Cart</span> */}
                 {/* 
                 {!sameAsShippingAddress && <AddressElement options={{ mode: 'billing' }} />} */}
 
-                <button className="btn-1 submit-btn" type='submit' disabled={isProcessing}  >
-                    {isProcessing ? <CircularProgress size={16} sx={{ color: 'white' }} /> : errorMessage ? 'Try Again' : 'Place Order'}
-                </button>
+              
+                {stripe && elements && <CTAButton onClick={createPaymentIntent} isSubmitting={isProcessing} disabled={isProcessing} buttonText={errorMessage ? 'Try Again' : 'Place Order'} />}
                 {errorMessage && <div id="error-message">{errorMessage}</div>}
             </div>
 

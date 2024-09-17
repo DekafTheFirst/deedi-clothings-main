@@ -216,7 +216,7 @@ const CheckoutPage = () => {
 
                           <div className='list-empty'>
                             <span>No Products</span>
-                            <button onClick={() => navigate('/products/women')} className='btn-1'><ShoppingBagOutlined fontSize='small' /> Continue Shopping</button>
+                            <button onClick={() => navigate('/products/women')} className='xta-btn'><ShoppingBagOutlined fontSize='small' /> Continue Shopping</button>
                           </div>}
                       </div>
                     </div>

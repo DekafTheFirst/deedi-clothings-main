@@ -306,20 +306,20 @@ const Product = () => {
                 
                 {selectedStock?.stock === 0 || maxStockReached ?
                   <button
-                    className={`add btn-1`}
+                    className={`add cta-button`}
                     onClick={handleNotifyWhenAvailable}
                   >
                     {'Notify me when available'}
                   </button>
                   :
                   <button
-                    className={`add btn-1`}
+                    className={`add cta-button`}
                     disabled={selectedStock?.stock === 0 || isLoading}
                     onClick={handleAddToCart}
                   >
                     {isLoading ? <CircularProgress size={16} sx={{ color: 'white' }} /> : 'Add to Cart'}
                   </button>}
-                <button className="add-to-wishlist btn-2">
+                <button className="add-to-wishlist secondary-btn">
                   <StarBorderIcon /> <span>ADD TO WISH LIST</span>
                 </button>
               </div>

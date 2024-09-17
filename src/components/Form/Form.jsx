@@ -11,6 +11,7 @@ import { nextStep, setCurrentStep, setShippingInfo } from '../../redux/checkout/
 import CircularProgress from '@mui/material/CircularProgress';
 import { GetCity, GetCountries, GetState } from 'react-country-state-city/dist/cjs';
 import { Close } from '@mui/icons-material';
+import CTAButton from '../CTAButton/CTAButton';
 
 const FormComponent = ({ formItems, countryData, stateData, cityData, handleSubmit, handleReset, errorWhileSubmittingForm, retry, submitBtnText }) => {
     const validationSchema = yup.object().shape({
@@ -89,7 +90,7 @@ const FormComponent = ({ formItems, countryData, stateData, cityData, handleSubm
             onSubmit={handleSubmit}
             validationSchema={validationSchema}
         >
-            {({ isSubmitting, setSubmitting, errors, initialValues, values, touched, setFieldValue, handleBlur, handleSubmit, resetForm }) => {
+            {({ isSubmitting, setSubmitting,  errors, initialValues, values, touched, setFieldValue, handleBlur, handleSubmit, resetForm }) => {
 
                 // useEffect(() => {
                 //     console.log('initialValues known inside form', initialValues)
@@ -181,9 +182,9 @@ const FormComponent = ({ formItems, countryData, stateData, cityData, handleSubm
                                         </div>
 
                                         <div className="reset" onClick={() => handleReset(resetForm)}><Close fontSize='small' />Reset form</div>
-                                        <button type="submit" className="btn-1 submit-btn" disabled={isSubmitting} >
-                                            {submitBtnText || 'Save & Continue'}
-                                        </button>
+                                        
+                                        <CTAButton isSubmitting={isSubmitting} onClick={handleSubmit} buttonText={submitBtnText || 'Save & Continue' }/>
+
                                     </Form>
                                 </>
                             )

@@ -116,7 +116,7 @@ const Layout = () => {
       {displayNavbar && <Navbar />}
       <div id="content" className={`${displayNavbar ? 'navbar-visible': ''}`}>
         <div className={`darkOverlay ${showCart ? 'show' : ''}`}></div>
-        <ToastContainer />
+        <ToastContainer position="top-center" />
         <Outlet />
       </div>
     </div>

@@ -146,7 +146,7 @@ const CartPage = () => {
                     <div className="summary-item">No. of Items: <span className="value">{inStockItems.length}</span></div>
                   </div>
                 </div>
-                <button onClick={handleProceedToCheckout} className='btn-1'>{cartMode === CART_MODE.NORMAL ? 'PROCEED TO CHECKOUT' : 'CONFIRM CHANGES & CONTINUE'}</button>
+                <button onClick={handleProceedToCheckout} className='cta-button'>{cartMode === CART_MODE.NORMAL ? 'PROCEED TO CHECKOUT' : 'CONFIRM CHANGES & CONTINUE'}</button>
                 {/* <span className="reset" onClick={() => dispatch(resetCart())}>Reset Cart</span> */}
                 <Link to="/cart" className='secondary-action'> Continue Shopping </Link>
               </div>
