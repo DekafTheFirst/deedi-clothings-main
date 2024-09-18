@@ -62,7 +62,7 @@ const CheckoutItem = ({ item }) => {
                             </div>}
                         </div>
                         <div className="price">
-                            <span className="total-price-per-item">${item?.price * item.quantity}</span>
+                            <span className="total-price-per-item">${item?.price}</span>
                         </div>
                     </div>
 

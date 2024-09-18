@@ -3442,7 +3442,7 @@ const List = ({ products, productsLoading }) => {
     return (
         <div className="list">
             {productsLoading
-                ? <CircularProgress />
+                ? <CircularProgress className='loading-indicator'/>
                 : products?.map(item => (<Card item={item} key={item.id} />))}
             {/* {images.map((img, index) => 
                 (<LazyLoadImage

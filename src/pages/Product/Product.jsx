@@ -323,12 +323,11 @@ const Product = () => {
                   <StarBorderIcon /> <span>ADD TO WISH LIST</span>
                 </button>
               </div>
-              <div className="info">
-                <span className="product-type">Product Type: {product?.attributes?.sub_categories?.data?.map((subCategory) => {
+              {/* <div className="info">
+                <span className="product-type">Subcategory: {product?.attributes?.sub_categories?.data?.map((subCategory) => {
                   return <span className="subCategory" key={subCategory.id}> {subCategory.attributes.title}, </span>
                 })}</span>
-                <span>Tag(s): T-Shirt, Women, Top</span>
-              </div>
+              </div> */}
               <div className="info">
                 {/* <span>DESCRIPTION: </span>
                 <hr />

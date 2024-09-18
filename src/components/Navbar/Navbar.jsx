@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { memo, useEffect, useState } from 'react'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import SearchIcon from '@mui/icons-material/Search';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
@@ -17,9 +17,27 @@ import { endCheckoutSession, setCheckoutSessionExpiryDate } from '../../redux/ch
 import { logoutUser } from '../../redux/auth/authReducer';
 import LoginForm from '../../pages/Auth/Login/LoginForm';
 import PersonOutline from '@mui/icons-material/PersonOutline';
+import classNames from 'classnames';
 
 
 const excludedPaths = ['/checkout', '/checkout-success']; // Paths to exclude Navbar
+
+const menuItems = [
+  { title: 'Profile', slug: 'profile', icon: <Person /> },
+  { title: 'Orders', slug: 'orders', icon: <LocalShipping /> },
+];
+
+const AuthDropDownItem = memo(({ title, slug, icon }) => {
+  const location = useLocation();
+  const isActive = `#${slug}` === location.hash;
+  return (
+    <Link className={classNames("dropdown-item", { isActive })} to={`/my-account#${slug}`}>
+      {icon}
+      <span>{title}</span>
+    </Link>
+  )
+})
+
 
 const Navbar = () => {
   const [showMobileMenu, toggleShowMobileMenu] = useState(false);
@@ -130,6 +148,8 @@ const Navbar = () => {
   }
 
 
+
+
   return (
     <div className={`navbar ${scrolled ? 'scrolled' : ''} ${showMobileMenu ? 'toggled' : ''} ${inCheckoutPage ? 'in-checkout-page' : ''}`}>
       <div className="container-fluid">
@@ -153,17 +173,17 @@ const Navbar = () => {
             <div className="item">
               <Link className="link" to="/products/kids">Kids</Link>
             </div>
-            <div className="item">
+            {/* <div className="item">
               <Link className="link" to="/about">About</Link>
-            </div>
-            <div className="item">
+            </div> */}
+            {/* <div className="item">
               <Link className="link" to="/contact">Contact</Link>
-            </div>
+            </div> */}
           </div>
         </div>
         <div className="center">
           <div className="brand collapse-menu-brand" onClick={(e) => {
-              navigate('/') 
+            navigate('/')
           }}>
             <img src='/img/deedi-logo.png' />
           </div>
@@ -175,10 +195,10 @@ const Navbar = () => {
           </div> */}
 
           <div className="icons">
-            <div className="searchbar">
+            {/* <div className="searchbar">
               <input type="text" name="" id="" />
               <SearchIcon fontSize='small' className='icon search-icon' />
-            </div>
+            </div> */}
 
             <div className="user">
               <div className="summary">
@@ -195,14 +215,7 @@ const Navbar = () => {
               {user ?
                 <div className="user-dropdown">
                   <div className="wrapper">
-                    <Link className="dropdown-item" to="/my-account#profile">
-                      <Person fontSize='small' />
-                      <span>Profile</span>
-                    </Link>
-                    <Link className="dropdown-item" to='/my-account#orders'>
-                      <LocalShipping fontSize='small' />
-                      <span>Orders</span>
-                    </Link>
+                    {menuItems.map((item) => <AuthDropDownItem key={item.slug} title={item.title} slug={item.slug} icon={item.icon} />)}
                     <div className="dropdown-item" onClick={handleLogout}>
                       <Logout fontSize='small' />
                       <span>Logout</span>
@@ -221,13 +234,16 @@ const Navbar = () => {
             </div>
 
             {
-              pathname !== '/checkout' && <div className="cartIcon" onClick={() => dispatch(setShowCart(!showCart))}>
-                <ShoppingCartOutlinedIcon className='icon' />
-                <div className='noOfItems'><span>{noOfItems}</span></div>
+              pathname !== '/checkout' &&
+              <div className="cart-icon-wrapper" onMouseOver={() => dispatch(setShowCart(!showCart))}>
+                <div className="cartIcon"
+                >
+                  <ShoppingCartOutlinedIcon className='icon' />
+                  <div className='noOfItems'><span>{noOfItems}</span></div>
+                </div>
               </div>
             }
-            {showCart && <Cart />
-            }
+            {showCart && <Cart />}
 
           </div>
 

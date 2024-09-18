@@ -17,10 +17,11 @@ const ShippingTab = () => {
     const reduxStoredShippingInfo = useSelector(state => state.checkout.shippingInfo);
     const user = useSelector(state => state.auth.user)
     console.log('reduxStoredShippingInfo', reduxStoredShippingInfo)
-    const [email, setEmail] = useState(user?.email);
+    const [email, setEmail] = useState('');
     // console.log('fetched session storage shipping info', sessionStoredShippingInfo)
     const elements = useElements()
 
+    const [isStripeReady, setIsStripeReady] = useState(false);
 
     // console.log(reduxStoredShippingInfo)
 
@@ -208,8 +209,8 @@ const ShippingTab = () => {
             dispatch(setShippingInfo({}))
         }
         addressElement.clear()
-        setFilledShippingInfo({})
         setEmail('')
+        setFilledShippingInfo({})
     }
 
 
@@ -233,20 +234,22 @@ const ShippingTab = () => {
                     handleReset={handleReset}
                 >
                 </FormComponent> */}
-                <div className="stripe-input-lookalike">
-                    <label htmlFor="email">Email</label>
-                    <input type='text' defaultValue={email} name="email" placeholder="Email" onChange={(e) => setEmail(e.target.value)} />
+                {isStripeReady &&
+                    <div className="stripe-input-lookalike">
+                        <label htmlFor="email">Email</label>
+                        <input type='text' value={email} defaultValue={user?.email || ''} name="email" placeholder="Email" onChange={(e) => setEmail(e.target.value)} />
                     </div>
-
+                }
 
                 <AddressElement options={{ mode: 'shipping', defaultValues: reduxStoredShippingInfo }} onChange={(event) => {
                     setFilledShippingInfo(event.value)
-                }} />
+                }} onReady={() => setIsStripeReady(true)} />
+
                 <div className="reset" onClick={handleReset}><Close fontSize='small' />Reset form</div>
 
 
 
-                <CTAButton isSubmitting={isSubmitting} type='submit' disabled={isSubmitting} onClick={() => handleShippingSubmit()} buttonText='Continue' />
+                {isStripeReady && <CTAButton isSubmitting={isSubmitting} type='submit' disabled={isSubmitting} onClick={() => handleShippingSubmit()} buttonText='Continue' />}
 
                 {/* <button onClick={handlePayment} className='cta-button'>PROCEED TO CHECKOUT</button> */}
                 {/* <span className="reset" onClick={() => dispatch(resetCart())}>Reset Cart</span> */}

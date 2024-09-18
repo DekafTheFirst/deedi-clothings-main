@@ -100,6 +100,7 @@
             // margin-right: auto;
             .brand {
                 cursor: pointer;
+
                 img {
                     height: 50px;
                 }
@@ -115,7 +116,7 @@
             .icons {
                 display: flex;
                 height: 100%;
-                gap: 15px;
+                gap: 5px;
                 color: #464545;
                 align-items: center;
 
@@ -229,13 +230,13 @@
                                 background-color: $lighterGray;
                             }
 
-                            &.active {
+                            &.isActive {
                                 color: $azureRadBlue;
                                 background-color: $lighterGray;
 
                             }
 
-                            
+
                         }
 
                         &.nav-login-form {
@@ -273,31 +274,37 @@
 
                 }
 
-                .cartIcon {
-                    position: relative;
+                .cart-icon-wrapper {
+                    height: 100%;
                     display: flex;
                     align-items: center;
-                    margin-right: 5px;
-                    cursor: pointer;
-
-                    .noOfItems {
+                    padding-inline: 10px;
+                    .cartIcon {
+                        position: relative;
                         display: flex;
                         align-items: center;
-                        justify-content: center;
-                        position: absolute;
-                        right: -10px;
-                        top: -8px;
-                        width: 20px;
-                        height: 20px;
-                        border-radius: 50%;
-                        background-color: #FF4B5C;
+                        margin-right: 5px;
+                        cursor: pointer;
+
+                        .noOfItems {
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            position: absolute;
+                            right: -10px;
+                            top: -8px;
+                            width: 20px;
+                            height: 20px;
+                            border-radius: 50%;
+                            background-color: #FF4B5C;
 
 
-                        span {
-                            vertical-align: middle;
-                            color: white;
-                            font-size: 11px;
+                            span {
+                                vertical-align: middle;
+                                color: white;
+                                font-size: 11px;
 
+                            }
                         }
                     }
                 }

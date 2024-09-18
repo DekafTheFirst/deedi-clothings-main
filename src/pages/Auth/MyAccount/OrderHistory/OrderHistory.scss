@@ -13,7 +13,11 @@
     align-items: center;
     gap: 10px;
 
-    span {
+    .dynamic-title {
+
+    }
+
+    .quantity {
       padding: 4px 10px;
       text-align: center;
       font-size: 14px;
@@ -155,158 +159,13 @@
           display: flex;
           flex-direction: column;
 
-          .order-item {
-            display: flex;
-            gap: 10px;
-            cursor: pointer;
-            padding: 5px;
-            border-radius: 6px;
-
-
-
-            .img {
-              background-color: $lighterGray;
-              border: 1px solid $lightGray;
-              border-radius: 3px;
-              width: 55px;
-              height: 55px;
-              padding: 5px;
-
-              img {
-                object-fit: contain;
+          .checkout-item {
+            .img-wrapper {
+              .img {
+                background-color: $lighterGray;
               }
-
-
-            }
-
-            .wrapper {
-              display: flex;
-              flex-grow: 1;
-              gap: 3px;
-              align-items: center;
-
-              .top {
-                display: flex;
-                width: 100%;
-                align-items: center;
-
-
-                .details {
-                  display: flex;
-                  flex-direction: column;
-                  gap: 5px;
-                  flex: 1;
-                  overflow: hidden;
-
-                  .title {
-                    margin-top: 0;
-                    font-size: 15px;
-                    // font-weight: 500;
-                    white-space: nowrap;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                    display: block;
-                  }
-
-                  .stock {
-                    display: flex;
-                    align-items: center;
-                    gap: 6px;
-
-                    .size {
-                      font-weight: 400;
-                      font-size: 14px;
-                      display: flex;
-                      align-items: center;
-                      gap: 4px;
-                      color: $darkGray;
-
-
-
-                      .value {
-                        font-weight: 500;
-                        font-size: 15px;
-                      }
-
-
-
-
-                    }
-
-                    .vertical-line {
-                      width: 2px;
-                      height: 13px;
-                      background-color: $lightGray;
-                    }
-
-                    .stock-info {
-                      display: flex;
-
-                      span {
-                        font-weight: 600;
-                        font-size: 14px;
-
-                        &.out-of-stock {
-                          color: red;
-                        }
-
-                        &.in-stock {
-                          color: green;
-                        }
-
-                        &.low-stock {
-                          color: $brightRed;
-                        }
-
-                      }
-
-
-                    }
-
-                  }
-
-
-
-                  .warning {
-                    color: $warningYellow;
-                    font-size: 14px;
-                    font-style: italic;
-                  }
-
-                }
-
-                .price {
-                  display: flex;
-                  gap: 5px;
-
-
-                  .total-price-per-item {
-                    font-size: 16px;
-                    font-weight: 600;
-                  }
-                }
-
-
-
-
-              }
-
-
-
-              span {
-                line-height: 1; // Ensures the text is centered
-                font-size: 15px;
-                vertical-align: middle;
-              }
-
-            }
-            &:hover {
-              background-color: $lighterGray;
             }
           }
-
-         
-
         }
 
         .summary {

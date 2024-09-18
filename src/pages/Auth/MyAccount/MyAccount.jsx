@@ -11,8 +11,8 @@ const OrderHistory = lazy(() => import('./OrderHistory/OrderHistory'));
 const Profile = lazy(() => import('./Profile/Profile'));
 
 const menuItems = [
-  { title: 'Orders', slug: 'orders', component: OrderHistory, icon: <LocalShipping /> },
   { title: 'Profile', slug: 'profile', component: Profile, icon: <Person /> },
+  { title: 'Orders', slug: 'orders', component: OrderHistory, icon: <LocalShipping /> },
 ];
 
 const MyAccount = () => {
@@ -28,9 +28,10 @@ const MyAccount = () => {
   };
 
   const handleSelectActiveTab = (slug) => {
-    setActiveTab(slug)
-    setShowActiveTab(true)
-  }
+    setActiveTab(slug);
+    setShowActiveTab(true);
+    navigate(`#${slug}`); // Update hash in URL
+  };
 
   const handleLogout = () => {
     dispatch(logoutUser());
@@ -39,13 +40,13 @@ const MyAccount = () => {
   }
 
   const isInitialMount = useRef(true)
+  
   useEffect(() => {
-    navigate(`#${activeTab}`);
-    if (!isInitialMount.current) {
-      setShowActiveTab(true)
-      isInitialMount.current = false
+    const currentHash = location.hash.replace('#', '') || 'orders';
+    if (currentHash !== activeTab) {
+      setActiveTab(currentHash);
     }
-  }, [activeTab, navigate]);
+  }, [location.hash, activeTab]);
 
   const user = useSelector(state => state.auth.user);
 
@@ -84,7 +85,7 @@ const MyAccount = () => {
             >
               <LogoutIcon />
               <span>Logout</span>
-            *</button>
+            </button>
           </div>
         </div>
 

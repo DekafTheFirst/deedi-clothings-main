@@ -20,6 +20,8 @@ const BillingTab = ({ totalAmount }) => {
     const dispatch = useDispatch()
     const { shippingInfo, billingInfo, selectedCourierId, checkoutSessionExpiresAt } = useSelector(state => state.checkout);
     const stripe = useStripe();
+    const [isStripeReady, setIsStripeReady] = useState(false);
+
     const elements = useElements();
     const navigate = useNavigate()
 
@@ -218,13 +220,13 @@ const BillingTab = ({ totalAmount }) => {
         const paymentElement = elements.getElement('payment');
         // const billingDetails = paymentElement.getValue(); // Extract the data from the element
         console.log('Billing Details:', paymentElement);
-        
+
         if (!paymentElement) {
             toast.error('Payment element not found.');
             setIsProcessing(false);
             return;
         }
-    
+
 
         // Step 2: Request PaymentIntent from the server (backend)
         let clientSecret;
@@ -265,7 +267,7 @@ const BillingTab = ({ totalAmount }) => {
                 elements,
                 confirmParams: {
                     payment_method_data: {
-                        
+
                     },
                     return_url: `${window.location.origin}/checkout-success`,
                 },
@@ -336,16 +338,18 @@ const BillingTab = ({ totalAmount }) => {
 
             <div className="checkout">
                 {/* <CourierOptions /> */}
-                {<PaymentElement options={{
+                {<PaymentElement
+                    onReady={()=>setIsStripeReady(true)}
+                options={{
                     layout: {
                         type: 'accordion',
                         defaultCollapsed: false,
                         radios: true,
                         spacedAccordionItems: false
                     },
-                    
+
                     fields: {
-                        billingDetails: 'auto' 
+                        billingDetails: 'auto'
                     },
                 }} />
                 }
@@ -370,8 +374,8 @@ const BillingTab = ({ totalAmount }) => {
                 {/* 
                 {!sameAsShippingAddress && <AddressElement options={{ mode: 'billing' }} />} */}
 
-              
-                {stripe && elements && <CTAButton onClick={createPaymentIntent} isSubmitting={isProcessing} disabled={isProcessing} buttonText={errorMessage ? 'Try Again' : 'Place Order'} />}
+
+                {isStripeReady ? <CTAButton onClick={createPaymentIntent} isSubmitting={isProcessing} disabled={isProcessing} buttonText={errorMessage ? 'Try Again' : 'Place Order'} /> : <CircularProgress size={24} className='loading-indicator'/>}
                 {errorMessage && <div id="error-message">{errorMessage}</div>}
             </div>
 
