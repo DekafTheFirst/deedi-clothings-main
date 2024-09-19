@@ -17,107 +17,26 @@ const ShippingTab = () => {
     const reduxStoredShippingInfo = useSelector(state => state.checkout.shippingInfo);
     const user = useSelector(state => state.auth.user)
     console.log('reduxStoredShippingInfo', reduxStoredShippingInfo)
-    const [email, setEmail] = useState('');
-    // console.log('fetched session storage shipping info', sessionStoredShippingInfo)
-    const elements = useElements()
+    const [email, setEmail] = useState(reduxStoredShippingInfo?.email || user?.email);
+    const [emailError, setEmailError] = useState('');
+    const elements = useElements();
+    const stripe = useStripe();
+
+    const addressElement = elements?.getElement(AddressElement)
+
+    const [isAddressComplete, setIsAddressComplete] = useState(false);
 
     const [isStripeReady, setIsStripeReady] = useState(false);
 
     // console.log(reduxStoredShippingInfo)
 
-
-
-    const formItems = [
-        {
-            name: 'firstName',
-            label: 'First Name',
-            type: 'text',
-            placeholder: '',
-            initialValue: reduxStoredShippingInfo?.firstName || '',
-        },
-        {
-            name: 'lastName',
-            label: 'Last Name',
-            type: 'text',
-            placeholder: '',
-            initialValue: reduxStoredShippingInfo?.lastName || '',
-
-        },
-
-        {
-            name: 'addressLine1',
-            label: 'Address Line 1',
-            type: 'text',
-            as: 'custom',
-            customInputName: 'addressLine',
-            placeholder: '',
-            initialValue: reduxStoredShippingInfo?.addressLine1 || '',
-        },
-
-
-        {
-            name: 'addressLine2',
-            label: 'Address Line 2(Optional)',
-            type: 'text',
-            as: 'custom',
-            customInputName: 'addressLine',
-            placeholder: '',
-            initialValue: reduxStoredShippingInfo?.addressLine2 || '',
-        },
-        {
-            name: 'country',
-            label: 'Country',
-            as: 'country-selector',
-            type: 'text',
-            placeholder: '',
-            initialValue: reduxStoredShippingInfo?.country || '',
-        },
-
-        {
-            name: 'state',
-            label: 'State',
-            as: 'state-selector',
-            type: 'text',
-            placeholder: '',
-            initialValue: reduxStoredShippingInfo?.state || '',
-        },
-        {
-            name: 'city',
-            label: 'City',
-            as: 'city-selector',
-            type: 'text',
-            placeholder: '',
-            initialValue: reduxStoredShippingInfo?.city || '',
-        },
-        {
-            name: 'postalCode',
-            label: 'Postal Code',
-            type: 'text',
-            placeholder: '',
-            initialValue: reduxStoredShippingInfo?.postalCode || '',
-        },
-        {
-            name: 'phoneNumber',
-            label: 'Phone Number',
-            type: 'tel',
-            placeholder: '',
-            initialValue: reduxStoredShippingInfo?.phoneNumber || '',
-        },
-        {
-            name: 'email',
-            label: 'Email',
-            type: 'email',
-            placeholder: '',
-            initialValue: reduxStoredShippingInfo?.email || '',
-        },
-    ];
     const [filledShippingInfo, setFilledShippingInfo] = useState({})
     useEffect(() => {
         'filledShippingInfo', filledShippingInfo
     }, [filledShippingInfo])
 
     const [isSubmitting, setIsSubmitting] = useState(false)
-    // fetch from sessionStorage if available
+    const [errorWhileSubmittingForm, setErrorSubmittingForm] = useState(null);
 
 
     const [retryAttempt, setRetryAttempt] = useState(0);
@@ -161,8 +80,31 @@ const ShippingTab = () => {
         }
     }
 
-    const handleShippingSubmit = async () => {
+    const validateEmail = (email) => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    };
+
+    const handleShippingSubmit = async (e) => {
+        e.preventDefault();
+
+        if (!isAddressComplete) {
+            setErrorSubmittingForm("Please complete your address details before submitting.");
+            return;
+        }
+
+        if (emailError || !validateEmail(email)) {
+            setErrorSubmittingForm("Please provide a valid email address.");
+            return;
+        }
+
+        if (!stripe || !elements) {
+            return;
+        }
+
+
         setIsSubmitting(true)
+
         if (inStockItems.length > 0) {
             if (previewedStep) {
                 console.log('currently previewing')
@@ -195,7 +137,6 @@ const ShippingTab = () => {
 
 
     // Error Handling
-    const [errorWhileSubmittingForm, setErrorSubmittingForm] = useState(null);
     // console.log(errorWhileSubmittingForm)
     // useEffect(() => {
     //     console.log('Error fetching couriers', errorWhileSubmittingForm);
@@ -204,7 +145,6 @@ const ShippingTab = () => {
 
     const handleReset = () => {
         console.log('clicked')
-        const addressElement = elements.getElement(AddressElement)
         if (reduxStoredShippingInfo) {
             dispatch(setShippingInfo({}))
         }
@@ -237,25 +177,33 @@ const ShippingTab = () => {
                 {isStripeReady &&
                     <div className="stripe-input-lookalike">
                         <label htmlFor="email">Email</label>
-                        <input type='text' value={email} defaultValue={user?.email || ''} name="email" placeholder="Email" onChange={(e) => setEmail(e.target.value)} />
+                        <input type='text' value={email} name="email" placeholder="Email" onChange={(e) => {
+                            const value = e.target.value;
+                            setEmail(value);
+                            if (!validateEmail(value)) {
+                                setEmailError('Please enter a valid email address.');
+                            } else {
+                                setEmailError('');
+                            }
+                        }} />
+                        {emailError && <span className='error'>{emailError}</span>}
                     </div>
                 }
 
                 <AddressElement options={{ mode: 'shipping', defaultValues: reduxStoredShippingInfo }} onChange={(event) => {
                     setFilledShippingInfo(event.value)
+                    setIsAddressComplete(event.complete)
                 }} onReady={() => setIsStripeReady(true)} />
 
-                <div className="reset" onClick={handleReset}><Close fontSize='small' />Reset form</div>
-
-
-
-                {isStripeReady && <CTAButton isSubmitting={isSubmitting} type='submit' disabled={isSubmitting} onClick={() => handleShippingSubmit()} buttonText='Continue' />}
+                {isStripeReady && < div className="reset" onClick={handleReset}><Close fontSize='small' />Reset form</div>}
+                {errorWhileSubmittingForm && <span className="error">{errorWhileSubmittingForm}</span> }
+                {isStripeReady && <CTAButton isSubmitting={isSubmitting} type='submit' disabled={isSubmitting} onClick={handleShippingSubmit} buttonText='Continue' />}
 
                 {/* <button onClick={handlePayment} className='cta-button'>PROCEED TO CHECKOUT</button> */}
                 {/* <span className="reset" onClick={() => dispatch(resetCart())}>Reset Cart</span> */}
             </div>
 
-        </div>
+        </div >
     )
 }
 

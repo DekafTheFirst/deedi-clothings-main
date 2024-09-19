@@ -96,7 +96,10 @@ p {
     }
 }
 
-
+.error {
+    color: $errorRed;
+    font-size: 14px;
+}
 .cta-button {
     background: #2F2F2F; // Dark button background
     color: #ffffff; // White text for button

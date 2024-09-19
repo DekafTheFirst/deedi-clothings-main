@@ -25,7 +25,6 @@ const AuthFormComponent = ({ onSubmit, buttonText, errors, footer, classNames: m
                 setSubmitting(false);
             }}        >
             {({ isSubmitting, errors, touched, values, submitForm, handleChange, handleBlur, setFieldValue }) => {
-                // console.log('values', values)
                 return (
                     <Form className={classNames('form', myClassNames)}>
 
@@ -34,7 +33,7 @@ const AuthFormComponent = ({ onSubmit, buttonText, errors, footer, classNames: m
                                 <InputField
                                     name={input.name}
                                     type={input.type}
-                                    placeholder={input.placeholder}
+                                    // placeholder={input.placeholder}
                                     label={input.label}
                                     as={input.as}
                                     value={values[input.name]}

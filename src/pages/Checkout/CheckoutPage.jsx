@@ -16,6 +16,7 @@ import { toast } from 'react-toastify'
 import { loadStripe } from '@stripe/stripe-js'
 import { Elements } from "@stripe/react-stripe-js";
 import { makeRequest } from '../../makeRequest.js'
+import formatAmount from '../../utils/formatAmount.js'
 
 
 const CheckoutPage = () => {
@@ -32,8 +33,8 @@ const CheckoutPage = () => {
 
   // console.log('inStockItems', inStockItems)
 
-  const { previewedStep, currentStep, selectedCourier } = useSelector(state => state.checkout);
-
+  const { previewedStep, currentStep, stripeTaxCalculationData } = useSelector(state => state.checkout);
+  console.log('stripeTaxCalculationData', stripeTaxCalculationData)
 
   // const billingInfo = useSelector(state => state.checkout.billingInfo);
   // const shippingInfo = useSelector(state => state.checkout.shippingInfo);
@@ -116,7 +117,7 @@ const CheckoutPage = () => {
       dispatch(setCheckoutSessionExpiryDate(null))
 
       dispatch(endCheckoutSession());
-      // }
+      
       console.log('sessionTimeoutId', sessionTimeoutIdRef.current)
       clearTimeout(sessionTimeoutIdRef.current);
       clearTimeout(warningTimeoutIdRef.current);
@@ -159,18 +160,18 @@ const CheckoutPage = () => {
   const renderCurrentTab = () => {
     switch (previewedStep?.id || currentStep?.id) {
       case 1:
-        return <ShippingTab subtotal={subtotal} totalAmount={totalAmount} vat={vat} quantity={inStockItems.length} />
+        return <ShippingTab  />
       case 2:
         return <CourierOptions />
       case 3:
-        return <BillingTab totalAmount={totalAmount} />
+        return <BillingTab />
     }
   }
 
   return (
     <>
       {stripePromise &&
-        < Elements stripe={stripePromise} options={{ mode: 'payment', currency: 'usd',  amount: 1099,}}>
+        < Elements stripe={stripePromise} options={{ mode: 'payment', currency: 'usd', amount: Math.round(totalAmount), }}>
           <div className="checkout-page">
             <div className="container">
               <div className="row">
@@ -224,10 +225,13 @@ const CheckoutPage = () => {
                       <div className="order-total">
                         <div className="summary-items">
                           <div className="summary-item">No. of Items: <span className="value">{noOfItems}</span></div>
-                          <div className="summary-item">Subtotal: <span className="value">${subtotal}</span></div>
-                          <div className="summary-item">VAT(20%): <span className="value">${vat}</span></div>
-                          {selectedCourier && <div className="summary-item">Shipping: <span className="value">${selectedCourier.total_charge}</span></div>}
-                          <div className="summary-item total">Total: <span className="value">${totalAmount}</span></div>
+                          <div className="summary-item">Subtotal: <span className="value">${formatAmount(subtotal)}</span></div>
+                          {stripeTaxCalculationData?.tax_amount_exclusive > 0
+                            &&
+                            <div className="summary-item">Tax(20%): <span className="value">${formatAmount(stripeTaxCalculationData?.tax_amount_exclusive)}</span></div>
+                          }  
+                          {stripeTaxCalculationData?.shipping_cost?.amount && <div className="summary-item">Shipping: <span className="value">${formatAmount(stripeTaxCalculationData?.shipping_cost.amount / 100)}</span></div>}
+                          <div className="summary-item total">Total: <span className="value">${formatAmount(stripeTaxCalculationData?.amount_total ? stripeTaxCalculationData?.amount_total / 100 : totalAmount)}</span></div>
                         </div></div>
                     </div>
 

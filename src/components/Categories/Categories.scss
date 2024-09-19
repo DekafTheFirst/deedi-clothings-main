@@ -46,6 +46,26 @@
   }
 }
 
+@mixin subtle-hover {
+  @include md {
+    &:hover {
+      .content {
+        .link {
+          color: $burgundy;
+        }
+
+        .text .title {
+          color: $charcoal;
+        }
+      }
+
+      .image {
+        background-color: rgba(0, 0, 0, 0.2);
+      }
+    }
+  }
+}
+
 .categories {
   margin-block: 30px;
   margin-inline: 0;
@@ -164,6 +184,7 @@
 
       &.men {
         grid-area: men;
+        @include subtle-hover;
 
         @include md {
           position: relative;
@@ -181,6 +202,7 @@
 
       &.accessories {
         grid-area: accessories;
+        @include subtle-hover;
 
 
         @include max-breakpoint(1199px) {
@@ -192,6 +214,7 @@
 
       &.kids {
         grid-area: kids;
+        @include subtle-hover;
 
         @include max-breakpoint(767px) {
           flex-direction: row-reverse;

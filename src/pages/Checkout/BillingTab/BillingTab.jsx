@@ -18,7 +18,7 @@ import CTAButton from '../../../components/CTAButton/CTAButton';
 
 const BillingTab = ({ totalAmount }) => {
     const dispatch = useDispatch()
-    const { shippingInfo, billingInfo, selectedCourierId, checkoutSessionExpiresAt } = useSelector(state => state.checkout);
+    const { shippingInfo, billingInfo, selectedCourierId, checkoutSessionExpiresAt, clientSecret } = useSelector(state => state.checkout);
     const stripe = useStripe();
     const [isStripeReady, setIsStripeReady] = useState(false);
 
@@ -219,7 +219,6 @@ const BillingTab = ({ totalAmount }) => {
 
         const paymentElement = elements.getElement('payment');
         // const billingDetails = paymentElement.getValue(); // Extract the data from the element
-        console.log('Billing Details:', paymentElement);
 
         if (!paymentElement) {
             toast.error('Payment element not found.');
@@ -229,36 +228,7 @@ const BillingTab = ({ totalAmount }) => {
 
 
         // Step 2: Request PaymentIntent from the server (backend)
-        let clientSecret;
-        try {
-            const { data } = await makeRequest.post('/orders', {
-                items: inStockItems,
-                totalAmount,
-                shippingInfo,
-            });
-
-            if (data?.paymentAlreadySucceeded) {
-                toast.warning('Duplicate Payment Detected. Payment already succeeded.');
-                navigate('/my-account/orders')
-                setIsProcessing(false);
-                return;
-            }
-
-            clientSecret = data.clientSecret; // Save for further use
-            if (!clientSecret) {
-                throw new Error('No clientSecret received from backend.');
-            }
-        } catch (err) {
-            if (err.response?.status === 410 && err.response?.data?.error?.name === 'GoneError') {
-                toast.error('Checkout session has expired. Redirecting to cart...');
-                navigate('/cart');
-            } else {
-                console.error('Error creating payment intent:', err);
-                toast.error('Error creating payment. Please try again.');
-            }
-            setIsProcessing(false);
-            return;
-        }
+        
 
         // Step 3: Confirm Payment using the clientSecret
         try {
@@ -272,6 +242,8 @@ const BillingTab = ({ totalAmount }) => {
                     return_url: `${window.location.origin}/checkout-success`,
                 },
             });
+
+            console.log('paymentIntent', paymentIntent)
 
             if (paymentError) {
                 console.error('Payment confirmation error:', paymentError);
@@ -319,9 +291,7 @@ const BillingTab = ({ totalAmount }) => {
 
 
 
-    useState(() => {
-        console.log('isProcessing', isProcessing)
-    }, [isProcessing])
+
 
 
 

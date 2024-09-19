@@ -1,10 +1,11 @@
-import React, { lazy, Suspense, useEffect } from 'react';
+import React, { lazy, Suspense, useEffect, useState } from 'react';
 import {
   RouterProvider,
   createBrowserRouter,
   Outlet,
   redirect,
-  useLocation
+  useLocation,
+  useNavigate
 } from 'react-router-dom';
 import Navbar from './components/Navbar/Navbar';
 import { Provider, useDispatch, useSelector } from 'react-redux';
@@ -29,7 +30,18 @@ const MyAccount = lazy(() => import('./pages/Auth/MyAccount/MyAccount'));
 
 const navbarExcludedPaths = ['/login', '/register']
 
-const dispatch = store.dispatch
+const dispatch = store.dispatch;
+
+const protectedRouteLoader = () => {
+  const user = store.getState().auth.user;
+  console.log('user', user);
+
+  if(!user) {
+    return redirect("/login")
+  }
+  else return null
+}
+
 const checkoutLoader = async ({ request }) => {
   console.log('checkout loader')
   try {
@@ -94,28 +106,28 @@ const Layout = () => {
   const displayNavbar = !navbarExcludedPaths.includes(pathname)
   // console.log('pathname', pathname);
 
-  useEffect(() => {
-    const handleOutsideClick = (event) => {
-      if (!event.target.closest('.mini-cart, .cartIcon, .delete')) {
-        dispatch(setShowCart(false)); // Close the navbar if clicked outside
-      }
-    };
+  // useEffect(() => {
+  //   const handleOutsideClick = (event) => {
+  //     if (!event.target.closest('.mini-cart, .cartIcon, .delete')) {
+  //       dispatch(setShowCart(false)); // Close the navbar if clicked outside
+  //     }
+  //   };
 
-    // Add event listener when component mounts
-    document.addEventListener('click', handleOutsideClick);
+  //   // Add event listener when component mounts
+  //   document.addEventListener('click', handleOutsideClick);
 
-    // Remove event listener when component unmounts
-    return () => {
-      document.removeEventListener('click', handleOutsideClick);
-    };
+  //   // Remove event listener when component unmounts
+  //   return () => {
+  //     document.removeEventListener('click', handleOutsideClick);
+  //   };
 
-  }, [dispatch]);
+  // }, [dispatch]);
+  const [showUserDropdown, setShowUserDropdown] = useState(false)
 
   return (
     <div className="app">
-      {displayNavbar && <Navbar />}
-      <div id="content" className={`${displayNavbar ? 'navbar-visible': ''}`}>
-        <div className={`darkOverlay ${showCart ? 'show' : ''}`}></div>
+      {displayNavbar && <Navbar setShowUserDropdown={setShowUserDropdown} showUserDropdown = {showUserDropdown}/>}
+      <div id="content" className={`${displayNavbar ? 'navbar-visible': ''}`} onMouseEnter={()=>setShowUserDropdown(false)}>
         <ToastContainer position="top-center" />
         <Outlet />
       </div>
@@ -199,6 +211,7 @@ const router = createBrowserRouter([
       },
       {
         path: '/my-account',
+        loader: protectedRouteLoader,
         element: (
           <Suspense fallback={<LoadingSpinner />}>
             <MyAccount />

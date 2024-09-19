@@ -9,7 +9,7 @@
     text-decoration: none;
     color: unset;
     max-width: 100%;
-    padding-block: 20px;
+    padding-block: 15px;
     border-bottom: 1px solid $lightGray;
 
     &:last-child {
@@ -116,7 +116,7 @@
 
                 .product-price {
                     font-weight: 500;
-                    font-size: 15px;
+                    font-size: 14px;
                     color: $darkGray;
                 }
 
@@ -131,7 +131,7 @@
 
 
                 .total-price-per-item {
-                    font-size: 18px;
+                    font-size: 16px;
                     font-weight: 600;
                 }
             }

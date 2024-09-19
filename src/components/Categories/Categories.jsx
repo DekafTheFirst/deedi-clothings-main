@@ -50,7 +50,7 @@ const Categories = () => {
 
         </Link>
 
-        <Link className="category-card regular-category-card men">
+        <Link className="category-card regular-category-card men" to='/products/men'>
           <div className="content">
             <div className="text">
               <h1 className=" title">Men</h1>
@@ -74,7 +74,7 @@ const Categories = () => {
           </div>
         </Link>
 
-        <Link className="category-card regular-category-card kids">
+        <Link className="category-card regular-category-card kids" to='/products/kids'>
           <div className="content">
             <div className="text">
               <h1 className=" title">Kids</h1>

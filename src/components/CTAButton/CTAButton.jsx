@@ -3,9 +3,6 @@ import './CTAButton.scss'
 import { CircularProgress } from '@mui/material'
 import classNames from 'classnames'
 const CTAButton = ({ isSubmitting, onClick, buttonText, disabled }) => {
-
-
-    
     return (
         <button type='button' onClick={onClick} className={classNames("cta-button", { disabled })} disabled={disabled}>
             {isSubmitting ? <CircularProgress

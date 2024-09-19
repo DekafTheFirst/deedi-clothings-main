@@ -11,10 +11,11 @@
     display: flex;
     background-color: $offWhite;
     box-shadow: 0 0.5px 3px rgba(0, 0, 0, 0.1); // Soft shadow
-
+    padding: 0;
 
     .container-fluid {
-        align-items: stretch;
+        align-items: center;
+        height: 100%;
 
         .item {
 
@@ -111,6 +112,7 @@
             display: flex;
             align-items: center;
             gap: 25px;
+            height: 100%;
 
 
             .icons {
@@ -184,13 +186,13 @@
                         }
                     }
 
+
                     .user-dropdown {
-                        display: none;
                         min-width: 210px;
                         position: absolute;
                         left: 50%;
-                        top: 35px;
-                        padding-top: 30px;
+                        top: $navbarHeight;
+                        padding-top: 10px;
                         transform: translate(-50%);
 
                         .wrapper {
@@ -209,11 +211,10 @@
                             align-items: center;
                             gap: 5px;
                             padding: 9px 15px;
-                            cursor: pointer;
                             color: $darkGray;
                             background: none;
                             border: none;
-
+                            cursor: pointer;
 
                             &:not(:last-child) {
                                 border-bottom: 1px solid $lightGray;
@@ -243,9 +244,13 @@
                             min-width: 350px;
                             left: 0;
 
+
                             .wrapper {
                                 padding: 15px;
+                            }
 
+                            .wrapper form:focus-within {
+                                visibility: visible;
                             }
                         }
 
@@ -256,20 +261,17 @@
                             // border-bottom: 3px solid black;
                         }
 
-
-                    }
-
-
-
-
-
-                    &:hover {
-                        .user-dropdown {
-                            @include md {
-                                display: block;
-                            }
+                        @include md {
+                            display: block;
                         }
+
                     }
+
+                    
+
+
+
+
 
 
                 }
@@ -279,12 +281,14 @@
                     display: flex;
                     align-items: center;
                     padding-inline: 10px;
+                    cursor: pointer;
+
+
                     .cartIcon {
                         position: relative;
                         display: flex;
                         align-items: center;
                         margin-right: 5px;
-                        cursor: pointer;
 
                         .noOfItems {
                             display: flex;
@@ -306,6 +310,39 @@
 
                             }
                         }
+                    }
+
+
+                }
+
+                .cart-dropdown {
+                    // display: none;
+
+                    @include md {
+                        display: block;
+                    }
+
+                    .darkOverlay {
+                        // display: none;
+                        background-color: rgba(0, 0, 0, 0.4);
+                        position: absolute;
+                        height: 100vh;
+                        width: 100%;
+                        top: $navbarHeight;
+                        left: 0;
+                        z-index: 8;
+                        transition: top 0.03s ease-in-out;
+                        cursor: default;
+                    }
+
+                    .cart-dropdown-wrapper {
+                        position: absolute;
+                        right: 12px;
+                        top: $navbarHeight ;
+                        padding-top: 10px;
+                        z-index: 9;
+                        cursor: default;
+
                     }
                 }
             }

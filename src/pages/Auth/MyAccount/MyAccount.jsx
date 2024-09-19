@@ -61,8 +61,8 @@ const MyAccount = () => {
           <div className="user-info">
             <img src='http://localhost:1337/uploads/pexels_olly_972804_3fa9e26e5b.jpg' alt="" className="profile-img" />
             <div className="content">
-              <span className="name">Destiny Kefas</span>
-              <span className="email">dekeji1@gmail.com</span>
+              <span className="name">{user?.firstName} {user?.lastName}</span>
+              <span className="email">{user?.email}</span>
             </div>
           </div>
           <hr></hr>

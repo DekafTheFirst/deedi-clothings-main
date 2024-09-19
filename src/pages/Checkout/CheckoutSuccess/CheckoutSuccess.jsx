@@ -10,17 +10,15 @@ const CheckoutSuccess = () => {
 
     useEffect(() => {
         const query = new URLSearchParams(location.search);
-        const sessionId = query.get('session_id');
+        const paymentIntent = query.get('payment_intent');
 
-        if (sessionId) {
+        if (paymentIntent) {
             // Here you can fetch the session to verify payment if necessary
             
             // Clear cart and checkout data
-            // dispatch(resetCart());
-            // dispatch(resetCheckout());
+            dispatch(resetCart());
+            dispatch(resetCheckout());
 
-            // Clear session storage if needed
-            // sessionStorage.removeItem('checkout');
         }
     }, [location, dispatch]);
 

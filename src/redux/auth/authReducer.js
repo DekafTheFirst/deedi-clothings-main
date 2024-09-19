@@ -30,17 +30,20 @@ export const registerUser = createAsyncThunk(
             //     expires: new Date()
             // });
             return {
-                user: {
-                    email: strapiUser.email,
-                    id: strapiUser.id,
-                    username: strapiUser.username,
-                    photoUrl: strapiUser.photoUrl,
-                },
+                user: strapiUser,
 
             };
         } catch (error) {
-            console.error('error', error?.response?.data?.error);
-            return rejectWithValue(error?.response?.data?.error?.message);
+            console.error(error);
+            if (error?.response?.data?.error?.name === "ApplicationError") {
+                return rejectWithValue(error?.response?.data?.error?.message);
+            }
+            else if (error?.code === 'ERR_NETWORK') {
+                return rejectWithValue('Network Error');
+            }
+            else {
+                return rejectWithValue('Unable to register');
+            }
         }
     }
 );
@@ -75,17 +78,16 @@ export const loginUser = createAsyncThunk(
             });
 
             return {
-                user: {
-                    email: strapiUser.email,
-                    id: strapiUser.id,
-                    username: strapiUser.username,
-                    // photoUrl: strapiUser.photoUrl,
-                },
+                user: strapiUser,
             };
         } catch (error) {
             console.error(error);
-            if (error?.response.data?.error?.name === "ValidationError") {
+            if (error?.response?.data?.error?.name === "ValidationError") {
                 return rejectWithValue('Invalid email or password');
+            }
+            else if (error?.code === 'ERR_NETWORK') {
+                return rejectWithValue('Network Error');
+
             }
             else {
                 return rejectWithValue('Unable to login');
@@ -97,7 +99,7 @@ export const loginUser = createAsyncThunk(
 
 export const updateUser = createAsyncThunk(
     'auth/updateProfile',
-    async ({userId, updatedFields}, thunkAPI) => {
+    async ({ userId, updatedFields }, thunkAPI) => {
         console.log('updatedFields', updatedFields)
         try {
             const response = await makeRequest.put(`/users/${userId}`, {

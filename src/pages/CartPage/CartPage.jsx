@@ -1,15 +1,18 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import "./CartPage.scss"
 import { useDispatch, useSelector } from 'react-redux'
-import { CART_MODE, removeItemFromCart, resetCart, selectItemsByStock, setShowCart, validateCartItems } from '../../redux/cart/cartReducer.js'
+import { CART_MODE, removeItemFromCart, resetCart, selectCartTotals, selectItemsByStock, setShowCart, validateCartItems } from '../../redux/cart/cartReducer.js'
 import { Link, useNavigate } from 'react-router-dom'
 import CartItem from '../../components/MiniCart/MiniCartItem/CartItem'
+import FreeShippingProgress from '../../components/FreeShippingProgress/FreeshippingProgress.jsx'
+import formatAmount from '../../utils/formatAmount.js'
 
 
 const CartPage = () => {
   const { items, cartMode } = useSelector(state => state.cart);
 
   const { inStockItems, outOfStockItems, reducedItems } = useSelector(selectItemsByStock);
+  const { vat, totalAmount, subtotal, noOfItems } = useSelector(selectCartTotals)
 
 
   useEffect(() => {
@@ -34,11 +37,7 @@ const CartPage = () => {
   const navigate = useNavigate();
   // console.log(items);
 
-  const totalPrice = () => {
-    let total = 0
-    inStockItems.forEach(item => (total += item.price * item.quantity));
-    return total.toFixed(2)
-  }
+  
 
   const dispatch = useDispatch()
 
@@ -49,7 +48,7 @@ const CartPage = () => {
 
 
   useEffect(() => {
-    
+
     if (isInitialMount.current) {
       isInitialMount.current = false;
       return
@@ -101,7 +100,7 @@ const CartPage = () => {
                 <div className="item-group in-stock">
                   <div className="total">
                     <span>{`Items(${items ? inStockItems.length : '0'})`}</span>
-                    <span className='amount'>${totalPrice()}</span>
+                    <span className='amount'>${formatAmount(totalAmount)}</span>
                   </div>
                   <div className="cart-items">
 
@@ -111,7 +110,9 @@ const CartPage = () => {
                           <CartItem key={item.localCartItemId} item={item} cartType="full" />
                         ))
                         :
-                        <span className='list-empty'>No items</span>
+                        <div className='list-empty'><span>No items</span>
+                          <Link to="/" className='cta-button'> Continue Shopping </Link>
+                        </div>
                     }
 
                   </div>
@@ -140,16 +141,19 @@ const CartPage = () => {
             <div className="actions-card">
               <div className="checkout">
                 <div className="summary">
+
                   <h5 className="heading">Order Summary</h5>
                   <div className="summary-items">
-                    <div className="summary-item">Subtotal: <span className="value">${totalPrice()}</span></div>
+                    <div className="summary-item">Subtotal: <span className="value">${formatAmount(totalAmount)}</span></div>
                     <div className="summary-item">No. of Items: <span className="value">{inStockItems.length}</span></div>
+
                   </div>
                 </div>
-                <button onClick={handleProceedToCheckout} className='cta-button'>{cartMode === CART_MODE.NORMAL ? 'PROCEED TO CHECKOUT' : 'CONFIRM CHANGES & CONTINUE'}</button>
-                {/* <span className="reset" onClick={() => dispatch(resetCart())}>Reset Cart</span> */}
-                <Link to="/cart" className='secondary-action'> Continue Shopping </Link>
+                <FreeShippingProgress />
+
+                {inStockItems.length > 0 && <><button onClick={handleProceedToCheckout} className='cta-button'>{cartMode === CART_MODE.NORMAL ? 'PROCEED TO CHECKOUT' : 'CONFIRM CHANGES & CONTINUE'}</button><Link to="/" className='secondary-action'> Continue Shopping </Link></>}
               </div>
+
               <div className="info">
                 <h5 className="heading"> Accepted Payment Methods</h5>
                 <img src="/img/payment-removebg.png" alt="" />

@@ -12,6 +12,10 @@
     scrollbar-width: 0;
     padding-block: 20px;
 
+    .clickable-brand-name {
+        cursor: pointer;
+    }
+
     .welcome {
         display: flex;
         flex-direction: column;

@@ -39,6 +39,7 @@ const LoginForm = () => {
             setError(null)
             navigate('/')
         } catch (error) {
+            // console.error('error', error)
             setError(error);
         }
     };

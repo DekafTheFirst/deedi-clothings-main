@@ -535,7 +535,7 @@ const calculateTotals = (items) => {
   // const noOfProdcts = items.reduce
   const subtotal = items.reduce((acc, item) => acc + item.price * item.quantity, 0).toFixed(2);
   const vat = (subtotal * 0.2).toFixed(2);
-  const totalAmount = (parseFloat(subtotal) + parseFloat(vat)).toFixed(2);
+  const totalAmount = parseFloat(subtotal);
 
   return { subtotal, vat, totalAmount };
 };

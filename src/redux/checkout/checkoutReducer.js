@@ -35,9 +35,7 @@ const initialState = {
   completedSteps: [],
   items: [],
   previewedStep: null,
-  shippingInfo: {
-
-  },
+  shippingInfo: {},
   billingInfo: null,
   rates: null,
   selectedCourierId: null,
@@ -47,6 +45,7 @@ const initialState = {
   showCountdown: false,
   paymentAlreadyInitiated: false,
   clientSecret: "",
+  stripeTaxCalculationData: {}
 };
 
 export const initializeCheckout = createAsyncThunk(
@@ -118,6 +117,11 @@ const checkoutSlice = createSlice({
     setClientSecret: (state, action) => {
       state.clientSecret = action.payload
     },
+
+    setStripeTaxCalculationData: (state, action) => {
+      state.stripeTaxCalculationData = action.payload
+    },
+
     setShippingInfo: (state, action) => {
       state.shippingInfo = action.payload;
       // storeShippingInfoInSession(action.payload);
@@ -177,11 +181,11 @@ const checkoutSlice = createSlice({
     setRates: (state, action) => {
       state.rates = action.payload
     },
-
+    
 
 
     resetCheckout: () => {
-      // return initialState;
+      return initialState;
     },
   },
   extraReducers: (builder) => {
@@ -222,6 +226,7 @@ export const {
   setCheckoutSessionExpiryDate,
   setPaymentAlreadyInitiated,
   setClientSecret,
+  setStripeTaxCalculationData,
 } = checkoutSlice.actions;
 
 export default checkoutSlice.reducer;

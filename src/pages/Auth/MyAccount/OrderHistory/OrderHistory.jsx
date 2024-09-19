@@ -4,10 +4,11 @@ import './OrderHistory.scss';
 import { makeRequest } from '../../../../makeRequest';
 import { useSelector } from 'react-redux';
 import classNames from 'classnames';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, redirect, useNavigate } from 'react-router-dom';
 import StatusElement from '../../../../components/StatusElement/StatusElement';
 import OptimizedImage from '../../../../components/OptimizedImage/OptimizedImage';
 import CheckoutItem from '../../../Checkout/CheckoutItem/CheckoutItem';
+import formatAmount from '../../../../utils/formatAmount';
 
 const OrderHistory = memo(() => {
   const [orders, setOrders] = useState([]);
@@ -19,15 +20,15 @@ const OrderHistory = memo(() => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await makeRequest.get(`/orders?filters[user][id][$eq]=${user.id}`);
-        // console.log('response', response);
+        const response = await makeRequest.get(`/orders?filters[user][id][$eq]=${user?.id}`);
+        console.log('response', response);
         setOrders(response.data.data);
       } catch (error) {
         console.error('Error fetching orders', error);
       }
     };
     fetchOrders();
-  }, [user.id]);
+  }, [user?.id]);
 
   const handleFilterClick = (slug) => {
     setSelectedFilter(slug);
@@ -85,9 +86,9 @@ const OrderHistory = memo(() => {
         {
           filteredOrders.length > 0 ?
             filteredOrders?.map((order) => {
-              const { status, totalAmount, createdAt, items: orderItems } = order.attributes;
+              const { status, totalAmount, createdAt, items: orderItems, trackingPageUrl } = order.attributes;
               return (
-                <div key={order.id} className="order-card">
+                <div key={order.id} className="order-card" >
                   <div className="order-item-header">
                     <div className="header-item">
                       <span className="header-item-label">Placed on</span>
@@ -101,7 +102,7 @@ const OrderHistory = memo(() => {
                     </div>
                     <div className="header-item">
                       <span className="header-item-label">Total </span>
-                      <span className="header-item-value">${totalAmount}</span>
+                      <span className="header-item-value">${formatAmount(totalAmount /100)}</span>
                     </div>
                     <div className="view-details">
                       <span className="order-number">Order #{order.id}</span>
@@ -116,7 +117,15 @@ const OrderHistory = memo(() => {
                         <div className="value">5th Sept, 2024</div>
                       </div>
                       <div className="order-actions">
-                        <button className="cta-button">Track Package</button>
+                        <button className="cta-button" onClick={(e) => {
+                          e.preventDefault()
+                          if (trackingPageUrl){
+                            window.open(trackingPageUrl)
+                          }
+                          }}
+                        >
+                          Track Package
+                        </button>
                         {/* <button className="secondary-btn">Track Package</button> */}
                       </div>
                     </div>
@@ -133,7 +142,7 @@ const OrderHistory = memo(() => {
                   </div>
                 </div>
               );
-            }) : <span className='text-center p-5 fw-medium text-muted'>{selectedFilter==='all' ? 'No Orders':`No ${selectedFilter} orders`}</span>
+            }) : <span className='text-center p-5 fw-medium text-muted'>{selectedFilter === 'all' ? 'No Orders' : `No ${selectedFilter} orders`}</span>
         }
       </div>
     </div>
