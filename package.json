@@ -5,7 +5,7 @@
   "dependencies": {
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.0",
-    "@mui/icons-material": "^5.15.13",
+    "@mui/icons-material": "^6.1.1",
     "@mui/lab": "^6.0.0-beta.9",
     "@mui/material": "^6.0.2",
     "@reduxjs/toolkit": "^2.2.2",
@@ -21,6 +21,7 @@
     "blurhash": "^2.0.5",
     "classnames": "^2.5.1",
     "cloc": "^2.2.0-cloc",
+    "deedi-clothings": "file:",
     "firebase": "^10.12.4",
     "formik": "^2.4.6",
     "jwt-decode": "^4.0.0",
