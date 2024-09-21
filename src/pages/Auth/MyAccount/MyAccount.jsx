@@ -59,7 +59,7 @@ const MyAccount = () => {
       <div className="container-fluid">
         <div className="dashboard-menu">
           <div className="user-info">
-            <img src={`${import.meta.env.VITE_UPLOAD_URL} + '/uploads/pexels_olly_972804_3fa9e26e5b.jpg'`} alt="" className="profile-img" />
+            <img src={import.meta.env.VITE_UPLOAD_URL + '/uploads/pexels_olly_972804_3fa9e26e5b.jpg'} alt="" className="profile-img" />
             <div className="content">
               <span className="name">{user?.firstName} {user?.lastName}</span>
               <span className="email">{user?.email}</span>
