@@ -18,10 +18,6 @@ jobs:
         with:
           node-version: '20.x'
 
-      - name: Install dependencies
-        run: |
-          yarn install
-
       - name: Build Strapi
         run: yarn build
 
@@ -33,8 +29,8 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
-            cd ~/strapi
+            cd ~/client
             git pull origin main
-            yarn install
+            yarn install 
             yarn build
-            pm2 restart strapi
+            sudo nginx -s reload
