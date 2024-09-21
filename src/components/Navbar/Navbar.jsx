@@ -231,7 +231,7 @@ const Navbar = ({ showUserDropdown, setShowUserDropdown }) => {
             <div className="user" >
               <div className="summary" onClick={handleClickUser} onMouseEnter={handleUserMouseEnter} onMouseLeave={handleUserMouseLeave}>
                 <div className="user-icon" >
-                  {!user ? <PersonOutline /> : <img src='http://localhost:1337/uploads/pexels_olly_972804_3fa9e26e5b.jpg' className='user-image' />}
+                  {!user ? <PersonOutline /> : <img src= {`${import.meta.env.VITE_UPLOAD_URL} + '/uploads/pexels_olly_972804_3fa9e26e5b.jpg'`} className='user-image' />}
                 </div>
                 <div className="user-info"><span>
                   {!user ? 'My Account' : `Hello, ${user?.firstName}`}</span>
