@@ -35,6 +35,6 @@ jobs:
           script: |
             cd ~/strapi
             git pull origin main
-            yarn install --frozen-lockfile
+            yarn install
             yarn build
             pm2 restart strapi
