@@ -59,9 +59,7 @@ const CartItem = ({ item, cartType }) => {
         dispatch(setShowCart(false))
     }
 
-    useEffect(() => {
-        // console.log(product?.title, 'availableStock', item.availableStock)
-    }, [item.availableStock])
+
 
     return (
         <div
