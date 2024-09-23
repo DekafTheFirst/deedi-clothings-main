@@ -49,10 +49,7 @@ const CartPage = () => {
 
   useEffect(() => {
 
-    if (isInitialMount.current) {
-      isInitialMount.current = false;
-      return
-    }
+    
 
     const validateAndSet = () => {
       try {
