@@ -36,8 +36,17 @@ const Cart = ({ setShowCart }) => {
 
 
   useEffect(() => {
-    dispatch(validateCartItems())
-  }, [])
+    const validateAndSet = () => {
+      try {
+        dispatch(validateCartItems());
+        // setValidated(true);
+      } catch (error) {
+        console.error('Error validating stock:', error);
+      }
+    };
+
+    validateAndSet();
+  }, []);
 
 
 
