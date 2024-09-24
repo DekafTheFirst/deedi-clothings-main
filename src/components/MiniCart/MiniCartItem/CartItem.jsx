@@ -138,9 +138,10 @@ const CartItem = ({ item, cartType }) => {
                                 <FavoriteBorder sx={{ m: 0, p: 0, minWidth: 0 }} className='action-icon' />
                                 {/* <span>Remove</span> */}
                                 <span>Move to wishlist</span>
-                            </div>}
-                        <div className="action delete">
-                            <DeleteForeverOutlined sx={{ m: 0, p: 0, minWidth: 0 }} className='action-icon' onClick={(e) => handleRemoveFromCart(e, { localCartItemId: item.localCartItemId, strapiCartItemId: item.strapiCartItemId })} />
+                            </div>
+                        }
+                        <div className="action delete" onClick={(e) => handleRemoveFromCart(e, { localCartItemId: item.localCartItemId, strapiCartItemId: item.strapiCartItemId })}>
+                            <DeleteForeverOutlined sx={{ m: 0, p: 0, minWidth: 0 }} className='action-icon' />
                             {cartType === 'full' && <span>Remove</span>}
                         </div>
                     </div>

@@ -36,13 +36,15 @@ const Cart = ({ setShowCart }) => {
 
 
   useEffect(() => {
-    if (isInitialMount.current) {
-      isInitialMount.current = false;
+    if (!isInitialMount.current) {
       return
+    }
+    else {
+      dispatch(validateCartItems())
+      isInitialMount.current = false;
     }
 
 
-    dispatch(validateCartItems())
   }, [])
 
 
