@@ -16,7 +16,7 @@ const ShippingTab = () => {
     const dispatch = useDispatch()
     const reduxStoredShippingInfo = useSelector(state => state.checkout.shippingInfo);
     const user = useSelector(state => state.auth.user)
-    console.log('reduxStoredShippingInfo', reduxStoredShippingInfo)
+    // console.log('reduxStoredShippingInfo', reduxStoredShippingInfo)
     const [email, setEmail] = useState(reduxStoredShippingInfo?.email || user?.email);
     const [emailError, setEmailError] = useState('');
     const elements = useElements();

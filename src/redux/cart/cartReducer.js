@@ -501,8 +501,6 @@ export const cartSlice = createSlice({
         state.error = action.payload;
         
       })
-
-
   },
 })
 

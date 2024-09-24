@@ -43,7 +43,6 @@ const protectedRouteLoader = () => {
 }
 
 const checkoutLoader = async ({ request }) => {
-  console.log('checkout loader')
   try {
 
     const response = await store.dispatch(initializeCheckout({ reserve: true })).unwrap();
@@ -53,6 +52,12 @@ const checkoutLoader = async ({ request }) => {
     const sessionHasExpired = new Date() > new Date(checkoutSessionExpiresAt)
     console.log('sessionHasExpired', sessionHasExpired);
 
+
+    const items = store.getState().cart.items
+    console.log('items', items)
+    if(items.length <= 0) {
+      return redirect("/")
+    }
     if (status === 'initialized') {
       const { successfulItems, outOfStockItems } = validationResults;
 
@@ -61,6 +66,7 @@ const checkoutLoader = async ({ request }) => {
       }
 
       if (successfulItems?.length <= 0) {
+        console.log('cart is empty')
         throw new Response('Your cart is empty, add some items!', { status: 302, headers: { Location: '/cart' } });
       }
       
@@ -74,7 +80,7 @@ const checkoutLoader = async ({ request }) => {
         dispatch(resetCheckout())
         
         toast.info('Checkout sessoon complete already. Check your orders page.')
-        return redirect("/products/women")
+        return redirect("/my-account#orders")
       }
 
       if (status === 'expired') {

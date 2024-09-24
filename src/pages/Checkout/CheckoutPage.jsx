@@ -126,36 +126,6 @@ const CheckoutPage = () => {
   }, [dispatch]);
 
 
-  // useEffect(() => {
-
-  // }, [])
-  // useEffect(() => {
-  //   // Set up event listener for route changes
-  //   const handleRouteChange = () => {
-  //     // Clear session state when navigating away from the checkout route
-  //     if (location.pathname !== '/checkout') {
-  //       sessionStorage.removeItem('checkoutState');
-  //     }
-  //   };
-
-  //   // Listen for route changes
-  //   handleRouteChange();
-
-  //   // Clean up listener
-  //   return () => {
-  //     // Remove session state on component unmount if necessary
-  //     sessionStorage.removeItem('checkoutState');
-  //   };
-  // }, [location.pathname]);
-
-  // useEffect(() => {
-  //   console.log('Component mounted');
-
-  //   return () => {
-  //     console.log('Cleanup triggered');
-  //     // dispatch(endCheckoutSession());
-  //   };
-  // }, [dispatch]);
 
   const renderCurrentTab = () => {
     switch (previewedStep?.id || currentStep?.id) {
@@ -167,7 +137,6 @@ const CheckoutPage = () => {
         return <BillingTab />
     }
   }
-  console.log(Math.round(totalAmount))
   return (
     <>
       {stripePromise &&

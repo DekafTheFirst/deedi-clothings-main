@@ -58,7 +58,7 @@ export const initializeCheckout = createAsyncThunk(
       const items = cart.items;
 
       const { inStockItems } = selectItemsByStock(state);
-      console.log('inStockItems', inStockItems)
+      // console.log('inStockItems', inStockItems)
       const cartId = cart.cartId;
 
 
@@ -67,7 +67,7 @@ export const initializeCheckout = createAsyncThunk(
         { items: inStockItems, cartId, customerEmail: 'dekeji1@gmail.com' },
       );
 
-      console.log('checkout response', checkoutSessionResponse);
+      // console.log('checkout response', checkoutSessionResponse);
       const validationResults = checkoutSessionResponse?.data?.validationResults;
       const checkoutSessionDuration = checkoutSessionResponse?.data?.checkoutSessionDuration
       const checkoutSessionAlreadyExists = checkoutSessionResponse?.data?.checkoutSessionAlreadyExists

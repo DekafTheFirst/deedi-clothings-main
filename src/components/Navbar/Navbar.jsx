@@ -97,7 +97,7 @@ const Navbar = ({ showUserDropdown, setShowUserDropdown }) => {
     const targetDateLocal = new Date(checkoutSessionExpiresAt);
     // Update the countdown timer every second
     // Update every second
-    console.log('showCountdown', showCountdown)
+    // console.log('showCountdown', showCountdown)
     if (inCheckoutPage) {
       const intervalId = setInterval(() => {
         const currentTime = new Date();
@@ -235,7 +235,7 @@ const Navbar = ({ showUserDropdown, setShowUserDropdown }) => {
                 </div>
                 <div className="user-info"><span>
                   {!user ? 'My Account' : `Hello, ${user?.firstName}`}</span>
-                  <KeyboardArrowDownIcon className='icon down-arrow' fontSize="small" />
+                <KeyboardArrowDownIcon className='icon down-arrow' fontSize="small" />
                 </div>
 
               </div>
