@@ -36,6 +36,7 @@ const Cart = ({ setShowCart }) => {
 
 
   useEffect(() => {
+    
     const validateAndSet = () => {
       try {
         dispatch(validateCartItems());

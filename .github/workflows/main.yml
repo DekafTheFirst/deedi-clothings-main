@@ -30,4 +30,4 @@ jobs:
             git pull origin main
             yarn install 
             yarn build
-            sudo systemctl restart nginx 
+            sudo nginx -s reload
