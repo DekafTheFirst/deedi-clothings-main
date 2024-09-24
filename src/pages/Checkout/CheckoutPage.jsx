@@ -167,7 +167,7 @@ const CheckoutPage = () => {
         return <BillingTab />
     }
   }
-
+  console.log(Math.round(totalAmount))
   return (
     <>
       {stripePromise &&
