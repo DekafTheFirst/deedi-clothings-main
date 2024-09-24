@@ -103,7 +103,7 @@ const Navbar = ({ showUserDropdown, setShowUserDropdown }) => {
     // Parse the target date string into a Date object
     const now = new Date();
     // const fiveSecondsLater = new Date(now.getTime() + 5000);
-    const targetDateLocal = new Date(now.getTime() + 5000);
+    const targetDateLocal = new Date(checkoutSessionExpiresAt)
     // Update the countdown timer every second
     // Update every second
     // console.log('showCountdown', showCountdown)
