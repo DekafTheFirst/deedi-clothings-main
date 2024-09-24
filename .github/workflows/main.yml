@@ -28,6 +28,6 @@ jobs:
           script: |
             cd ~/client
             git pull origin main
-            yarn install 
+            yarn install --frozen-lockfile
             yarn build
-            sudo nginx -s reload
+            sudo systemctl restart nginx
