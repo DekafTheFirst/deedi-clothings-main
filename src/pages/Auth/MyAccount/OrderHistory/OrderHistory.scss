@@ -152,14 +152,16 @@
         padding: 10px;
         display: flex;
         flex-direction: column;
-        gap: 15px;
+        gap: 10px;
 
 
         .order-items {
           display: flex;
           flex-direction: column;
+          gap: 5px;
 
           .checkout-item {
+            padding: 0;
             .img-wrapper {
               .img {
                 background-color: $lighterGray;
@@ -243,8 +245,7 @@
 
         @include md {
           .summary {
-            align-items: stretch;
-            flex-direction: column;
+            justify-content: space-between;
 
             .order-actions {
               align-items: stretch;

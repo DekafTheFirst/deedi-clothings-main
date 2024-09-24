@@ -102,7 +102,7 @@ const OrderHistory = memo(() => {
                     </div>
                     <div className="header-item">
                       <span className="header-item-label">Total </span>
-                      <span className="header-item-value">${formatAmount(totalAmount /100)}</span>
+                      <span className="header-item-value">${formatAmount(totalAmount / 100)}</span>
                     </div>
                     <div className="view-details">
                       <span className="order-number">Order #{order.id}</span>
@@ -119,10 +119,10 @@ const OrderHistory = memo(() => {
                       <div className="order-actions">
                         <button className="cta-button" onClick={(e) => {
                           e.preventDefault()
-                          if (trackingPageUrl){
+                          if (trackingPageUrl) {
                             window.open(trackingPageUrl)
                           }
-                          }}
+                        }}
                         >
                           Track Package
                         </button>
@@ -135,7 +135,7 @@ const OrderHistory = memo(() => {
                         const { img, title, size, price, productId } = orderItem;
 
                         return (
-                          <CheckoutItem key={index} item={orderItem} />
+                          <CheckoutItem key={index} item={{ ...orderItem, size: { size: size } }} />
                         );
                       })}
                     </div>

@@ -27,14 +27,21 @@ const menuItems = [
   { title: 'Orders', slug: 'orders', icon: <LocalShipping /> },
 ];
 
-const AuthDropDownItem = memo(({ title, slug, icon }) => {
+const AuthDropDownItem = memo(({ title, slug, icon, setShowUserDropdown }) => {
   const location = useLocation();
   const isActive = `#${slug}` === location.hash;
+  const navigate = useNavigate();
+
+  const handleDropDownclick = () => {
+    navigate(`/my-account#${slug}`)
+    setShowUserDropdown(false)
+  }
+  
   return (
-    <Link className={classNames("dropdown-item", { isActive })} to={`/my-account#${slug}`}>
+    <span className={classNames("dropdown-item", { isActive })} onClick={handleDropDownclick}>
       {icon}
       <span>{title}</span>
-    </Link>
+    </span>
   )
 })
 
@@ -61,7 +68,7 @@ const Navbar = ({ showUserDropdown, setShowUserDropdown }) => {
   };
 
   const handleUserDropdownEnter = () => {
-    
+
     console.log('cleared timeout, dropdown should stay open')
     clearTimeout(timeoutRef.current);
   };
@@ -95,7 +102,7 @@ const Navbar = ({ showUserDropdown, setShowUserDropdown }) => {
   useEffect(() => {
     // Parse the target date string into a Date object
     const now = new Date();
-// const fiveSecondsLater = new Date(now.getTime() + 5000);
+    // const fiveSecondsLater = new Date(now.getTime() + 5000);
     const targetDateLocal = new Date(now.getTime() + 5000);
     // Update the countdown timer every second
     // Update every second
@@ -106,8 +113,8 @@ const Navbar = ({ showUserDropdown, setShowUserDropdown }) => {
         const difference = targetDateLocal - currentTime;
         const timeRemaining = difference > 0 ? difference : 0;
         // console.log('timeRemaining', timeRemaining)
-        if (timeRemaining <= 5 * 1000 * 6) { 
-          setShowCountdown(true) 
+        if (timeRemaining <= 5 * 1000 * 6) {
+          setShowCountdown(true)
         }
 
         if (timeRemaining <= 0) {
@@ -234,11 +241,11 @@ const Navbar = ({ showUserDropdown, setShowUserDropdown }) => {
             <div className="user" >
               <div className="summary" onClick={handleClickUser} onMouseEnter={handleUserMouseEnter} onMouseLeave={handleUserMouseLeave}>
                 <div className="user-icon" >
-                  {!user ? <PersonOutline /> : <img src= {import.meta.env.VITE_UPLOAD_URL + '/uploads/pexels_olly_972804_3fa9e26e5b.jpg'} className='user-image' />}
+                  {!user ? <PersonOutline /> : <img src={import.meta.env.VITE_UPLOAD_URL + '/uploads/pexels_olly_972804_3fa9e26e5b.jpg'} className='user-image' />}
                 </div>
                 <div className="user-info"><span>
                   {!user ? 'My Account' : `Hello, ${user?.firstName}`}</span>
-                <KeyboardArrowDownIcon className='icon down-arrow' fontSize="small" />
+                  <KeyboardArrowDownIcon className='icon down-arrow' fontSize="small" />
                 </div>
 
               </div>
@@ -247,7 +254,7 @@ const Navbar = ({ showUserDropdown, setShowUserDropdown }) => {
               {showUserDropdown && (user ?
                 <div className="user-dropdown" onMouseEnter={handleUserDropdownEnter}>
                   <div className="wrapper">
-                    {menuItems.map((item) => <AuthDropDownItem key={item.slug} title={item.title} slug={item.slug} icon={item.icon} />)}
+                    {menuItems.map((item) => <AuthDropDownItem key={item.slug} title={item.title} slug={item.slug} icon={item.icon} setShowUserDropdown={setShowUserDropdown} />)}
                     <div className="dropdown-item" onClick={handleLogout}>
                       <Logout fontSize='small' />
                       <span>Logout</span>

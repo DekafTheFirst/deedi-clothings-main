@@ -188,6 +188,13 @@
 
 
                     .user-dropdown {
+
+                        display: none;
+
+                    @include md {
+                        display: block;
+                    }
+
                         min-width: 210px;
                         position: absolute;
                         left: 50%;
@@ -316,7 +323,7 @@
                 }
 
                 .cart-dropdown {
-                    // display: none;
+                    display: none;
 
                     @include md {
                         display: block;
