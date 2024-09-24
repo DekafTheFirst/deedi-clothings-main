@@ -17,7 +17,7 @@ import { CircularProgress, Box } from '@mui/material'; // Import CircularProgres
 import Home from './pages/Home/Home'; // No lazy loading for the Home page
 import './app.scss';
 import { initializeCheckout, resetCheckout } from './redux/checkout/checkoutReducer';
-import AuthGuard from './components/guards/WithAuth';
+import AuthGuard from './components/guards/AuthGuard';
 
 // Lazy load the pages that aren't immediately needed
 const Products = lazy(() => import('./pages/Products/Products'));
@@ -46,11 +46,7 @@ const checkoutLoader = async ({ request }) => {
     console.log('sessionHasExpired', sessionHasExpired);
 
 
-    const items = store.getState().cart.items
-    console.log('items', items)
-    if (items.length <= 0) {
-      return redirect("/")
-    }
+    
     if (status === 'initialized') {
       const { successfulItems, outOfStockItems } = validationResults;
 

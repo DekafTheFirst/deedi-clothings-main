@@ -66,49 +66,13 @@ const CheckoutPage = () => {
   useEffect(() => {
     // Handle SPA navigation
 
-    if (isInitialMount.current) {
-      isInitialMount.current = false;
-      return
+    // if (isInitialMount.current) {
+    //   isInitialMount.current = false;
+    //   return
+    // }
+    if(inStockItems <= 0) {
+      navigate('/cart')
     }
-
-
-    // const handleInitializeCheckout = async () => {
-    //   try {
-    //     // console.log('checkout initiated')
-    //     const response = await dispatch(initializeCheckout({ reserve: true })).unwrap();
-    //     console.log('response', response);
-
-    //     const { validationResults, checkoutSessionAlreadyExists } = response;
-
-    //     if (!checkoutSessionAlreadyExists) {
-    //       const { successfulItems, outOfStockItems } = validationResults
-
-
-
-    //       // console.log('response', response);
-    //       if (outOfStockItems?.length > 0) {
-    //         navigate('/cart');
-    //         // toast.warning('Some items are out of stock')
-    //         return
-    //       }
-
-
-    //       if (successfulItems?.length <= 0) {
-    //         navigate('/cart');
-    //         toast.warning('Your cart is empty, add some items!')
-    //         return
-    //       }
-
-    //       dispatch(setCartMode(CART_MODE.REVIEW));
-    //     }
-    //     else {
-    //       toast.info('Checkout session restored')
-    //     }
-    //   } catch (error) {
-    //     console.error('Error initializing checkout', error);
-    //   }
-    // };
-    // handleInitializeCheckout();
 
     return () => {
       console.log('cleanup')
@@ -123,7 +87,7 @@ const CheckoutPage = () => {
       clearTimeout(warningTimeoutIdRef.current);
     };
 
-  }, [dispatch]);
+  }, []);
 
 
 
