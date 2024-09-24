@@ -61,6 +61,7 @@ const CourierOptions = () => {
   const handleSubmitCourierOtion = async () => {
     let clientSecret;
     try {
+      setIsProcessing(true)
       console.log('shipping info', shippingInfo)
       const { data } = await makeRequest.post('/checkout/create-payment-intent', {
         items: inStockItems,
@@ -81,6 +82,8 @@ const CourierOptions = () => {
       dispatch(setClientSecret(clientSecret))
       dispatch(setStripeTaxCalculationData(data.taxCalculation))
       dispatch(nextStep())
+      setIsProcessing(false);
+
     } catch (err) {
       if (err.response?.status === 410 && err.response?.data?.error?.name === 'GoneError') {
 
@@ -132,7 +135,7 @@ const CourierOptions = () => {
             />
           ))}
         </div>
-        <CTAButton onClick={handleSubmitCourierOtion} className="" disabled={false} buttonText={'Proceed To Payment'} />
+        <CTAButton onClick={handleSubmitCourierOtion} className="" disabled={false} buttonText={'Proceed To Payment'} isSubmitting={isProcessing} />
         {errorMessage && <span className='error'>{errorMessage}</span>}
       </form>
     </div>

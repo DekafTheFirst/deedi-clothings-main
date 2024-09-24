@@ -17,6 +17,7 @@ import { CircularProgress, Box } from '@mui/material'; // Import CircularProgres
 import Home from './pages/Home/Home'; // No lazy loading for the Home page
 import './app.scss';
 import { initializeCheckout, resetCheckout } from './redux/checkout/checkoutReducer';
+import AuthGuard from './components/guards/WithAuth';
 
 // Lazy load the pages that aren't immediately needed
 const Products = lazy(() => import('./pages/Products/Products'));
@@ -32,16 +33,7 @@ const navbarExcludedPaths = ['/login', '/register']
 
 const dispatch = store.dispatch;
 
-const protectedRouteLoader = () => {
-  const user = store.getState().auth.user;
-  console.log('user', user);
 
-  if(!user) {
-    console.log('no user')
-    return null
-  }
-  else return null
-}
 
 const checkoutLoader = async ({ request }) => {
   try {
@@ -56,7 +48,7 @@ const checkoutLoader = async ({ request }) => {
 
     const items = store.getState().cart.items
     console.log('items', items)
-    if(items.length <= 0) {
+    if (items.length <= 0) {
       return redirect("/")
     }
     if (status === 'initialized') {
@@ -70,7 +62,7 @@ const checkoutLoader = async ({ request }) => {
         console.log('cart is empty')
         throw new Response('Your cart is empty, add some items!', { status: 302, headers: { Location: '/cart' } });
       }
-      
+
       dispatch(resetCheckout())
 
       return { checkoutSessionDuration, checkoutSessionAlreadyExists }
@@ -79,7 +71,7 @@ const checkoutLoader = async ({ request }) => {
 
       if (status === 'completed') {
         dispatch(resetCheckout())
-        
+
         toast.info('Checkout sessoon complete already. Check your orders page.')
         return redirect("/my-account#orders")
       }
@@ -133,8 +125,8 @@ const Layout = () => {
 
   return (
     <div className="app">
-      {displayNavbar && <Navbar setShowUserDropdown={setShowUserDropdown} showUserDropdown = {showUserDropdown}/>}
-      <div id="content" className={`${displayNavbar ? 'navbar-visible': ''}`} onMouseEnter={()=>setShowUserDropdown(false)}>
+      {displayNavbar && <Navbar setShowUserDropdown={setShowUserDropdown} showUserDropdown={showUserDropdown} />}
+      <div id="content" className={`${displayNavbar ? 'navbar-visible' : ''}`} onMouseEnter={() => setShowUserDropdown(false)}>
         <ToastContainer position="top-center" />
         <Outlet />
       </div>
@@ -218,10 +210,11 @@ const router = createBrowserRouter([
       },
       {
         path: '/my-account',
-        loader: protectedRouteLoader,
         element: (
           <Suspense fallback={<LoadingSpinner />}>
-            <MyAccount />
+            <AuthGuard>
+              <MyAccount />
+            </AuthGuard>
           </Suspense>
         ),
       },
@@ -231,9 +224,9 @@ const router = createBrowserRouter([
 
 function App() {
   return (
-    <Provider store={store}>
+    <Suspense fallback={<LoadingSpinner />}>
       <RouterProvider router={router} />
-    </Provider>
+    </Suspense>
   );
 }
 

@@ -94,7 +94,9 @@ const Navbar = ({ showUserDropdown, setShowUserDropdown }) => {
 
   useEffect(() => {
     // Parse the target date string into a Date object
-    const targetDateLocal = new Date(checkoutSessionExpiresAt);
+    const now = new Date();
+// const fiveSecondsLater = new Date(now.getTime() + 5000);
+    const targetDateLocal = new Date(now.getTime() + 5000);
     // Update the countdown timer every second
     // Update every second
     // console.log('showCountdown', showCountdown)
@@ -104,11 +106,12 @@ const Navbar = ({ showUserDropdown, setShowUserDropdown }) => {
         const difference = targetDateLocal - currentTime;
         const timeRemaining = difference > 0 ? difference : 0;
         // console.log('timeRemaining', timeRemaining)
-        if (timeRemaining <= 5 * 1000 * 6) { setShowCountdown(true) }
+        if (timeRemaining <= 5 * 1000 * 6) { 
+          setShowCountdown(true) 
+        }
 
         if (timeRemaining <= 0) {
           clearInterval(intervalId);
-          setShowCountdown(false);
           dispatch(endCheckoutSession())
           navigate('/cart');
         } else {
