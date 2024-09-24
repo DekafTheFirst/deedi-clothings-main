@@ -37,7 +37,8 @@ const protectedRouteLoader = () => {
   console.log('user', user);
 
   if(!user) {
-    return redirect("/login")
+    console.log('no user')
+    return null
   }
   else return null
 }

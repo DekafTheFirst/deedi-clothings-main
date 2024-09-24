@@ -5,6 +5,8 @@ import { Close, Delete, DeleteForeverOutlined, DeleteOutline, FavoriteBorder } f
 import './CartItem.scss';
 import { useDispatch } from 'react-redux';
 import { removeItemFromCart, setOutOfStock, setShowCart, updateCartItem } from '../../../redux/cart/cartReducer';
+import CTAButton from '../../CTAButton/CTAButton';
+import classNames from 'classnames';
 
 
 const CartItem = ({ item, cartType }) => {
@@ -63,7 +65,7 @@ const CartItem = ({ item, cartType }) => {
 
     return (
         <div
-            className="cart-item"
+            className={classNames("cart-item", { outOfStock: isOutOfStock })}
         >
 
             <div className="img-wrapper" onClick={handleRedirect}>
@@ -109,27 +111,32 @@ const CartItem = ({ item, cartType }) => {
                 <div className="actions">
 
 
-                    <div className="quantity">
-                        <button
-                            className={`reduce ${item.quantity <= 1 || isOutOfStock ? 'disabled' : ''}`}
-                            disabled={item.quantity <= 1 || isOutOfStock}
-                            onClick={(e) => {
-                                handleUpdateCartItem(e, { requestedQuantity: item.quantity - 1 })// Prevents the parent click handler from firing
-                            }
-                            }
-                        >
-                            <span>-</span>
-                        </button>
-                        <span className="no-of-items">{item.quantity}</span>
-                        <button
-                            className={`add ${item.quantity >= item.availableStock ? 'disabled' : ''}`}
-                            disabled={item.quantity >= item.availableStock}
-                            onClick={(e) => {
-                                handleUpdateCartItem(e, { requestedQuantity: item.quantity + 1 }); // Prevents the parent click handler from firing
-                            }}
-                        ><span>+</span></button>
+                    {isOutOfStock
+                        ?
+                        <button className="disabled-btn" disabled>SOLD OUT</button>
+                        :
+                        <div className="quantity">
+                            <button
+                                className={`reduce ${item.quantity <= 1 || isOutOfStock ? 'disabled' : ''}`}
+                                disabled={item.quantity <= 1 || isOutOfStock}
+                                onClick={(e) => {
+                                    handleUpdateCartItem(e, { requestedQuantity: item.quantity - 1 })// Prevents the parent click handler from firing
+                                }
+                                }
+                            >
+                                <span>-</span>
+                            </button>
+                            <span className="no-of-items">{item.quantity}</span>
+                            <button
+                                className={`add ${item.quantity >= item.availableStock ? 'disabled' : ''}`}
+                                disabled={item.quantity >= item.availableStock}
+                                onClick={(e) => {
+                                    handleUpdateCartItem(e, { requestedQuantity: item.quantity + 1 }); // Prevents the parent click handler from firing
+                                }}
+                            ><span>+</span></button>
 
-                    </div>
+                        </div>
+                    }
 
 
                     <div className="others">

@@ -20,7 +20,7 @@ const OrderHistory = memo(() => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await makeRequest.get(`/orders?filters[user][id][$eq]=${user?.id}`);
+        const response = await makeRequest.get(`/orders?filters[user][id][$eq]=${user?.id}&sort=createdAt:desc`);
         console.log('response', response);
         setOrders(response.data.data);
       } catch (error) {
@@ -56,7 +56,7 @@ const OrderHistory = memo(() => {
     const filterOption = filterOptions.find((filter) => filter.slug === selectedFilter);
 
     // Return orders that match any status in the selected filter's statuses array
-    return orders.filter((order) => filterOption.statuses.includes(order.attributes.status));
+    return orders?.filter((order) => filterOption.statuses.includes(order.attributes.status));
   }, [orders, selectedFilter]);
 
   // console.log('filteredOrders', filteredOrders);
@@ -65,7 +65,7 @@ const OrderHistory = memo(() => {
     <div className="order-tab">
       <div className="heading">
         <h6 className="fw-semibold"><span className='text-capitalize'>{selectedFilter}</span> Orders</h6>
-        <span className='quantity'>{filteredOrders.length}</span>
+        <span className='quantity'>{filteredOrders?.length}</span>
       </div>
 
       <div className="filters">
@@ -84,7 +84,7 @@ const OrderHistory = memo(() => {
 
       <div className="order-tab-content">
         {
-          filteredOrders.length > 0 ?
+          filteredOrders?.length > 0 ?
             filteredOrders?.map((order) => {
               const { status, totalAmount, createdAt, items: orderItems, trackingPageUrl } = order.attributes;
               return (
@@ -131,7 +131,7 @@ const OrderHistory = memo(() => {
                     </div>
 
                     <div className="order-items">
-                      {orderItems.map((orderItem, index) => {
+                      {orderItems?.map((orderItem, index) => {
                         const { img, title, size, price, productId } = orderItem;
 
                         return (
