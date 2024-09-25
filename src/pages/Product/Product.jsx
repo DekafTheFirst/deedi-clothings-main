@@ -202,8 +202,8 @@ const Product = () => {
                 <h1 className="title">{product?.attributes?.title}</h1>
                 <h6 className="category">Women's Dresses</h6>
                 <div className="prices">
-                  <p className='discountedPrice'>{`$${product?.attributes.price}`}</p>
-                  <p className="price">{`$${product?.attributes?.oldPrice || product?.attributes.price + 20}`}</p>
+                  <p className="price">{`$${product?.attributes?.discountedPrice || product?.attributes.price }`}</p>
+                 {product?.attributes?.discountedPrice && <p className='oldPrice'>{`$${product?.attributes.price}`}</p>}
                 </div>
               </div>
               <div className="section filters">

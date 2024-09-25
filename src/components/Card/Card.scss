@@ -101,14 +101,13 @@
                 vertical-align: middle;
             }
 
-            .price {
+            .oldPrice {    
                 color: gray;
                 text-decoration: line-through;
                 font-size: 14px;
-
             }
 
-            .discountedPrice {
+            .price {
                 font-size: 16px;
                 font-weight: 600;
                 color: black;

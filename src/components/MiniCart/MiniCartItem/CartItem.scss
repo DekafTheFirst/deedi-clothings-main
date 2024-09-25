@@ -24,10 +24,12 @@
         width: 90px;
         height: 105px;
         padding: 5px;
+        cursor: pointer;
 
         img {
             object-fit: contain;
         }
+
     }
 
     .body {
@@ -42,6 +44,8 @@
         .wrapper {
             display: flex;
             align-items: start;
+            cursor: pointer;
+
 
             .details {
                 display: flex;
