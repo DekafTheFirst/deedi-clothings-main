@@ -23,6 +23,10 @@
             height: calc(100vh - $navbarHeight );
         }
 
+        // @include min-breakpoint(576px){
+        //     height: calc(70vh - $navbarHeight );
+        // }
+
         @include md {
             height: calc(40vh - $navbarHeight );
             align-items: center;
@@ -37,11 +41,12 @@
         }
 
         @include xl {
-            height: calc(100vh - $navbarHeight);
+            height: calc(70vh - $navbarHeight);
+
         }
 
         @include xl-landscape {
-            // height: calc(80vh - $navbarHeight);
+            height: calc(100vh - $navbarHeight);
         }
 
 
@@ -172,7 +177,11 @@
 
                     .img img {
                         height: 100%;
-                        object-fit: contain;
+
+                        @include sm {
+                            object-fit: contain;
+
+                        }
                     }
 
                     .img .image-placeholder {
@@ -214,7 +223,7 @@
 
         .blob-2 {
             position: absolute;
-            width: 100%;
+            width: 90%;
 
             object-fit: cover;
             opacity: 0.1;
