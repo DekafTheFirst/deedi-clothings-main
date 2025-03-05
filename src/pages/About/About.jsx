@@ -33,7 +33,7 @@ const About = () => {
 
     <div className="row">
       <div className="col-md-6 image-col">
-        <OptimizedImage src="/img/women-empowerment.jpg" className="image" />
+        <OptimizedImage src="/img/women-empowerments.jpg" className="image" />
       </div>
       <div className="col-md-6 text-col">
         <span>Our Vision</span>
