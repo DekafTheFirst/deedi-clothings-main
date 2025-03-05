@@ -18,6 +18,7 @@ import Home from './pages/Home/Home'; // No lazy loading for the Home page
 import './app.scss';
 import { initializeCheckout, resetCheckout } from './redux/checkout/checkoutReducer';
 import AuthGuard from './components/guards/AuthGuard';
+import About from './pages/About/About';
 
 // Lazy load the pages that aren't immediately needed
 const Products = lazy(() => import('./pages/Products/Products'));
@@ -152,6 +153,14 @@ const router = createBrowserRouter([
         element: (
           <Suspense fallback={<LoadingSpinner />}>
             <CartPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: "/about",
+        element: (
+          <Suspense fallback={<LoadingSpinner />}>
+            <About />
           </Suspense>
         ),
       },

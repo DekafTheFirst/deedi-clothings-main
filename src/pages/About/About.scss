@@ -1,0 +1,417 @@
+/* About Us Page */
+
+.about-us-page .container {
+    display: flex;
+    flex-direction: column;
+    gap: 35px;
+    margin-top: 10px;
+    margin-bottom: 70px;
+
+}
+
+.about-us-page .row {
+    max-width: 1100px;
+    margin: auto;
+    gap: 10px;
+    margin-top: 30px;
+}
+
+.about-us-page .row>* {
+    padding: 0;
+}
+
+.about-us-page .row .image-col .image {
+    height: 100%;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+}
+
+.about-us-page .row .text-col {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+}
+
+.about-us-page .row span {
+    color: var(--forestGreen);
+    text-transform: capitalize;
+    font-weight: 600;
+}
+
+/* .about-us-page .row .text-col *{
+    text-align: start;
+} */
+
+
+.about-us-page .row:nth-child(odd) {
+    flex-direction: row-reverse;
+}
+
+/* Special Row  */
+.about-us-page .row.special {
+    flex-direction: row;
+}
+
+.about-us-page .row.special.cards-row .header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.about-us-page .row.special.cards-row .header>p {
+    max-width: 700px;
+    text-align: center;
+}
+
+/* Values */
+.about-us-page .row.special.cards-row.values .list {
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-gap: 35px;
+    margin-top: 20px;
+}
+
+.about-us-page .row.special.values .list .value-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    max-width: 90%;
+    margin: auto;
+}
+
+.about-us-page .row.special.values .list .value-card .card-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+
+.about-us-page .row.special.values .list .value-card .card-content>* {
+    text-align: center;
+}
+
+.about-us-page .row.special.values .list .value-card .icon {
+    color: var(--green);
+}
+
+.about-us-page .row.special.values .list .value-card p{
+    color: var(--gray);
+    width: 80%;
+}
+
+
+
+
+
+
+.about-us-page .row.special.leadership .image-col {
+    
+}
+
+.about-us-page .row.special.leadership .image-col .image {
+    padding: 0;
+    margin-top: 10px;
+}
+
+/* Directorates */
+.about-us-page .row.special.cards-row.directorates .list {
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    
+    grid-gap: 30px;
+    margin-top: 30px;
+}
+
+.about-us-page .row.special.directorates .list .directorate-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    padding: 20px 10px;
+    gap: 20px;
+    background-color: #CED0D4;
+    border-radius: 10px;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1);
+    border: 1px solid transparent;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    position: relative;
+}
+
+.about-us-page .row.special.directorates .list .directorate-card:hover {
+    border: 1px solid var(--forestGreen);
+    cursor: pointer;
+   
+}
+
+.about-us-page .row.special.directorates .list .directorate-card .go-corner {
+    background-color: #00838d;
+    height: 100%;
+    width: 35px;
+    padding-right: 9px;
+    border-radius: 0;
+    transform: skew(8deg);
+    position: absolute;
+    top: 0;
+    right: -50px;
+    align-items: start;
+    background-image: linear-gradient(-45deg,  var(--gray)  1%, var(--forestGreen) 100%);
+    transition: all 0.2s ease-out;
+}
+
+.about-us-page .row.special.directorates .list .directorate-card .go-corner .go-arrow {
+    transform: skew(-8deg);
+    margin-left: -2px;
+    font-size: 14px;
+    margin-top: 3px;
+    margin-left: 3px;
+    opacity: 0;
+}
+
+.about-us-page .row.special.directorates .list .directorate-card:hover .go-corner {
+   right: -20px;
+}
+
+.about-us-page .row.special.directorates .list .directorate-card:hover .go-arrow {
+    opacity: 1;
+    color: var(--white);
+}
+
+
+
+
+.about-us-page .row.special.directorates .list .directorate-card .icon {
+    color: var(--green);
+}
+
+.about-us-page .row.special.directorates .list .directorate-card .card-content p {
+    color: var(--gray);
+    font-size: 14px;
+}
+
+.about-us-page .row.special.directorates .list .directorate-card .card-content>* {
+    text-align: center;
+}
+
+
+
+/* Accordion */
+.about-us-page .accordion-item .accordion-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px 0;
+}
+
+
+
+
+.about-us-page .accordion-item {
+    border: none;
+    margin-bottom: 10px;
+}
+
+.about-us-page .accordion-button {
+    font-weight: 600;
+    padding: 15px;
+}
+
+
+
+.about-us-page .accordion-body {
+    padding: 15px;
+}
+
+
+.about-us-page .accordion-body ul li {
+    margin-bottom: 15px;
+}
+
+.about-us-page .accordion-button:not(.collapsed) {
+    color: var(--cl--6--);
+    background-color: var(--cl--3--);
+    transition: 0.3s ease-in-out;
+}
+
+.about-us-page .accordion-button:focus {
+    box-shadow: none;
+}
+
+.about-us-page .accordion-button.collapsed {
+    border: 1px solid var(--cl--3--);
+}
+
+.about-us-page .body-text {
+    margin-bottom: 10px;
+}
+
+.about-us-page .our-team .wrapper {
+    display: flex;
+    justify-items: center;
+}
+
+.about-us-page .our-team .cards {
+    display: flex;
+    justify-content: center;
+    justify-items: flex-start;
+    flex-wrap: wrap;
+    margin-top: 20px;
+    gap: 20px;
+}
+
+.about-us-page .our-team .card {
+    width: 300px;
+    height: 470px;
+    background-color: var(--cl--4--);
+    overflow: hidden;
+    border: none;
+}
+
+.about-us-page .our-team .card * {
+    color: var(--cl--2--);
+}
+
+
+.about-us-page .our-team .card .img-wrapper {
+    background-color: var(--cl--2--);
+}
+
+.about-us-page .our-team .card .card-img {
+    height: 220px;
+    object-fit: cover;
+    object-position: top;
+    border-radius: 0;
+    margin-top: 10px;
+}
+
+.about-us-page .our-team .card-body {
+    position: relative;
+    padding: 0 15px;
+}
+
+
+.about-us-page .our-team .card .logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: -35px;
+    width: 65px;
+    height: 65px;
+    padding: 5px;
+    border-radius: 50%;
+    background-color: var(--cl--1--);
+}
+
+.about-us-page .our-team .card .logo img {
+    width: 70%;
+    height: 70%;
+}
+
+.about-us-page .our-team .card .content {
+    margin-top: 50px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.about-us-page .our-team .card .name {
+    border-bottom: 3px solid var(--cl--2--);
+    width: fit-content;
+    padding-bottom: 8px;
+}
+
+
+.about-us-page .our-team .card .media-links {
+    position: absolute;
+    bottom: 0;
+}
+
+@media screen and (max-width: 480px) {
+    .about-us-page .row.special.directorates .list .directorate-card {
+        aspect-ratio: 16/9;
+    }
+}
+
+@media screen and (max-width: 567px) {
+    .about-us-page .row.special.directorates .list {
+        padding: 0 30px;
+
+    }
+
+    /* .about-us-page .row.special.directorates .list .directorate-card {
+        aspect-ratio: 16/9;
+    } */
+}
+
+@media screen and (min-width: 768px) {
+
+    .about-us-page .container {
+        max-width: 1000px;
+        padding: 0;
+        margin-top: 0;
+        gap: 0;
+    }
+
+    .about-us-page .row {
+        margin-top: 0;
+        gap: 0;
+    }
+
+    .about-us-page .row.special {
+        margin-top: 70px;
+    }
+
+    .about-us-page .row.special.cards-row.values .list {
+        margin-top: 40px;
+    }
+
+
+
+    .about-us-page .row.special.leadership .image-col .image {
+        padding: 0;
+        margin-top: 0;
+    }
+
+    .about-us-page .row .image-col .image {
+        height: 100%;
+
+        aspect-ratio: 4 / 4;
+    }
+
+    .about-us-page .row .text-col {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 50px;
+    }
+
+
+    .about-us-page .row.special.leadership .image-col .image {
+        padding: 0;
+        margin-top: 0;
+    }
+
+    .about-us-page .row.special.directorates .list {
+        padding: 20px;
+    }
+
+}
+
+@media screen and (min-width: 1200px) {
+
+    .about-us-page .container {
+        max-width: 1000px;
+        padding: 0;
+        margin-top: 0px;
+        margin-bottom: 50px;
+        gap: 0;
+    }
+}
+
+/* End About Us */

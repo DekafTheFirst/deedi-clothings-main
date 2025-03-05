@@ -60,7 +60,7 @@ const CartPage = () => {
       }
     };
 
-    validateAndSet();
+    // validateAndSet();
   }, []);
 
 

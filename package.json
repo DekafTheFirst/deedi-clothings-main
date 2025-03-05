@@ -9,6 +9,7 @@
     "@mui/lab": "^6.0.0-beta.9",
     "@mui/material": "^6.0.2",
     "@reduxjs/toolkit": "^2.2.2",
+    "@rollup/rollup-darwin-arm64": "^4.30.1",
     "@strapi/blocks-react-renderer": "^1.0.1",
     "@stripe/react-stripe-js": "^2.8.0",
     "@stripe/stripe-js": "^4.4.0",

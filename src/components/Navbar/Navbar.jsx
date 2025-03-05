@@ -211,9 +211,9 @@ const Navbar = ({ showUserDropdown, setShowUserDropdown }) => {
             <div className="item">
               <Link className="link" to="/products/kids">Kids</Link>
             </div>
-            {/* <div className="item">
+            <div className="item">
               <Link className="link" to="/about">About</Link>
-            </div> */}
+            </div>
             {/* <div className="item">
               <Link className="link" to="/contact">Contact</Link>
             </div> */}
