@@ -60,9 +60,7 @@ const FeaturedProducts = ({ type }) => {
         </div>
         <div className="col-md-5">
           <p>
-            Lorem ipsum dolor sit amet consectetur
-            adipisicing elit. Consequatur neque
-            totam sed tenetur expedita
+          Editor's choice &ndash; curated standout pieces selected to elevate your style and upgrade your collection.
              
           </p>
         </div>

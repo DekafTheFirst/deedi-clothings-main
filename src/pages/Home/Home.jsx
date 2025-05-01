@@ -1,9 +1,8 @@
-import React, { useEffect } from 'react'
+import React, { } from 'react'
 import "./Home.scss"
 import FeaturedProducts from '../../components/FeaturedProducts/FeaturedProducts'
 import Categories from '../../components/Categories/Categories'
 import Contact from '../../components/Contact/Contact'
-import MySwiper from '../../components/Swiper/MySwiper'
 import { Link } from 'react-router-dom'
 import OptimizedImage from '../../components/OptimizedImage/OptimizedImage'
 

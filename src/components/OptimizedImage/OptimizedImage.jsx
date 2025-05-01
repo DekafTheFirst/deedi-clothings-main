@@ -41,11 +41,14 @@ const OptimizedImage = ({ src, blurhash, height, width, wrapperClassName, classN
                 width={'100%'}
                 onLoad={handleLoad}
                 beforeLoad={handleLoadStarted}
-            /> 
+            />
 
             {!isLoaded && isLoadStarted && (
-                <div className={`image-placeholder ${backgroundImage ? 'background-image':''}`}></div>
+                <div className={`image-placeholder ${backgroundImage ? 'background-image' : ''}`}></div>
             )}
+
+
+            
         </div>
 
 

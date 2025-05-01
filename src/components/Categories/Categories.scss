@@ -202,6 +202,19 @@
 
       &.accessories {
         grid-area: accessories;
+
+        .content {
+          justify-content: start;
+
+          .title {
+            color: #343A40
+          }
+
+          .link {
+            color: #800020
+          }
+        }
+
         @include subtle-hover;
 
 
